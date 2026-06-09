@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<title>행복한 하루 — 16일 예보</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --card: rgba(255,255,255,.88); --radius: 18px; }
+
+  body.clear        { --A:#fef3c7; --B:#fed7aa; --P:#d97706; --T:#78350f; }
+  body.partlyCloudy { --A:#dbeafe; --B:#e0f2fe; --P:#0284c7; --T:#0c4a6e; }
+  body.cloudy       { --A:#e2e8f0; --B:#cbd5e1; --P:#475569; --T:#1e293b; }
+  body.foggy        { --A:#d1fae5; --B:#ecfdf5; --P:#059669; --T:#064e3b; }
+  body.drizzle      { --A:#dbeafe; --B:#c7d2fe; --P:#4f46e5; --T:#1e3a8a; }
+  body.rainy        { --A:#c7d2fe; --B:#a5b4fc; --P:#4338ca; --T:#312e81; }
+  body.snowy        { --A:#e0f2fe; --B:#f0f9ff; --P:#0369a1; --T:#0c4a6e; }
+  body.thunderstorm { --A:#1e1b4b; --B:#312e81; --P:#a5b4fc; --T:#e0e7ff; --card:rgba(15,10,60,.75); }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, var(--A,#fef3c7) 0%, var(--B,#fed7aa) 100%);
+    color: var(--T, #78350f);
+    font-family: 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    transition: background 1.4s ease, color .6s;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  .site-header { text-align: center; padding: 2rem 1rem 1rem; }
+  .site-logo   { font-size: 1.9rem; font-weight: 900; color: var(--P); margin-bottom: .15rem; }
+  .site-sub    { font-size: .83rem; opacity: .65; margin-bottom: .7rem; }
+  .date-box    {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: var(--card); backdrop-filter: blur(10px);
+    border-radius: 14px; padding: .5rem 1.3rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08); margin-bottom: .6rem;
+  }
+  .date-box .today-label { font-size: .75rem; opacity: .55; }
+  .date-box .today-date  { font-size: .95rem; font-weight: 700; color: var(--P); }
+
+  .nav-links { display: flex; justify-content: center; gap: .5rem; flex-wrap: wrap; }
+  .nav-link  {
+    display: inline-block; padding: .32rem .8rem;
+    background: var(--card); border-radius: 999px;
+    color: var(--P); text-decoration: none; font-size: .82rem; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: opacity .2s;
+  }
+  .nav-link:hover { opacity: .8; }
+
+  /* ── LOCATION BAR ── */
+  .loc-bar { display: flex; justify-content: center; gap: .5rem; padding: .5rem 1rem; flex-wrap: wrap; }
+  .loc-bar input {
+    padding: .45rem .9rem; border: 1.5px solid var(--P);
+    border-radius: 8px; font-size: .88rem; background: var(--card); color: var(--T); width: 175px;
+  }
+  .loc-btn {
+    padding: .45rem .9rem; background: var(--P); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-size: .88rem;
+    font-weight: 600; transition: opacity .2s;
+  }
+  .loc-btn:hover { opacity: .85; }
+
+  /* ── MAIN ── */
+  main { max-width: 740px; margin: 0 auto; padding: .5rem 1rem 4rem; }
+  #loading { text-align: center; padding: 2.5rem; font-size: 1rem; color: var(--P); }
+  #err-box { text-align: center; padding: 1.5rem; }
+  .err-btn { margin-top: .6rem; padding: .4rem .9rem; background: #e11d48; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+
+  /* ── FORECAST GRID ── */
+  .forecast-section { margin-bottom: 1.2rem; }
+  .section-title {
+    font-size: .75rem; font-weight: 700; opacity: .45;
+    text-transform: uppercase; letter-spacing: .07em; margin-bottom: .5rem;
+  }
+  .forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: .4rem;
+  }
+  @media (max-width: 620px) { .forecast-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .day-card {
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: .55rem .3rem;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all .18s;
+    min-width: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .day-card:hover  { border-color: var(--P); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .day-card.sel    { background: var(--P); color: #fff; border-color: var(--P); }
+  .day-card.today-card .day-wd { color: var(--P); font-weight: 800; }
+  .day-card.sel    .day-wd     { color: rgba(255,255,255,.75); }
+
+  .day-wd   { font-size: .6rem; opacity: .7; }
+  .day-dt   { font-size: .7rem; font-weight: 700; margin-bottom: .1rem; }
+  .day-ico  { font-size: 1.4rem; display: block; margin: .1rem 0; }
+  .day-tmax { font-size: .72rem; font-weight: 700; }
+  .day-tmin { font-size: .64rem; opacity: .6; }
+  .day-rain { font-size: .58rem; opacity: .55; margin-top: .05rem; }
+
+  /* ── SELECTED DAY BANNER ── */
+  .sel-banner {
+    background: var(--card); backdrop-filter: blur(12px);
+    border-radius: var(--radius); padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem; box-shadow: 0 4px 24px rgba(0,0,0,.1);
+    display: flex; align-items: center; gap: 1.2rem;
+  }
+  .sel-big  { font-size: 3.5rem; flex-shrink: 0; }
+  .sel-date { font-size: .82rem; opacity: .6; margin-bottom: .1rem; }
+  .sel-temp { font-size: 1.7rem; font-weight: 800; }
+  .sel-cond { font-size: .9rem; font-weight: 600; }
+  .sel-meta { display: flex; gap: .8rem; font-size: .78rem; margin-top: .3rem; opacity: .6; flex-wrap: wrap; }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    background: var(--P); color: #fff; border-radius: var(--radius);
+    padding: 1rem 1.3rem; margin-bottom: 1rem;
+    font-size: .95rem; font-style: italic; font-weight: 500;
+    box-shadow: 0 4px 18px rgba(0,0,0,.12); position: relative; overflow: hidden;
+  }
+  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia,serif; }
+  .quote-box .q-text { position: relative; }
+  .quote-box .q-src  { display: block; font-style: normal; font-size: .78rem; opacity: .75; margin-top: .3rem; }
+
+  /* ── TABS ── */
+  .tab-bar { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .3rem; margin-bottom: 1rem; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0; padding: .5rem 1rem;
+    border: 1.5px solid var(--P); border-radius: 999px;
+    background: transparent; color: var(--P);
+    font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .tab-btn.active, .tab-btn:hover { background: var(--P); color: #fff; }
+
+  .panel { display: block; max-height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
+  .panel.active { max-height: 9999px; opacity: 1; pointer-events: auto; }
+  .content-card { background: var(--card); backdrop-filter: blur(10px); border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 3px 18px rgba(0,0,0,.08); }
+
+  /* Music */
+  .music-artist { font-size: .78rem; opacity: .6; margin-bottom: .2rem; }
+  .music-title  { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+  .music-why    { font-size: .85rem; opacity: .7; margin-bottom: .8rem; padding: .5rem; background: rgba(0,0,0,.04); border-radius: 8px; border-left: 3px solid var(--P); }
+  /* YouTube 썸네일 클릭 재생 */
+  .yt-cover { display: block; position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; margin-bottom: .4rem; text-decoration: none; }
+  .yt-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s; }
+  .yt-cover:hover img { opacity: .85; }
+  .yt-play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 62px; height: 62px; background: rgba(220,0,0,.88); border-radius: 50%; pointer-events: none; transition: transform .18s, background .18s; }
+  .yt-cover:hover .yt-play-btn { transform: translate(-50%,-50%) scale(1.1); background: #f00; }
+  .yt-play-btn::after { content: ''; position: absolute; top: 50%; left: 54%; transform: translate(-50%,-50%); border: 10px solid transparent; border-left: 18px solid #fff; }
+  .yt-open-link { display: inline-block; margin-top: .5rem; font-size: .82rem; color: var(--P); text-decoration: none; opacity: .75; }
+  .yt-open-link:hover { opacity: 1; text-decoration: underline; }
+
+  /* Poem */
+  .poem-author { font-size: .82rem; opacity: .6; margin-bottom: .6rem; }
+  .poem-body { white-space: pre-line; font-family: 'Malgun Gothic','Apple SD Gothic Neo',serif; font-size: .95rem; line-height: 2.1; padding: .9rem 1rem; background: rgba(0,0,0,.04); border-radius: 10px; border-left: 4px solid var(--P); }
+
+  /* Art */
+  .art-img   { width: 100%; border-radius: 12px; margin-bottom: .7rem; display: block; }
+  .art-title { font-weight: 700; font-size: .98rem; }
+  .art-info  { font-size: .8rem; opacity: .6; margin-top: .1rem; }
+  .art-desc  { font-size: .87rem; margin-top: .45rem; line-height: 1.6; }
+
+  /* Places */
+  .place-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; }
+  .place-item { background: rgba(0,0,0,.05); border-radius: 12px; padding: .8rem; }
+  .place-icon { font-size: 1.5rem; margin-bottom: .25rem; }
+  .place-name { font-weight: 700; font-size: .9rem; }
+  .place-desc { font-size: .78rem; opacity: .65; margin-top: .2rem; }
+
+  /* Books */
+  .book-item { border-bottom: 1px solid rgba(0,0,0,.07); padding: .75rem 0; }
+  .book-item:last-child { border-bottom: none; }
+  .book-title  { font-weight: 700; font-size: .95rem; }
+  .book-author { font-size: .78rem; opacity: .6; }
+  .book-reason { font-size: .85rem; margin-top: .2rem; }
+
+  /* Activities */
+  .job-sel { width: 100%; padding: .5rem; border: 1.5px solid var(--P); border-radius: 8px; background: var(--card); color: var(--T); font-size: .9rem; margin-bottom: .8rem; cursor: pointer; }
+  .act-list { list-style: none; }
+  .act-list li { padding: .55rem .5rem; border-bottom: 1px solid rgba(0,0,0,.06); font-size: .9rem; display: flex; gap: .5rem; align-items: flex-start; }
+  .act-list li::before { content: '🌟'; flex-shrink: 0; }
+  .act-list li:last-child { border-bottom: none; }
+
+  footer { text-align: center; padding: 2rem 1rem; font-size: .78rem; opacity: .45; }
+</style>
+</head>
+<body class="clear">
+
+<div class="site-header">
+  <div class="site-logo">📅 행복한 하루 — 예보</div>
+  <div class="site-sub">앞으로 16일, 날씨별 맞춤 추천</div>
+  <div class="date-box">
+    <span class="today-label">오늘</span>
+    <span class="today-date" id="today-date">-</span>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🌤 오늘 날씨</a>
+  </div>
+</div>
+
+<div class="loc-bar">
+  <button class="loc-btn" onclick="getGeo()">📍 내 위치</button>
+  <input type="text" id="city-input" placeholder="도시 이름 (예: 서울)"
+         onkeyup="if(event.key==='Enter')searchCity()">
+  <button class="loc-btn" onclick="searchCity()">검색</button>
+</div>
+
+<main>
+  <div id="loading">📡 날씨를 불러오는 중...</div>
+  <div id="err-box" style="display:none"></div>
+
+  <!-- 16일 예보 그리드 -->
+  <div id="forecast-section" class="forecast-section" style="display:none">
+    <div class="section-title">📅 16일 날씨 예보 — 날짜를 클릭하면 추천이 바뀝니다</div>
+    <div id="forecast-grid" class="forecast-grid"></div>
+  </div>
+
+  <!-- 선택된 날 배너 -->
+  <div id="sel-banner" class="sel-banner" style="display:none">
+    <div class="sel-big" id="sel-emoji">☀️</div>
+    <div>
+      <div class="sel-date" id="sel-date">-</div>
+      <div class="sel-temp" id="sel-temp">--°</div>
+      <div class="sel-cond" id="sel-cond">-</div>
+      <div class="sel-meta">
+        <span id="sel-rain">💧 -</span>
+        <span id="sel-wind">💨 -</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 명언 -->
+  <div id="quote-box" class="quote-box" style="display:none">
+    <div class="q-text" id="q-text">-</div>
+    <span class="q-src"  id="q-src"></span>
+  </div>
+
+  <!-- 탭 -->
+  <div id="tab-bar" class="tab-bar" style="display:none">
+    <button class="tab-btn active" onclick="showTab('music')">🎵 음악</button>
+    <button class="tab-btn"        onclick="showTab('poem')">📜 시</button>
+    <button class="tab-btn"        onclick="showTab('art')">🖼️ 그림</button>
+    <button class="tab-btn"        onclick="showTab('places')">📍 장소</button>
+    <button class="tab-btn"        onclick="showTab('books')">📚 책</button>
+    <button class="tab-btn"        onclick="showTab('act')">💼 활동</button>
+  </div>
+
+  <div id="panel-music"  class="panel active  content-card"></div>
+  <div id="panel-poem"   class="panel         content-card"></div>
+  <div id="panel-art"    class="panel         content-card"></div>
+  <div id="panel-places" class="panel         content-card"></div>
+  <div id="panel-books"  class="panel         content-card"></div>
+  <div id="panel-act"    class="panel         content-card"></div>
+</main>
+
+<footer>행복한 하루 · 날씨 제공: Open-Meteo · 명화: Wikimedia Commons</footer>
+
+<script>
+// ══════════════════════════════════════════
+//  날짜별 pick — 해당 날짜의 연중 몇 번째 날인지 기준
+// ══════════════════════════════════════════
+function pickForDate(arr, dateStr) {
+  const d   = new Date(dateStr + 'T00:00:00');
+  const day = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
+  return arr[day % arr.length];
+}
+
+// ══════════════════════════════════════════
+//  범용 명언 풀 (100개) — 날씨 무관, 매일 랜덤
+// ══════════════════════════════════════════
+const QUOTES = [
+  {t:'오늘 할 수 있는 일을 내일로 미루지 마라.', s:'— 벤저민 프랭클린'},
+  {t:'시작이 반이다.', s:'— 아리스토텔레스'},
+  {t:'넘어지는 것은 실패가 아니다. 넘어진 채로 있는 것이 실패다.', s:'— 메리 피커드'},
+  {t:'행복은 습관이다. 그것을 몸에 지녀라.', s:'— 허버트 허바드'},
+  {t:'작은 일에 최선을 다하는 사람만이 큰 일도 이룰 수 있다.', s:'— 괴테'},
+  {t:'꿈을 꾸는 사람에게는 불가능이란 없다.', s:'— 월트 디즈니'},
+  {t:'당신이 할 수 있다고 믿든, 할 수 없다고 믿든 — 둘 다 맞다.', s:'— 헨리 포드'},
+  {t:'지금 이 순간이 당신이 가진 전부다.', s:'— 에크하르트 톨레'},
+  {t:'성공은 열정을 잃지 않고 실패를 거듭할 수 있는 능력이다.', s:'— 윈스턴 처칠'},
+  {t:'남들이 모두 포기할 때 계속하는 것이 성공의 비결이다.', s:'— 해리 트루먼'},
+  {t:'가장 큰 실수는 실수를 두려워하는 것이다.', s:'— 엘버트 허바드'},
+  {t:'천 리 길도 한 걸음부터.', s:'— 노자'},
+  {t:'변화를 두려워하지 마라. 변화하지 않는 것을 두려워하라.', s:'— 익명'},
+  {t:'삶이란 자전거 타기와 같다. 균형을 잡으려면 계속 움직여야 한다.', s:'— 알베르트 아인슈타인'},
+  {t:'나는 실패한 적이 없다. 단지 작동하지 않는 방법을 만 가지 찾아냈을 뿐이다.', s:'— 토머스 에디슨'},
+  {t:'사람은 목표가 있을 때 어디서나 행복할 수 있다.', s:'— 도스토예프스키'},
+  {t:'두려움이 있는 곳에 성장이 있다.', s:'— 익명'},
+  {t:'완벽함은 행동의 적이다.', s:'— 볼테르'},
+  {t:'기회는 준비된 사람에게 찾아온다.', s:'— 루이 파스퇴르'},
+  {t:'단순하게 살수록 풍요로워진다.', s:'— 헨리 데이비드 소로'},
+  {t:'오늘 심은 씨앗이 내일의 나무가 된다.', s:'— 중국 속담'},
+  {t:'가장 용감한 행동은 스스로 생각하고 큰 소리로 말하는 것이다.', s:'— 코코 샤넬'},
+  {t:'친절함은 무료다. 아낌없이 뿌려라.', s:'— 익명'},
+  {t:'행복은 목적지가 아니라 여행의 방식이다.', s:'— 마가렛 리 런벡'},
+  {t:'모든 위대한 여정은 첫 걸음에서 시작된다.', s:'— 노자'},
+  {t:'실수를 한 번도 안 한 사람은 새로운 것을 시도한 적이 없는 사람이다.', s:'— 아인슈타인'},
+  {t:'비교는 기쁨의 도둑이다.', s:'— 시어도어 루스벨트'},
+  {t:'지금 힘든 이유는, 지금 성장하고 있기 때문이다.', s:'— 익명'},
+  {t:'웃음은 마음의 언어다.', s:'— 익명'},
+  {t:'작은 행동이 큰 변화를 만든다.', s:'— 익명'},
+  {t:'당신이 원하는 변화가 있다면 스스로 그 변화가 되어라.', s:'— 마하트마 간디'},
+  {t:'인생은 가까이서 보면 비극이지만 멀리서 보면 희극이다.', s:'— 찰리 채플린'},
+  {t:'독서는 마음의 양식이다.', s:'— 익명'},
+  {t:'남을 용서하는 것은 자신을 자유롭게 하는 것이다.', s:'— 익명'},
+  {t:'미래는 자신의 꿈의 아름다움을 믿는 사람들에게 속한다.', s:'— 엘리너 루스벨트'},
+  {t:'세상을 바꾸고 싶으면 먼저 자신을 바꿔라.', s:'— 소크라테스'},
+  {t:'당신의 태도가 당신의 방향을 결정한다.', s:'— 익명'},
+  {t:'매일 조금씩 더 나아지는 것이 목표다.', s:'— 익명'},
+  {t:'조용히 흐르는 물이 깊다.', s:'— 한국 속담'},
+  {t:'열 번 찍어 안 넘어가는 나무 없다.', s:'— 한국 속담'},
+  {t:'어제의 나보다 오늘의 내가 더 나은 사람이면 충분하다.', s:'— 익명'},
+  {t:'모든 꽃은 한때 씨앗이었다.', s:'— 익명'},
+  {t:'삶에서 가장 중요한 것은 지금 이 순간 무엇을 하느냐다.', s:'— 레프 톨스토이'},
+  {t:'당신이 가진 것에 감사하라. 그러면 더 많은 것을 갖게 될 것이다.', s:'— 오프라 윈프리'},
+  {t:'두 번 생각하고 한 번 말하라.', s:'— 한국 속담'},
+  {t:'사랑은 행동이지 말이 아니다.', s:'— 익명'},
+  {t:'모든 어려움에는 기회가 숨어 있다.', s:'— 알베르트 아인슈타인'},
+  {t:'잠들기 전에 오늘에 감사하라.', s:'— 익명'},
+  {t:'한 번도 실수하지 않는 사람은 한 번도 도전하지 않은 사람이다.', s:'— 익명'},
+  {t:'지금 이 순간, 당신은 충분하다.', s:'— 익명'},
+  {t:'길이 없으면 길을 만들면 된다.', s:'— 익명'},
+  {t:'건강이 가장 큰 재산이다.', s:'— 버질'},
+  {t:'매 순간이 새로운 시작이다.', s:'— T.S. 엘리엇'},
+  {t:'자신을 이기는 자가 가장 강한 자다.', s:'— 노자'},
+  {t:'사람을 얻는 것이 세상을 얻는 것이다.', s:'— 한국 속담'},
+  {t:'오늘 웃지 않은 날은 낭비한 날이다.', s:'— 찰리 채플린'},
+  {t:'진정한 지식은 자신이 얼마나 모르는지 아는 것이다.', s:'— 소크라테스'},
+  {t:'모든 것은 마음먹기에 달렸다.', s:'— 원효대사'},
+  {t:'인생은 짧고 예술은 길다.', s:'— 히포크라테스'},
+  {t:'좋은 친구 하나가 책 천 권보다 낫다.', s:'— 익명'},
+  {t:'자신의 한계를 알되, 그 한계에 갇히지 마라.', s:'— 익명'},
+  {t:'겸손한 자는 항상 배울 것이 있다.', s:'— 익명'},
+  {t:'봄이 오기 위해 겨울이 필요하다.', s:'— 익명'},
+  {t:'오늘의 고통은 내일의 지혜다.', s:'— 익명'},
+  {t:'하루하루가 선물이다.', s:'— 익명'},
+  {t:'나는 내 삶의 주인공이다.', s:'— 익명'},
+  {t:'긍정적인 생각은 긍정적인 삶을 만든다.', s:'— 익명'},
+  {t:'지금 당장 완벽하지 않아도 된다. 그냥 시작하라.', s:'— 익명'},
+  {t:'꾸준함이 재능을 이긴다.', s:'— 익명'},
+  {t:'모든 날은 새로운 가능성을 품고 있다.', s:'— 익명'},
+  {t:'작은 것에 감사할 줄 아는 사람이 크게 받는다.', s:'— 익명'},
+  {t:'오늘 잘 살면 내일은 저절로 좋아진다.', s:'— 익명'},
+  {t:'고요한 마음이 가장 강한 마음이다.', s:'— 익명'},
+  {t:'지금 여기, 이 순간을 사랑하라.', s:'— 익명'},
+  {t:'당신의 이야기는 아직 끝나지 않았다.', s:'— 익명'},
+];
+
+// ══════════════════════════════════════════
+//  CONTENT DB
+// ══════════════════════════════════════════
+const DB = {
+  clear:{
+    name:'맑음', emoji:'☀️', cls:'clear',
+    quotes:[
+      {t:'맑은 날은 행복을 찾을 수 있는 날이고, 비 오는 날은 그 행복을 만들 수 있는 날이다.', s:'— 익명'},
+      {t:'오늘 아침, 햇살이 허락한 이 하루를 선물처럼 받아 주세요.', s:'— 익명'},
+      {t:'맑은 하늘은 아무것도 없는 것이 아니라, 무엇이든 될 수 있는 가능성이다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'사계 — 봄 1악장 (Vivaldi)', artist:'비발디 / 이무지치', yt:'GRxofEmo3HA', why:'봄날 햇살처럼 생동감 넘치는 선율. 자연의 기쁨이 활로 담겨 있습니다.'},
+      {title:'전원 교향곡 6번 (Beethoven)', artist:'베토벤 / 정명훈', yt:'8wd-bnirOsY', why:'전원의 평화, 시냇가의 속삭임, 맑은 날의 기쁨을 담은 교향곡.'},
+      {title:'아이네 클라이네 나흐트무지크 (Mozart)', artist:'모차르트 / 베를린 필하모닉', yt:'GxI4Zzf3l08', why:'경쾌하고 우아한 선율. 맑은 날 기분을 한껏 올려줍니다.'},
+      {title:'페르귄트 — 아침의 기분 (Grieg)', artist:'그리그 / 베를린 필하모닉', yt:'wfhagrxtVkg', why:'이른 아침 햇살처럼 맑고 상쾌한 선율. 페르귄트 모음곡 오프닝.'},
+      {title:'수상 음악 모음 (Handel)', artist:'헨델 / 가디너', yt:'34Ua04_V09E', why:'밝고 기품 있는 바로크 음악. 햇살 속을 산책하는 기분.'}
+    ],
+    poems:[
+      {title:'봄은 고양이로다', author:'이장희 · 1924', text:`꽃가루와 같이 부드러운 고양이의 털에\n고운 봄의 향기가 어리우도다.\n\n금방울과 같이 호동그란 고양이의 눈에\n미친 봄의 불길이 흐르도다.\n\n고요히 다물은 고양이의 입술에\n포근한 봄 졸음이 떠돌아라.\n\n날카롭게 쭉 뻗은 고양이의 수염에\n푸른 봄의 생기가 뛰놀아라.`},
+      {title:'나 자신의 노래 (부분)', author:'월트 휘트먼 · 1855', text:`나는 믿는다,\n풀잎 한 장이 별들의 여정보다\n못하지 않다고.\n\n개미 한 마리도 완전하고,\n모래 한 알도, 굴뚝새의 알 하나도 그러하다.\n\n뻗어 자라는 검은딸기는\n천국의 응접실을 장식하기에 충분하다.\n내 손 안의 흙 한 줌에\n끝없는 우주의 신비가 깃들어 있다.`},
+      {title:'풀꽃', author:'나태주 · 1989', text:`자세히 보아야 예쁘다\n오래 보아야 사랑스럽다\n너도 그렇다.`},
+      {title:'가을에게 (부분)', author:'존 키츠 · 1819', text:`안개와 풍요로운 결실의 계절이여!\n성숙하는 태양의 다정한 친구여!\n\n소나무 그늘 아래 졸거나,\n반쯤 베인 밭고랑 위에\n이삭다발로 머리를 베고 눕거나.\n\n제비들이 하늘 높이 지저귀고,\n모든 것은 익어가며 빛을 발한다.`},
+      {title:'산유화', author:'김소월 · 1925', text:`산에는 꽃 피네\n꽃이 피네\n갈 봄 여름 없이\n꽃이 피네.\n\n산에\n산에\n피는 꽃은\n저만치 혼자서 피어 있네.\n\n산에서 우는 작은 새여\n꽃이 좋아\n산에서\n사노라네.\n\n산에는 꽃 지네\n꽃이 지네\n갈 봄 여름 없이\n꽃이 지네.`},
+      {title:'저녁 (부분)', author:'라이너 마리아 릴케 · 1902', text:`천천히 저녁이 내리며\n별 하나하나를 달아놓는다.\n\n저 넓은 들판 위에서\n무언가 무겁게 하늘로 올라간다.\n\n그리고 서쪽에서 — 처음에는 파랗고,\n다음엔 밝게 빛나는 —\n저녁별 하나가 홀로 깨어 있다.`}
+    ],
+    arts:[
+      {title:'그랑드 자트 섬의 일요일 오후', info:'조르주 쇠라 · 1886 · 시카고 미술관', desc:'점묘법으로 그린 빛의 향연. 맑은 날 강가에서 휴식하는 파리 시민들.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg/800px-Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg'},
+      {title:'인상 — 해돋이 (Impression, Sunrise)', info:'클로드 모네 · 1872 · 마르모탕 미술관, 파리', desc:'인상주의의 탄생을 이끈 그림. 안개 낀 아침 항구의 해돋이를 빠른 붓터치로 포착.', img:'https://upload.wikimedia.org/wikipedia/commons/5/59/Monet_-_Impression%2C_Sunrise.jpg'},
+      {title:'비너스의 탄생 (Birth of Venus)', info:'산드로 보티첼리 · 1484~1486 · 우피치 미술관, 피렌체', desc:'봄의 탄생, 아름다움의 시작. 조개 위에 서 있는 비너스는 맑고 청명한 날의 상징.', img:'https://mdl.artvee.com/sftb/401238mt.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 투썸플레이스',d:'야외 테라스 자리 — 네이버지도에서 스타벅스 테라스 검색'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'낮 할인 타임 이용 — 앱에서 좌석 예매 후 방문'},{i:'🍽️',n:'야외 테라스 맛집',d:'카카오맵에서 테라스 식당 검색 → 리뷰 높은 곳 선택'},{i:'💆',n:'아로마 마사지 · 스파',d:'네이버지도에서 아로마마사지 검색 — 운동 후 피로 회복'}],
+    books:[{t:'월든',a:'헨리 데이비드 소로',r:'숲속 오두막에서 2년간 혼자 산 소로의 기록. 자연과 함께하는 단순한 삶 속에서 발견한 철학과 자유.'},{t:'어린 왕자',a:'생텍쥐페리',r:'사막에 불시착한 조종사가 만난 다른 별에서 온 어린 왕자 이야기. 사랑, 우정, 순수함에 대한 영원한 우화.'},{t:'나미야 잡화점의 기적',a:'히가시노 게이고',r:'30년을 뛰어넘어 오가는 편지들. 폐업한 잡화점의 우편함을 통해 과거와 현재가 연결되는 따뜻한 이야기.'}],
+    jobs:{student:['카페 테라스나 공원에서 공부해 보기','친구들과 야외 점심 후 복습','배운 내용을 걸으며 혼자 정리'],office:['점심시간 15분 산책 — 창의력 향상','창가 자리에서 오후 업무','퇴근 후 조깅 30분'],home:['재래시장에서 신선한 식재료 구매','아이들과 공원 나들이','베란다 화분에 물 주기'],retired:['아침 공원 걷기 30분','지인과 점심 약속','오후 도서관 독서'],freelance:['노트북 들고 카페 야외석 작업','오전 집중 → 오후 외출로 환기','새 동네 탐방하며 영감 찾기'],artist:['스케치북 들고 야외 스케치','빛 좋은 오후 사진 촬영','갤러리·전시회 관람']}
+  },
+  partlyCloudy:{
+    name:'구름 조금', emoji:'🌤️', cls:'partlyCloudy',
+    quotes:[
+      {t:'구름 사이로 비치는 햇살이 더 아름답다.', s:'— 익명'},
+      {t:'완벽한 날씨보다 완벽한 마음가짐이 더 중요하다.', s:'— 익명'},
+      {t:'구름은 하늘의 다양한 표정이다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'G선상의 아리아 (Bach)', artist:'바흐 / 베를린 필하모닉', yt:'NxwEadYik00', why:'고요하고 평온한 선율. 흘러가는 구름처럼 마음이 편안해집니다.'},
+      {title:'트로이메라이 (Schumann)', artist:'슈만 (Schumann)', yt:'imGaOIm5HOk', why:'꿈꾸는 듯 달콤한 선율. 구름 사이 햇살처럼 포근한 소품.'},
+      {title:'헝가리 무곡 5번 (Brahms)', artist:'브람스 / 베를린 필하모닉', yt:'PeU3LS_s03I', why:'흥겹고 생동감 넘치는 선율. 약간의 긴장과 유쾌함이 공존.'},
+      {title:'리베스트라움 3번 (Liszt)', artist:'리스트 (Liszt)', yt:'SVHHgC-a0dI', why:'사랑의 꿈 — 달콤하고 서정적인 낭만파 피아노 소품.'},
+      {title:'피아노 협주곡 21번 2악장 (Mozart)', artist:'모차르트 / 머레이 페라이어', yt:'7maJOI3QMu0', why:'구름 사이 햇살처럼 달콤하게 흐르는 모차르트.'}
+    ],
+    poems:[
+      {title:'향수', author:'정지용 · 1927', text:`넓은 벌 동쪽 끝으로\n옛이야기 지줄대는 실개천이 휘돌아 나가고,\n얼룩배기 황소가\n해설피 금빛 게으른 울음을 우는 곳,\n\n— 그곳이 차마 꿈엔들 잊힐리야.\n\n질화로에 재가 식어지면\n뷔인 밭에 밤바람 소리 말을 달리고,\n엷은 조름에 겨운 늙으신 아버지가\n짚 베개를 돋아 고이시는 곳,\n\n— 그곳이 차마 꿈엔들 잊힐리야.`},
+      {title:'나는 구름처럼 외로이 떠돌았다', author:'윌리엄 워즈워스 · 1807', text:`나는 구름처럼 외로이 떠돌았다,\n골짜기와 언덕을 넘나들며,\n문득 한 무리가 눈에 들어왔다 —\n황금빛 수선화 군락.\n\n호숫가, 나무들 아래,\n바람 따라 춤을 추며 흔들리는.\n\n긴 세월이 흘러도,\n홀로 누울 때면 눈을 감아 그 꽃들을 본다.\n그리하여 내 마음은 기쁨으로 춤을 춘다.`},
+      {title:'나그네', author:'박목월 · 1946', text:`강나루 건너서\n밀밭 길을\n\n구름에 달 가듯이\n가는 나그네.\n\n길은 외줄기\n남도 삼백 리.\n\n술 익은 마을마다\n타는 저녁놀\n\n구름에 달 가듯이\n가는 나그네.`},
+      {title:'가지 않은 길', author:'로버트 프로스트 · 1916', text:`노란 숲속에 두 갈래 길이 있었고,\n나는 두 길을 모두 갈 수 없었다.\n오랫동안 서서 한 길 끝까지 바라보았다,\n굽어 사라질 때까지.\n\n나는 다른 길을 택했다.\n\n언젠가 어딘가에서 나는 한숨짓겠지 —\n두 갈래 길이 숲속에 있었고,\n나는 사람이 덜 걸은 길을 택했노라고,\n그리고 그것이 모든 차이를 만들었노라고.`},
+      {title:'청포도', author:'이육사 · 1939', text:`내 고장 칠월은\n청포도가 익어가는 시절.\n\n이 마을 전설이 주저리주저리 열리고\n먼 데 하늘이 꿈꾸며 알알이 들어와 박혀,\n\n하늘 밑 푸른 바다가 가슴을 열고\n흰 돛단배가 곱게 밀려서 오면,\n\n내가 바라는 손님은 고달픈 몸으로\n청포(靑袍)를 입고 찾아온다고 했으니,\n\n내 그를 맞아, 이 포도를 따 먹으면\n두 손은 함뿍 적셔도 좋으련.\n\n아이야, 우리 식탁엔 은쟁반에\n하얀 모시 수건을 마련해 두렴.`},
+      {title:'오늘 밤 나는 쓸 수 있다 (부분)', author:'파블로 네루다 · 1924', text:`오늘 밤 나는 쓸 수 있다,\n가장 슬픈 시들을.\n\n나는 그녀를 사랑했고,\n때때로 그녀도 나를 사랑했다.\n\n그런 밤들에, 내 팔 안에 그녀를 안았었다.\n하늘이 밝고, 별이 파랗게 떨며 흔들렸다.\n\n그녀는 나를 사랑했고, 때때로 나도 그녀를 사랑했다.\n눈에 보이지 않는 것들은 얼마나 잊지 못하는지.`}
+    ],
+    arts:[
+      {title:'건초 수레 (The Hay Wain)', info:'존 컨스터블 · 1821 · 내셔널 갤러리, 런던', desc:'여름 구름 아래 영국 시골의 평화로운 풍경. 빛과 공기를 그린 낭만주의 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/5/5e/John_Constable_-_The_Hay_Wain_%281821%29.jpg'},
+      {title:'진주 귀걸이를 한 소녀 (Girl with a Pearl Earring)', info:'요하네스 페르메이르 · 1665 · 마우리츠하이스, 헤이그', desc:'신비로운 눈빛과 진주 귀걸이. 북유럽 회화의 모나리자라 불리는 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/d/d7/Meisje_met_de_parel.jpg'},
+      {title:'이삭 줍는 사람들 (The Gleaners)', info:'장프랑수아 밀레 · 1857 · 오르세 미술관, 파리', desc:'수확 후 남은 이삭을 줍는 농촌 여인들. 노동의 숭고함과 대지의 풍요를 담았다.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg/800px-Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg'}
+    ],
+    places:[{i:'☕',n:'폴바셋 · 커피빈 · 할리스',d:'창가 자리에서 책 한 권과 커피 한 잔'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'적당히 흐린 날 영화 한 편 — 앱으로 예매'},{i:'🍜',n:'미뤄뒀던 맛집',d:'카카오맵 · 네이버지도에서 별점 4.5 이상 맛집 검색'},{i:'💆',n:'스웨디시 · 아로마 마사지',d:'네이버지도에서 마사지 검색 — 주 1회 몸과 마음의 리셋'}],
+    books:[{t:'채식주의자',a:'한강',r:'어느 날 갑자기 고기를 거부한 여성의 이야기. 폭력적 세계에서 순수를 지키려는 처절한 몸부림을 그린 맨부커상 수상작.'},{t:'노인과 바다',a:'헤밍웨이',r:'늙은 어부 산티아고가 84일 만에 거대한 청새치를 낚는 이야기. 굴하지 않는 인간 정신과 패배 속의 승리.'},{t:'무소유',a:'법정',r:'법정 스님이 난초 화분 하나를 갖게 되면서 시작한 소유에 대한 성찰. 비움으로써 얻는 자유와 행복을 담은 에세이.'}],
+    jobs:{student:['도서관에서 심화 공부','선생님께 질문 리스트 작성','어려운 과목에 도전하기 좋은 날'],office:['중요한 보고서 마무리','팀원들과 브레인스토밍','미루던 업무 하나 완료'],home:['집 안 정리 하루 프로젝트','새 요리 레시피 도전','아이 숙제 함께 봐주기'],retired:['오전 스트레칭 + 가벼운 산책','서예·캘리그라피 수업','손주에게 편지 쓰기'],freelance:['새 프로젝트 기획 브레인스토밍','포트폴리오 업데이트','온라인 네트워킹'],artist:['새 작품 시작','SNS 콘텐츠 기획','포트폴리오 재정비']}
+  },
+  cloudy:{
+    name:'흐림', emoji:'☁️', cls:'cloudy',
+    quotes:[
+      {t:'흐린 날씨가 있기에 맑은 날씨가 더욱 소중하다.', s:'— 익명'},
+      {t:'흐린 날엔 내면을 들여다보기 좋다.', s:'— 익명'},
+      {t:'구름은 하늘의 일부다. 흐림도 삶의 일부다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'짐노페디 1번 (Satie)', artist:'에릭 사티 (Erik Satie)', yt:'S-Xm7s9eGxU', why:'몽환적이고 고요한 선율. 흐린 날의 내면을 조용히 들여다보게 합니다.'},
+      {title:'죽은 왕녀를 위한 파반느 (Ravel)', artist:'라벨 (Ravel)', yt:'imGaOIm5HOk', why:'고요하고 우아한 선율. 흐린 하늘 아래 달빛 같은 피아노 소품.'},
+      {title:'발라드 1번 (Chopin)', artist:'쇼팽 (Chopin)', yt:'7maJOI3QMu0', why:'서정적이고 극적인 쇼팽의 대표 피아노 소품.'},
+      {title:'골드베르크 변주곡 아리아 (Bach)', artist:'바흐 / 글렌 굴드', yt:'Ah392lnFHxM', why:'정교한 대위법의 정수. 흐린 날 사색에 잠기게 하는 바흐의 걸작.'},
+      {title:'월광 소나타 1악장 (Beethoven)', artist:'베토벤 / 빌헬름 켐프', yt:'4Tr0otuiQuU', why:'고요하고 신비로운 달빛 같은 피아노. 흐린 날 내면을 비춥니다.'}
+    ],
+    poems:[
+      {title:'서시', author:'윤동주 · 1941', text:`죽는 날까지 하늘을 우러러\n한 점 부끄럼이 없기를,\n잎새에 이는 바람에도\n나는 괴로워했다.\n\n별을 노래하는 마음으로\n모든 죽어가는 것을 사랑해야지\n그리고 나한테 주어진 길을\n걸어가야겠다.\n\n오늘 밤에도 별이 바람에 스치운다.`},
+      {title:'가을날', author:'라이너 마리아 릴케 · 1902', text:`주여, 때가 되었습니다.\n여름은 참으로 길었습니다.\n해시계 위에 그늘을 드리우시고,\n들판에 바람을 풀어놓으소서.\n\n지금 집 없는 자는 집을 짓지 않을 것입니다.\n지금 홀로인 자는 오래도록 홀로일 것입니다.\n잠 못 들고, 읽고, 긴 편지를 쓸 것입니다.\n그리고 낙엽 흩날리는 날,\n이리저리 가로수 길을 불안하게 떠돌 것입니다.`},
+      {title:'님의 침묵 (부분)', author:'한용운 · 1926', text:`님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n푸른 산빛을 깨치고 단풍나무 숲을 향하여\n난 작은 길을 걸어서, 차마 떨치고 갔습니다.\n\n우리는 만날 때에 떠날 것을 염려하는 것과 같이,\n떠날 때에 다시 만날 것을 믿습니다.\n\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.\n제 곡조를 못 이기는 사랑의 노래는\n님의 침묵을 휩싸고 돕니다.`},
+      {title:'우울 (부분)', author:'샤를 보들레르 · 1857', text:`하늘은 뚜껑처럼 무겁게 내리눌러\n권태로 신음하는 영혼에 씌운다.\n지평선을 에워싸며 회색빛을 쏟아낼 때,\n슬픈 낮은 슬픈 밤보다 더 어둡다.\n\n희망이 날개 꺾인 박쥐처럼\n썩은 천장에 부딪히며 맴돌다 떨어진다.\n빗소리는 창살처럼 내 머릿속을 두드린다.`},
+      {title:'별 헤는 밤 (부분)', author:'윤동주 · 1941', text:`계절이 지나가는 하늘에는\n가을로 가득 차 있습니다.\n\n나는 아무 걱정도 없이\n가을 속의 별들을 다 헤일 듯합니다.\n\n가슴속에 하나 둘 새겨지는 별을\n이제 다 못 헤는 것은\n쉬이 아침이 오는 까닭이요,\n내일 밤이 남은 까닭이요,\n아직 나의 청춘이 다하지 않은 까닭입니다.\n\n별 하나에 추억과\n별 하나에 사랑과\n별 하나에 쓸쓸함과\n별 하나에 동경과\n별 하나에 시와\n별 하나에 어머니, 어머니.`},
+      {title:'프루프록의 사랑 노래 (부분)', author:'T.S. 엘리엇 · 1915', text:`그럼 가자, 당신과 나,\n저녁이 하늘을 배경으로 펼쳐질 때 —\n수술대 위에 마취된 환자처럼.\n\n나는 커피 스푼으로 내 삶을 재어왔다.\n오, 감히 복숭아 하나를 먹어도 될까.\n흰 바지를 입고 해변을 걸어도 될까.\n나는 인어들이 서로 노래하는 것을 들었다.\n그녀들이 나를 위해 노래하리라고는 생각하지 않는다.`}
+    ],
+    arts:[
+      {title:'안개 바다 위의 방랑자', info:'카스파르 다비트 프리드리히 · 1818 · 함부르크 미술관', desc:'흐린 날 산 정상에서 안개 낀 세계를 바라보는 한 인간. 고독과 숭고함의 낭만주의 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/b/b9/Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg'},
+      {title:'야경 (The Night Watch)', info:'렘브란트 반 레인 · 1642 · 암스테르담 국립미술관', desc:'빛과 어둠의 극적인 대비. 바로크 회화의 정수이자 렘브란트 최고 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/9/94/The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg'},
+      {title:'키스 (The Kiss)', info:'구스타프 클림트 · 1907~1908 · 벨베데레 미술관, 빈', desc:'금빛 장식으로 감싸인 두 연인의 포옹. 사랑과 황홀경의 상징.', img:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Gustav_Klimt_016.jpg'}
+    ],
+    places:[{i:'☕',n:'투썸플레이스 · 이디야 · 메가커피',d:'흐린 날 어울리는 따뜻한 라떼 한 잔'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'한산한 평일 낮 영화 — 할인 시간대 이용'},{i:'🍲',n:'국밥 · 순댓국 · 감자탕',d:'네이버지도에서 국밥 검색 — 흐린 날 따뜻한 국물'},{i:'💆',n:'타이마사지 · 스파',d:'네이버지도에서 타이마사지 검색 — 어깨·등 집중 케어'}],
+    books:[{t:'데미안',a:'헤르만 헤세',r:'소년 싱클레어가 신비로운 친구 데미안을 만나 자아를 찾아가는 이야기. 선과 악, 내면의 갈등, 진정한 자신을 발견하는 성장 소설.'},{t:'노르웨이의 숲',a:'무라카미 하루키',r:'청년 와타나베의 상실과 사랑, 죽음의 이야기. 60년대 말 도쿄를 배경으로 한 애도와 성장의 서사.'},{t:'인간 실격',a:'다자이 오사무',r:'세상과 어울리지 못한 한 남자의 수기. 인간이 두려워 가면을 쓰고 살아온 요조의 고백 — 가장 솔직한 자기 고발.'}],
+    jobs:{student:['수학·논술 — 깊이 생각하는 공부','자기 생각을 글로 쓰는 연습','혼자만의 공부 루틴 점검'],office:['복잡한 문제를 조용히 혼자 생각','장기 계획 수립','이메일·문서 정리'],home:['조용히 책 읽는 오전','밀린 가계부 정리','좋아하는 드라마 정주행'],retired:['회고록·일기 쓰기','가족에게 전화하기','취미 수공예 작업'],freelance:['집중 작업에 최적인 날','장기 프로젝트 계획','자기계발 강의 수강'],artist:['내면을 표현하는 작품 작업','일기·영감 노트 정리','새로운 기법 실험']}
+  },
+  foggy:{
+    name:'안개', emoji:'🌫️', cls:'foggy',
+    quotes:[
+      {t:'안개 속에서도 길은 있다. 천천히 걷다 보면 앞이 보인다.', s:'— 익명'},
+      {t:'모든 아침은 안개와 함께 시작되고, 빛과 함께 끝난다.', s:'— 익명'},
+      {t:'안개는 세상을 숨기는 것이 아니라, 신비롭게 만드는 것이다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'클레르 드 룬 (Debussy)', artist:'드뷔시 (Debussy)', yt:'CDdvReNKKuk', why:'달빛처럼 부드럽게 흐르는 인상주의 피아노 명곡.'},
+      {title:'목신의 오후 전주곡 (Debussy)', artist:'드뷔시 (Debussy)', yt:'imGaOIm5HOk', why:'안개 속처럼 몽환적이고 신비로운 인상주의 관현악.'},
+      {title:'짐노페디 3번 (Satie)', artist:'에릭 사티 (Erik Satie)', yt:'NxwEadYik00', why:'고요하고 내면적인 선율. 안개 낀 아침의 고독한 산책.'},
+      {title:'페르귄트 — 오제의 죽음 (Grieg)', artist:'그리그 / 헤르베르트 폰 카라얀', yt:'XVEWGDQeLrk', why:'안개 속 슬픔처럼 천천히 흐르는 비가. 그리그 페르귄트의 명장면.'},
+      {title:'라 캄파넬라 (Liszt)', artist:'리스트 / 조르주 시프라', yt:'CsKZmUcQOzg', why:'안개 속에서 울리는 종소리 같은 환상적인 피아노 기교.'}
+    ],
+    poems:[
+      {title:'유리창 1', author:'정지용 · 1930', text:`유리(琉璃)에 차고 슬픈 것이 어른거린다.\n열없이 붙어서서 입김을 흐리우니\n길들은 양 언 날개를 파다거린다.\n지우고 보고 지우고 보아도\n새까만 밤이 밀려나가고 밀려와 부디치고,\n물 먹은 별이, 반짝, 보석처럼 박힌다.\n뒤척이며 죽어 울었다가\n창 밖에 밤비가 속살거려.`},
+      {title:'안개', author:'칼 샌드버그 · 1916', text:`안개는 고양이 발로 온다.\n\n조용히 항구와 도시 위에 걸터앉아\n작은 발굽 위에서 바라보다가\n그리고 떠난다.`},
+      {title:'모란이 피기까지는', author:'김영랑 · 1934', text:`모란이 피기까지는\n나는 아직 나의 봄을 기다리고 있을 테요.\n모란이 뚝뚝 떨어져 버린 날,\n나는 비로소 봄을 여읜 설움에 잠길 테요.\n\n오월 어느 날, 그 하루 무덥던 날,\n떨어져 누운 꽃잎마저 시들어 버리고는\n천지에 모란은 자취도 없어지고,\n뻗쳐 오르던 내 보람 서운케 무너졌느니,\n모란이 지고 말면 그뿐, 내 한 해는 다 가고 말아,\n삼백예순 날 하냥 섭섭해 우옵내다.\n\n모란이 피기까지는\n나는 아직 기다리고 있을 테요, 찬란한 슬픔의 봄을.`},
+      {title:'하이쿠 세 편', author:'마츠오 바쇼 · 1686', text:`고요함이여 —\n매미 소리가 바위 속으로\n스며드는구나.\n\n오래된 연못에\n개구리 뛰어드는 소리 —\n물 튀는 소리.\n\n이슬 속에\n세상의 먼지를 씻어내며\n시원한 아침.`},
+      {title:'절정', author:'이육사 · 1940', text:`매운 계절(季節)의 채찍에 갈겨\n마침내 북방(北方)으로 휩쓸려 오다.\n\n하늘도 그만 지쳐 끝난 고원(高原)\n서릿발 칼날진 그 위에 서다.\n\n어디다 무릎을 꿇어야 하나\n한 발 재겨 디딜 곳조차 없다.\n\n이러매 눈 감아 생각해 볼밖에\n겨울은 강철로 된 무지갠가 보다.`},
+      {title:'점점 넓어지는 원', author:'라이너 마리아 릴케 · 1899', text:`나는 내 삶을 점점 넓어지는 원 속에서 산다,\n오래된 것들 위로 넘실거리며.\n어쩌면 마지막 원은 완성되지 않을지도,\n그러나 나는 그것을 시도하겠다.\n\n나는 신 주위를 돈다, 태고의 탑 주위를,\n수천 년 동안 돌고 있다.\n나는 아직 모른다 — 매인가, 폭풍인가,\n아니면 위대한 노래인가.`}
+    ],
+    arts:[
+      {title:'전함 테메레르의 마지막 항해', info:'J.M.W. 터너 · 1839 · 내셔널 갤러리, 런던', desc:'안개와 빛이 뒤섞인 강. 증기선에 이끌려 마지막 항해를 하는 노 전함. 시간의 무상함.', img:'https://upload.wikimedia.org/wikipedia/commons/8/88/Turner%2C_J._M._W._-_The_Fighting_T%C3%A9m%C3%A9raire_tugged_to_her_last_Berth_to_be_broken_%28edit%29.jpg'},
+      {title:'모나리자 (Mona Lisa)', info:'레오나르도 다 빈치 · 1503~1519 · 루브르 박물관, 파리', desc:'스푸마토 기법으로 그린 신비로운 미소. 안개처럼 경계가 흐릿한 배경. 세계에서 가장 유명한 초상화.', img:'https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg'},
+      {title:'수련 (Water Lilies)', info:'클로드 모네 · 1906 · 시카고 예술박물관', desc:'빛과 반영으로 가득한 지베르니 연못. 모네가 시력을 잃어가며 그린 명상의 풍경.', img:'https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 폴바셋 · 북카페',d:'창 밖 안개 보며 따뜻한 차 한 잔'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'안개 낀 날 실내에서 영화 한 편'},{i:'🍣',n:'스시 · 파스타 · 코스 맛집',d:'카카오맵에서 예약제 맛집 검색 — 특별한 식사'},{i:'♨️',n:'온천 · 찜질방 · 반신욕',d:'네이버지도에서 찜질방 또는 온천 검색'}],
+    books:[{t:'설국',a:'가와바타 야스나리',r:'눈 덮인 산골 온천 마을에서 피어난 도시 남자와 게이샤의 사랑. 아름다움과 허무, 일본적 서정의 절정 — 노벨문학상 수상작.'},{t:'참을 수 없는 존재의 가벼움',a:'밀란 쿤데라',r:'프라하의 봄을 배경으로 토마시와 사비나, 테레자의 사랑 이야기. 무거움과 가벼움, 삶의 선택과 반복에 대한 철학적 소설.'},{t:'연금술사',a:'파울로 코엘료',r:'양치기 소년 산티아고가 꿈에서 본 보물을 찾아 이집트로 떠나는 여정. 자신의 전설(데스티노)을 찾아가는 자기발견의 우화.'}],
+    jobs:{student:['차분하게 암기 과목 정리','개념 정리 노트 작성','스터디 플래너 업데이트'],office:['운전 시 안개 주의 (대중교통 권장)','재택근무 시 집중 작업','내부 제안서·보고서 작성'],home:['따뜻한 국 끓여 가족 챙기기','집 안 습도 관리','실내 활동으로 아이와 시간'],retired:['안개 주의 — 실내 스트레칭','좋아하는 TV 시청','요리 연습'],freelance:['집 작업 최적의 날','오디오북 들으며 작업','온라인 강의·자격증 공부'],artist:['안개에서 영감 받은 수채화','모노크롬 작품 도전','음악 들으며 드로잉']}
+  },
+  drizzle:{
+    name:'이슬비', emoji:'🌦️', cls:'drizzle',
+    quotes:[
+      {t:'이슬비는 말없이 내려 대지를 적시고, 사람의 마음도 부드럽게 만든다.', s:'— 익명'},
+      {t:'가벼운 비는 쉬어가도 좋다는 하늘의 신호다.', s:'— 익명'},
+      {t:'이슬비에 옷 젖는 줄 모른다. 세월도 그렇게 간다.', s:'— 속담'}
+    ],
+    musics:[
+      {title:'야상곡 20번 (Chopin)', artist:'쇼팽 (Chopin)', yt:'9E6b3swbnWg', why:'이슬비처럼 서정적인 피아노. 빗소리와 함께 들으면 더욱 감미롭습니다.'},
+      {title:'즉흥곡 Op.90 No.3 (Schubert)', artist:'슈베르트 (Schubert)', yt:'Mep8VyyVzuo', why:'흐르는 빗소리처럼 물결치는 피아노. 서정적이고 맑은 슈베르트.'},
+      {title:'파반느 (Fauré)', artist:'포레 (Fauré)', yt:'imGaOIm5HOk', why:'우아하고 섬세한 선율. 이슬비처럼 부드럽게 내려앉는 음악.'},
+      {title:'클라리넷 협주곡 K.622 2악장 (Mozart)', artist:'모차르트 / 알브레히트 마이어', yt:'NxwEadYik00', why:'이슬비처럼 맑고 감미로운 목관 선율. 모차르트 최후의 협주곡.'},
+      {title:'메시아 — 라르고 (Handel)', artist:'헨델 / 존 엘리엇 가디너', yt:'PeU3LS_s03I', why:'이슬비 속에 울리는 따뜻한 위로. 헨델 오라토리오의 서정적 아리아.'}
+    ],
+    poems:[
+      {title:'빼앗긴 들에도 봄은 오는가 (부분)', author:'이상화 · 1926', text:`지금은 남의 땅 — 빼앗긴 들에도 봄은 오는가?\n\n나는 온몸에 풋내를 띠고,\n푸른 웃음 푸른 설움이 어우러진 사이로\n다리를 절며 하루를 걷는다.\n아마도 봄 신명이 지폈나 보다.\n\n그러나 지금은 — 들을 빼앗겨\n봄조차 빼앗기겠네.`},
+      {title:'내 마음에 비가 내린다', author:'폴 베를렌 · 1874', text:`내 마음속에 비가 내린다\n도시에 비가 내리듯.\n이 무딘 슬픔은 무엇인가\n내 가슴을 파고드는.\n\n오, 빗소리여, 지붕 위의 부드러운 노래여!\n권태롭고 슬픈 마음에게\n오, 빗소리여.\n\n이유도 없이 눈물이 흐른다.\n배신도 없건만 그리운 건 무엇인가.\n그것이 더욱 깊은 고통 — 이유조차 모르는.`},
+      {title:'먼 후일', author:'김소월 · 1925', text:`먼 훗날 당신이 찾으시면\n그때에 내 말이 "잊었노라."\n\n당신이 속으로 나무라면\n"무척 그리다가 잊었노라."\n\n그래도 당신이 나무라면\n"믿기지 않아서 잊었노라."\n\n오늘도 어제도 아니 잊고\n먼 훗날 그때에 "잊었노라."`},
+      {title:'빗속에서', author:'헨리 워즈워스 롱펠로 · 1842', text:`하루가 춥고 어둡고 황량하다,\n비가 내리고, 바람이 잠잠하다.\n안개가 포도덩굴 위에 스치고\n거리를 따라 흘러내린다.\n\n내 영혼도 춥고 어둡고 황량하다,\n생각이 구름처럼 모여들고\n희망은 빛을 잃는다.\n\n슬픈 마음이여, 조용히 있어라.\n모든 삶에는 비가 내리는 날이 있고,\n어둡고 황량한 날들이 있다.`},
+      {title:'사랑의 노래 (부분)', author:'라이너 마리아 릴케 · 1907', text:`어떻게 내 영혼이 당신의 영혼에\n닿을 수 있을까.\n어떻게 내가 당신의 것에\n그리고 당신이 내 것에 닿을 수 있을까.\n\n마치 이슬비가 밤사이에\n알지 못하는 사이\n내려앉듯이,\n당신은 내게 스민다.`},
+      {title:'가을 (부분)', author:'라이너 마리아 릴케 · 1902', text:`나뭇잎들이 떨어진다, 멀리서부터 떨어진다,\n마치 하늘의 먼 정원들이 시들어가듯.\n그것들은 부인하는 몸짓으로 떨어진다.\n\n그리고 밤에 무거운 지구가 떨어진다\n별들로부터, 고독 속으로.\n우리 모두 떨어진다. 이 손도 떨어진다.\n\n그러나 한 분이 계신다, 이 모든 떨어짐을\n한없이 부드럽게 두 손으로 받는 분.`}
+    ],
+    arts:[
+      {title:'우산들 (The Umbrellas)', info:'르누아르 · 1886 · 내셔널 갤러리, 런던', desc:'이슬비 내리는 파리 거리. 우산을 든 사람들의 색채 가득한 인상주의 풍경.', img:'https://upload.wikimedia.org/wikipedia/commons/e/eb/Pierre-Auguste_Renoir%2C_The_Umbrellas%2C_ca._1881-86.jpg'},
+      {title:'키스 (The Kiss)', info:'구스타프 클림트 · 1907~1908 · 벨베데레 미술관, 빈', desc:'금빛 장식으로 감싸인 두 연인의 포옹. 이슬비 내리는 날, 따뜻함이 그리울 때.', img:'https://upload.wikimedia.org/wikipedia/commons/f/f3/Gustav_Klimt_016.jpg'},
+      {title:'별이 빛나는 밤 (The Starry Night)', info:'빈센트 반 고흐 · 1889 · 뉴욕 현대미술관', desc:'소용돌이치는 밤하늘과 고요한 마을. 이슬비 내리는 날 창밖을 바라보는 마음.', img:'https://upload.wikimedia.org/wikipedia/commons/c/cd/VanGogh-starry_night.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 투썸 · 할리스',d:'창 밖 빗소리 들으며 커피와 책 — 조용한 음악과 함께'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'낮 할인 시간대 영화 한 편 — 앱으로 예매'},{i:'🍕',n:'피자 · 파스타 · 브런치 카페',d:'카카오맵에서 브런치 또는 피자 검색'},{i:'💆',n:'스웨디시 마사지 · 스파',d:'네이버지도에서 마사지 검색 — 이슬비 맞은 몸을 회복'}],
+    books:[{t:'아몬드',a:'손원평',r:'감정을 느끼지 못하는 소년 윤재의 성장 이야기. 차가운 세상에서 인간의 따뜻함을 배워가는 과정 — 감동과 웃음이 공존.'},{t:'멈추면 비로소 보이는 것들',a:'혜민 스님',r:'트위터에서 시작된 혜민 스님의 짧은 글들. 빠른 삶 속에서 잠시 멈추고 자신을 돌아보게 하는 따뜻한 위로의 글들.'},{t:'82년생 김지영',a:'조남주',r:'82년에 태어난 평범한 여성 김지영의 삶을 따라가며 한국 사회의 성차별 구조를 담담하게 고발한 소설.'}],
+    jobs:{student:['카페에서 공부 (배경 소음이 집중에 도움)','영어 듣기 집중 훈련','인터넷 강의 몰아보기'],office:['창가에서 집중 업무','재택근무 시 생산성 높이기','업무 목록 꼼꼼히 완수'],home:['빗소리 들으며 집 청소','따뜻한 국·찌개 만들기','아이와 보드게임'],retired:['실내 취미 (뜨개질·수채화·독서)','라디오 청취','가족 사진 정리'],freelance:['창 밖 빗소리가 집중력 높임','미루던 이메일 처리','새 프로젝트 리서치'],artist:['수채화 — 번짐 효과 실험','시·수필 쓰기','음악 들으며 창작']}
+  },
+  rainy:{
+    name:'비', emoji:'🌧️', cls:'rainy',
+    quotes:[
+      {t:'비가 와야 무지개가 생긴다. 폭풍 없이는 꽃도 피지 않는다.', s:'— 익명'},
+      {t:'비는 하늘이 대지에게 보내는 편지다.', s:'— 익명'},
+      {t:'비 오는 날은 세상이 씻기는 날이다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'첼로 모음곡 1번 전주곡 (Bach)', artist:'바흐 / Yo-Yo Ma', yt:'1prweT95Mo0', why:'비 내리는 날, 첼로의 깊은 울림이 마음 깊은 곳을 위로합니다.'},
+      {title:'바다 — 파도의 유희 (Debussy)', artist:'드뷔시 (Debussy)', yt:'NxwEadYik00', why:'파도처럼 밀려오는 관현악. 빗소리와 어우러지는 인상주의 음악.'},
+      {title:'피아노 협주곡 G장조 2악장 (Ravel)', artist:'라벨 (Ravel)', yt:'7maJOI3QMu0', why:'빗속의 감미로운 피아노. 조용하고 서정적인 선율.'},
+      {title:'페르귄트 — 솔베이의 노래 (Grieg)', artist:'그리그 / 키리 테 카나와', yt:'imGaOIm5HOk', why:'빗속에서 기다리는 솔베이의 애절한 사랑 노래. 그리그 최고의 아리아.'},
+      {title:'레퀴엠 — 라크리모사 (Mozart)', artist:'모차르트 / 가디너', yt:'PeU3LS_s03I', why:'비 내리는 날의 깊은 묵상. 모차르트가 세상을 떠나며 쓴 마지막 걸작.'}
+    ],
+    poems:[
+      {title:'진달래꽃', author:'김소월 · 1922', text:`나 보기가 역겨워\n가실 때에는\n말없이 고이 보내 드리오리다.\n\n영변에 약산\n진달래꽃\n아름 따다 가실 길에 뿌리오리다.\n\n가시는 걸음걸음\n놓인 그 꽃을\n사뿐히 즈려밟고 가시옵소서.\n\n나 보기가 역겨워\n가실 때에는\n죽어도 아니 눈물 흘리오리다.`},
+      {title:'로렐라이', author:'하인리히 하이네 · 1824', text:`무엇인지 알 수 없는 것이\n내 마음을 슬프게 한다.\n오래된 이야기 하나가\n내 머릿속을 떠나지 않는다.\n\n차갑고 어두운 저녁빛 속,\n라인강은 고요히 흐르고,\n저녁 햇살은 봉우리 위에서\n황금빛으로 빛난다.\n\n저 높은 바위 위에\n매혹적인 처녀 하나,\n황금 빗으로 머리를 빗으며\n슬픈 노래를 부른다.`},
+      {title:'초혼', author:'김소월 · 1925', text:`산산이 부서진 이름이여!\n허공중에 헤어진 이름이여!\n불러도 주인 없는 이름이여!\n부르다가 내가 죽을 이름이여!\n\n심중에 남아 있는 말 한마디는\n끝끝내 마저 하지 못하였구나.\n\n사랑하던 그 사람이여!\n사랑하던 그 사람이여!\n붉은 해는 서산마루에 걸리었다.\n사슴의 무리도 슬피 운다.\n\n떨어져 나가 앉은 산 위에서\n나는 그대의 이름을 부르노라.`},
+      {title:'큰 고통 뒤에', author:'에밀리 디킨슨 · 1862', text:`큰 고통 뒤에 의례적인 감각이 온다 —\n신경들은 묘비처럼 의식을 차리고,\n마음은 자신의 고통이 오래된 것인지\n어제의 것인지를 묻는다.\n\n발은 기계적으로 걷는다,\n땅이든 공기든 굳은 것이든.\n마치 납처럼, 마치 눈처럼.\n\n먼저 — 추위 — 그 다음 무감각 — 그 다음 내려놓음.\n살아남았다면.`},
+      {title:'자화상', author:'윤동주 · 1939', text:`산모퉁이를 돌아 논가 외딴 우물을\n홀로 찾아가선 가만히 들여다봅니다.\n\n우물 속에는 달이 밝고 구름이 흐르고\n하늘이 펼치고 파아란 바람이 불고\n가을이 있고 추억처럼 사나이가 있습니다.\n\n어쩐지 그 사나이가 미워져 돌아갑니다.\n\n돌아가다 생각하니 그 사나이가 가엾어집니다.\n도로 가 들여다보니 사나이는 그대로 있습니다.\n\n다시 그 사나이가 미워져 돌아갑니다.\n돌아가다 생각하니 그 사나이가 그리워집니다.\n\n우물 속에는 달이 밝고 구름이 흐르고\n하늘이 펼치고 파아란 바람이 불고\n가을이 있고 추억처럼 사나이가 있습니다.`},
+      {title:'그대 늙었을 때', author:'W.B. 예이츠 · 1893', text:`그대 늙어 머리 희고 잠에 지쳐\n불가에 조올며 이 시를 꺼내 읽어라.\n눈 앞에 부드러이 깃들던 그 눈빛을,\n그 깊은 그늘과 꿈결 같은 모습을.\n\n얼마나 많은 이가 그대의 즐거운 순간을 사랑하고\n거짓이거나 진실로 아름다움을 사랑했나.\n오직 한 사람만이 그대 안의 순례하는 영혼을 사랑하고\n그대의 변해가는 얼굴을 사랑했으리.`}
+    ],
+    arts:[
+      {title:'파리 거리, 빗속에', info:'귀스타브 카유보트 · 1877 · 시카고 미술관', desc:'우산을 든 파리 시민들이 오스만 대로를 걷는 사실적 풍경. 비 오는 도시의 정수.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg/800px-Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg'},
+      {title:'인상 — 해돋이 (Impression, Sunrise)', info:'클로드 모네 · 1872 · 마르모탕 미술관, 파리', desc:'비 온 뒤 아침. 안개 낀 항구에 떠오르는 붉은 태양. 인상주의의 탄생을 이끈 그림.', img:'https://upload.wikimedia.org/wikipedia/commons/5/59/Monet_-_Impression%2C_Sunrise.jpg'},
+      {title:'나이트호크스 (Nighthawks)', info:'에드워드 호퍼 · 1942 · 시카고 미술관', desc:'비 내리는 밤 도시의 식당. 고독한 사람들. 현대인의 고립감을 담은 미국 사실주의 명작.', img:'https://upload.wikimedia.org/wikipedia/commons/a/a8/Nighthawks_by_Edward_Hopper_1942.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 투썸플레이스',d:'창가에 앉아 빗소리를 배경음악으로 — 따뜻한 아메리카노'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'보고 싶었던 영화 연속 관람 — 영화관 앱에서 예매'},{i:'🍲',n:'갈비탕 · 순댓국 · 감자탕',d:'네이버지도에서 국밥 검색 — 비 오는 날 뜨끈한 국물 한 그릇'},{i:'💆',n:'찜질방 · 스파 · 아로마마사지',d:'네이버지도에서 찜질방 검색 — 빗속 피로를 따뜻하게 회복'}],
+    books:[{t:'파친코',a:'이민진',r:'20세기 초 일본으로 건너간 조선인 가족 4대의 이야기. 차별과 생존, 정체성과 사랑 — 역사의 소용돌이 속 인간의 존엄.'},{t:'소년이 온다',a:'한강',r:'1980년 5월 광주. 열다섯 살 소년 동호의 눈으로 본 5·18의 참상과 그 이후. 맨부커상 작가 한강의 가장 아프고 아름다운 소설.'},{t:'죄와 벌',a:'도스토옙스키',r:'가난한 법대생 라스콜리니코프가 전당포 노파를 살해하고 죄책감에 시달리는 이야기. 인간의 죄의식과 구원에 대한 심리 소설의 최고봉.'}],
+    jobs:{student:['집에서 인강+문제 풀이에 집중','노트 필기 정리 + 오답 복습','오늘 배울 분량 계획 후 실천'],office:['재택근무 최적의 날','화상 회의 준비 철저히','중요 문서 집중 작업'],home:['빗소리와 함께 대청소','가족을 위한 따뜻한 국 끓이기','좋아하는 드라마 정주행'],retired:['실내 활동 위주 (빗길 낙상 주의)','따뜻한 물에 발 담그기','지인에게 안부 문자'],freelance:['비 오는 날 집중력이 최고 — 어려운 과제 완수','다음 달 업무 계획','온라인 강의·자기계발'],artist:['빗소리에 영감을 받아 창작','수채화·먹그림 도전','나만의 음악 플레이리스트 만들기']}
+  },
+  snowy:{
+    name:'눈', emoji:'❄️', cls:'snowy',
+    quotes:[
+      {t:'눈이 내리면 세상이 조용해진다. 마음도 잠시 멈추고 순백의 고요를 즐겨라.', s:'— 익명'},
+      {t:'눈은 자연이 세상에게 주는 담요다.', s:'— 익명'},
+      {t:'눈 내리는 날엔 모든 것이 새로 시작되는 것 같다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'사계 — 겨울 1악장 (Vivaldi)', artist:'비발디 / 나이절 케네디', yt:'TZCfydWF48c', why:'눈 내리는 날의 고요함과 겨울의 아름다움. 차갑고 아름다운 바이올린 협주곡.'},
+      {title:'겨울 나그네 — 보리수 (Schubert)', artist:'슈베르트 / 피셔-디스카우', yt:'imGaOIm5HOk', why:'눈 덮인 겨울 길을 걷는 나그네의 노래. 쓸쓸하고 아름다운 겨울 연가.'},
+      {title:'호두까기 인형 — 눈송이의 왈츠 (Tchaikovsky)', artist:'차이콥스키 / 볼쇼이 발레단', yt:'NxwEadYik00', why:'눈송이가 춤추는 듯한 발레 음악. 겨울의 환상적인 세계.'},
+      {title:'브란덴부르크 협주곡 3번 (Bach)', artist:'바흐 / 카를 뮌힝거', yt:'7maJOI3QMu0', why:'겨울 실내악의 정수. 정교하고 따뜻한 바흐의 앙상블.'},
+      {title:'교향곡 40번 g단조 (Mozart)', artist:'모차르트 / 베를린 필하모닉', yt:'PeU3LS_s03I', why:'눈 내리는 날의 아름다운 슬픔. 모차르트 가장 사랑받는 교향곡.'}
+    ],
+    poems:[
+      {title:'나와 나타샤와 흰 당나귀', author:'백석 · 1938', text:`가난한 내가\n아름다운 나타샤를 사랑해서\n오늘밤은 푹푹 눈이 나린다\n\n나타샤를 사랑은 하고\n눈은 푹푹 날리고\n나는 혼자 쓸쓸히 앉아 소주를 마신다\n소주를 마시며 생각한다\n나타샤와 나는\n눈이 푹푹 쌓이는 밤 흰 당나귀 타고\n산골로 가자 출출이 우는 깊은 산골로 가 마가리에 살자`},
+      {title:'눈 내리는 저녁 숲 가에서', author:'로버트 프로스트 · 1923', text:`이 숲이 누구의 것인지 나는 안다.\n그의 집은 마을 안에 있다.\n나무들 사이 내리는 눈을\n그는 볼 수 없을 것이다.\n\n내 작은 말은 이상하게 여기리라,\n농가 하나 없는 곳에서 멈추다니.\n숲과 얼어붙은 호수 사이에서\n어두운 저녁이 내려앉는다.\n\n숲은 어둡고 깊고 아름답다.\n하지만 지켜야 할 약속들이 있고,\n잠들기 전에 갈 길이 멀다,\n잠들기 전에 갈 길이 멀다.`},
+      {title:'눈', author:'김수영 · 1956', text:`눈은 살아있다\n떨어진 눈은 살아있다\n마당 위에 떨어진 눈은 살아있다\n\n기침을 하자\n젊은 시인이여 기침을 하자\n눈 위에 대고 기침을 하자\n눈더러 보라고 마음 놓고 마음 놓고\n기침을 하자`},
+      {title:'떨어져라, 나뭇잎들아', author:'에밀리 브론테 · 1837', text:`떨어져라, 나뭇잎들아, 떨어져라,\n죽어라, 꽃들아, 멀어져라.\n겨울 바람이 뺨을 스치고,\n눈이 대지를 하얗게 뒤덮는다.\n\n봄보다 더 다정한 겨울,\n가을보다 더 기쁜 눈.\n나는 여름 빛 아래 있을 때보다\n어두운 저녁 눈발이 그립다.`},
+      {title:'십자가', author:'윤동주 · 1941', text:`쫓아오던 햇빛인데\n지금 교회당 꼭대기\n십자가에 걸리었습니다.\n\n첨탑(尖塔)이 저렇게도 높은데\n어떻게 올라갈 수 있을까요.\n\n종소리도 들려오지 않는데\n휘파람이나 불며 서성거리다가,\n\n괴로웠던 사나이,\n행복한 예수·그리스도에게처럼\n십자가가 허락된다면\n\n모가지를 드리우고\n꽃처럼 피어나는 피를\n어두워 가는 하늘 밑에\n조용히 흘리겠습니다.`},
+      {title:'겨울 하이쿠 세 편', author:'마츠오 바쇼 · 17세기', text:`이 세상은\n이슬 한 방울인가 —\n그렇다, 그렇다.\n\n달도 없이, 꽃도 없이,\n홀로 술을 마시다 —\n이것이 고독인가.\n\n겨울 외로움이여 —\n들판도, 산도,\n눈 속에 잠들다.`}
+    ],
+    arts:[
+      {title:'눈 속의 사냥꾼 (Hunters in the Snow)', info:'피터르 브뤼헐 · 1565 · 빈 미술사 박물관', desc:'눈 덮인 플랑드르 마을. 사냥꾼들이 돌아오고 마을 사람들은 얼음판을 지친다. 겨울의 서사시.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Pieter_Bruegel_the_Elder_-_Hunters_in_the_Snow_%28Winter%29_-_Google_Art_Project.jpg/800px-Pieter_Bruegel_the_Elder_-_Hunters_in_the_Snow_%28Winter%29_-_Google_Art_Project.jpg'},
+      {title:'까치 (The Magpie)', info:'클로드 모네 · 1868~1869 · 오르세 미술관, 파리', desc:'눈 덮인 고요한 시골. 울타리 위에 앉은 까치 한 마리. 빛과 그림자의 아름다운 대비.', img:'https://upload.wikimedia.org/wikipedia/commons/a/a5/Claude_Monet_-_La_Pie.jpg'},
+      {title:'겨울 풍경 (Winter Landscape)', info:'카스파르 다비트 프리드리히 · 1811 · 내셔널 갤러리, 런던', desc:'눈 덮인 땅에 홀로 선 나무와 십자가. 겨울의 고독과 신앙을 담은 낭만주의 명작.', img:'https://upload.wikimedia.org/wikipedia/commons/0/05/Caspar_David_Friedrich_-_Winterlandschaft_%281811%29.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 투썸 · 이디야',d:'창가에서 눈 내리는 풍경 보며 핫초코·라떼'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'따뜻한 영화관에서 겨울 영화 — 팝콘과 함께'},{i:'🍜',n:'설렁탕 · 우동 · 라멘',d:'네이버지도에서 설렁탕 또는 라멘 검색 — 추운 날 국물'},{i:'♨️',n:'온천 · 찜질방 · 스파',d:'네이버지도에서 온천 검색 — 눈 구경하며 몸 녹이기'}],
+    books:[{t:'설국',a:'가와바타 야스나리',r:'눈 덮인 산골 온천 마을에서 피어난 도시 남자와 게이샤의 사랑. 아름다움과 허무, 일본적 서정의 절정 — 노벨문학상 수상작.'},{t:'나니아 연대기',a:'C.S. 루이스',r:'옷장 속에서 눈 덮인 나니아 왕국으로 들어간 남매의 이야기. 용기와 희생, 선과 악의 싸움 — 전 세계 어린이와 어른이 함께 사랑한 판타지.'},{t:'크리스마스 캐럴',a:'찰스 디킨스',r:'구두쇠 스크루지 영감이 세 유령을 만나 삶을 돌아보는 이야기. 나눔과 사랑의 기적 — 영국 빅토리아 시대가 낳은 불멸의 크리스마스 고전.'}],
+    jobs:{student:['따뜻한 음료와 함께 수험서 정리','집에서 인강 마라톤','눈 구경하며 실내 공부'],office:['눈길·빙판 조심 (대중교통 권장)','재택근무 가능하다면 오늘 활용','따뜻한 사무실에서 계획 수립'],home:['아이들과 눈사람 만들기','핫초코 만들어 가족 챙기기','실내 보드게임·퍼즐'],retired:['빙판길 낙상 주의 — 실내 위주','따뜻한 실내에서 스트레칭','손주들과 화상통화'],freelance:['집에서 작업 — 눈 오는 날 최고의 환경','창의적 영감이 가득한 날','장기 기획·아이디어 정리'],artist:['눈 내리는 풍경 스케치','수묵화·한국화 도전','겨울 감성 시 쓰기']}
+  },
+  thunderstorm:{
+    name:'천둥번개', emoji:'⛈️', cls:'thunderstorm',
+    quotes:[
+      {t:'폭풍이 지나간 자리에 가장 아름다운 것들이 피어난다.', s:'— 익명'},
+      {t:'폭풍우는 나무가 얼마나 깊이 뿌리를 내렸는지 알게 해준다.', s:'— 익명'},
+      {t:'번개는 가장 어두운 하늘에서 가장 밝게 빛난다.', s:'— 익명'}
+    ],
+    musics:[
+      {title:'교향곡 5번 「운명」 (Beethoven)', artist:'베토벤 / 카를로스 클라이버', yt:'_4IRMYuE1hI', why:'"운명"이 문을 두드리는 소리. 천둥번개처럼 강렬하고 극적인 걸작.'},
+      {title:'교향곡 9번 「합창」 4악장 (Beethoven)', artist:'베토벤 / 헤르베르트 폰 카라얀', yt:'t3217H8JppI', why:'"기쁨의 송가". 폭풍이 지나간 뒤 찾아오는 인류의 환희와 단결.'},
+      {title:'발퀴레의 기행 (Wagner)', artist:'바그너 / 게오르크 솔티', yt:'7maJOI3QMu0', why:'천둥번개처럼 강렬하고 웅장한 관현악. 신화적 에너지가 폭발.'},
+      {title:'산왕의 궁전에서 (Grieg)', artist:'그리그 / 파보 예르비', yt:'SsL1DaZNPAo', why:'폭풍처럼 몰아치는 리듬. 페르귄트 모음곡에서 가장 극적인 장면.'},
+      {title:'헝가리 랩소디 2번 (Liszt)', artist:'리스트 / 랑랑', yt:'SVHHgC-a0dI', why:'화려하고 폭발적인 피아노 기교. 피아노계의 천둥번개.'}
+    ],
+    poems:[
+      {title:'광야', author:'이육사 · 1945', text:`까마득한 날에\n하늘이 처음 열리고\n어디 닭 우는 소리 들렸으랴.\n\n모든 산맥들이\n바다를 연모해 휘달릴 때도\n차마 이 곳을 범하던 못하였으리라.\n\n지금 눈 내리고\n매화 향기 홀로 아득하니\n내 여기 가난한 노래의 씨를 뿌려라.\n\n다시 천고(千古)의 뒤에\n백마 타고 오는 초인이 있어\n이 광야에서 목 놓아 부르게 하리라.`},
+      {title:'리어왕 — 폭풍의 노래', author:'윌리엄 셰익스피어 · 1606', text:`불어라, 바람이여! 터져라!\n비를 퍼부어라, 사나운 폭풍이여!\n이 흰 머리카락을 적시고\n이 늙은 몸을 뒤흔들어라.\n\n나는 너에게 명령할 수 없다.\n번개여! 천둥이여! 내려쳐라!\n\n자연이 화낼 수 있는 것은 모두 화내어라.\n나는 더 이상 잘못을 저질렀다고\n스스로를 탓하지 않겠다.`},
+      {title:'해에게서 소년에게 (부분)', author:'최남선 · 1908', text:`처……ㄹ썩, 처……ㄹ썩, 척, 쏴……아.\n때린다 부순다 무너버린다,\n태산 같은 높은 뫼, 집채 같은 바윗돌이나,\n요것이 무어야, 요게 무어야.\n나의 큰 힘 아느냐, 모르느냐,\n호통까지 내어가며\n처……ㄹ썩, 처……ㄹ썩, 척, 튜르릉, 뚝!`},
+      {title:'오 선장! 나의 선장!', author:'월트 휘트먼 · 1865', text:`오 선장이여! 나의 선장이여!\n두렵던 항해가 끝났노라.\n배는 모든 폭풍을 이겨냈고,\n찾던 상이 눈앞에 있노라.\n\n항구는 가깝고, 종소리 들리고,\n모든 뱃전에서 환호한다.\n하지만 오 심장이여! 심장이여! 심장이여!\n갑판 위에 쓰러진 선장 —\n차갑고 죽어 누워있구나.`},
+      {title:'쉽게 씌어진 시 (부분)', author:'윤동주 · 1942', text:`창 밖에 밤비가 속살거려\n육첩방(六疊房)은 남의 나라,\n\n시인이란 슬픈 천명인 줄 알면서도\n한 줄 시를 적어 볼까,\n\n인생은 살기 어렵다는데\n시가 이렇게 쉽게 씌어지는 것은\n부끄러운 일이다.\n\n등불을 밝혀 어둠을 조금 내몰고,\n시대처럼 올 아침을 기다리는 최후의 나,\n\n나는 나에게 작은 손을 내밀어\n눈물과 위안으로 잡는 최후의 악수.`},
+      {title:'내일 새벽에', author:'빅토르 위고 · 1856', text:`내일, 새벽에, 들판이 하얘질 때,\n나는 가겠다. 네가 기다리는 것을 알기에.\n숲을 헤치고 산을 넘겠다.\n먼 곳을 바라볼 수도 없으리,\n말을 들을 수도 없으리.\n\n홀로 — 등에 슬픔을 지고.\n낮에도 밤에도 걷겠다.\n아무것도 보지 않고, 아무것도 듣지 않고.\n\n저녁이 오면 그 무덤에 도착하리.\n보랏빛 꽃을, 푸른 가시나무를\n그 위에 놓아두고 오겠다.`}
+    ],
+    arts:[
+      {title:'가나가와 해변의 큰 파도', info:'가쓰시카 호쿠사이 · 1831 · 메트로폴리탄 미술관', desc:'거대한 파도 앞에 선 작은 배들. 자연의 압도적인 힘과 인간의 작음. 우키요에 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg'},
+      {title:'야경 (The Night Watch)', info:'렘브란트 반 레인 · 1642 · 암스테르담 국립미술관', desc:'폭풍 같은 역동성. 빛과 어둠의 강렬한 대비. 바로크 회화의 최고 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/9/94/The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg'},
+      {title:'눈보라 — 항구 앞 증기선 (Snow Storm)', info:'J.M.W. 터너 · 1842 · 테이트 브리튼, 런던', desc:'거센 눈보라 속 증기선. 자연의 폭력과 인간의 분투. 추상화에 가까운 터너의 역작.', img:'https://upload.wikimedia.org/wikipedia/commons/3/30/Joseph_Mallord_William_Turner_-_Snow_Storm_-_Steam-Boat_off_a_Harbour%27s_Mouth_-_WGA23178.jpg'}
+    ],
+    places:[{i:'☕',n:'스타벅스 · 투썸 · 커피빈',d:'천둥소리 들으며 따뜻한 커피 — 실내 창가 자리'},{i:'🎬',n:'CGV · 롯데시네마 · 메가박스',d:'폭풍우 속 안전한 실내에서 영화 한 편'},{i:'🍔',n:'배달 맛집 · 가까운 식당',d:'배달의민족 · 쿠팡이츠 앱 이용 또는 근처 실내 맛집'},{i:'💆',n:'마사지 · 스파 · 찜질방',d:'네이버지도에서 마사지 검색 — 폭풍 지나기를 기다리며'}],
+    books:[{t:'폭풍의 언덕',a:'에밀리 브론테',r:'황량한 요크셔 황야를 배경으로 히스클리프와 캐서린의 파멸적 사랑 이야기. 복수와 집착, 폭풍 같은 열정이 몰아치는 고딕 문학의 걸작.'},{t:'모비딕',a:'허먼 멜빌',r:'선장 에이헤브가 자신의 다리를 앗아간 흰 고래 모비딕을 쫓아 목숨을 건 항해를 떠나는 이야기. 집착과 운명, 인간과 자연의 대결.'},{t:'1984',a:'조지 오웰',r:'모든 것이 감시되고 역사가 조작되는 전체주의 국가 오세아니아. 반역자 윈스턴 스미스의 저항과 사랑, 그리고 절망적 결말 — 현대 디스토피아 소설의 원형.'}],
+    jobs:{student:['외출 자제 — 집에서 인강 마라톤','어려운 단원 집중 정복의 날','몰아서 문제 풀기'],office:['재택근무 적극 활용','화상 회의로 업무 진행','낙뢰 주의 — 안전한 실내 유지'],home:['아이들과 실내 활동','가족 영화 관람','천둥을 아이에게 과학으로 설명'],retired:['절대 외출 금지 (낙뢰 위험)','실내 스트레칭·체조','오래된 사진 앨범 정리'],freelance:['큰 마감 프로젝트 완수','집중 작업 세션 3~4시간','아이디어 노트 총정리'],artist:['폭풍에서 영감 받은 강렬한 작품','추상화·콜라주 시도','음악 들으며 즉흥 창작']}
+  }
+};
+
+// ══════════════════════════════════════════
+//  STATE & HELPERS
+// ══════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const WEEKDAYS = ['일','월','화','수','목','금','토'];
+let forecast = null;
+let curCond  = 'clear';
+
+function getCondition(c) {
+  if(c<=1) return 'clear'; if(c===2) return 'partlyCloudy'; if(c===3) return 'cloudy';
+  if(c===45||c===48) return 'foggy'; if(c>=51&&c<=57) return 'drizzle';
+  if([61,63,65,80,81,82].includes(c)) return 'rainy';
+  if([71,73,75,85,86,77].includes(c)) return 'snowy';
+  if(c>=95) return 'thunderstorm';
+  return 'partlyCloudy';
+}
+
+function todayStr() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
+}
+
+function initHeader() {
+  const n = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  $('today-date').textContent = `${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${days[n.getDay()]}요일`;
+}
+
+// ══════════════════════════════════════════
+//  FETCH
+// ══════════════════════════════════════════
+async function fetchForecast(lat, lon) {
+  const r = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max` +
+    `&timezone=auto&forecast_days=16`
+  );
+  return (await r.json()).daily;
+}
+
+async function reverseGeo(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ko`);
+    const j = await r.json();
+    return j.address?.city || j.address?.county || j.address?.state || '현재 위치';
+  } catch { return '현재 위치'; }
+}
+
+// ══════════════════════════════════════════
+//  ENTRY POINTS
+// ══════════════════════════════════════════
+function getGeo() {
+  if(!navigator.geolocation) { showErr('위치 서비스를 지원하지 않는 브라우저입니다.'); return; }
+  showLoading();
+  navigator.geolocation.getCurrentPosition(
+    async p => {
+      const city = await reverseGeo(p.coords.latitude, p.coords.longitude);
+      await load(p.coords.latitude, p.coords.longitude, city);
+    },
+    () => load(37.5665, 126.9780, '서울')
+  );
+}
+
+async function searchCity() {
+  const city = $('city-input').value.trim();
+  if(!city) return;
+  showLoading();
+  try {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ko&format=json`);
+    const j = await r.json();
+    if(!j.results?.length) throw new Error('도시를 찾을 수 없습니다.');
+    const { latitude, longitude, name } = j.results[0];
+    await load(latitude, longitude, name);
+  } catch(e) { showErr(e.message); }
+}
+
+async function load(lat, lon, city) {
+  try {
+    showLoading();
+    forecast = await fetchForecast(lat, lon);
+    renderCalendar(city);
+    selectDay(0);
+  } catch(e) { showErr('날씨를 불러오지 못했습니다: ' + e.message); }
+}
+
+// ══════════════════════════════════════════
+//  RENDER CALENDAR
+// ══════════════════════════════════════════
+function renderCalendar(city) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'block';
+
+  const today = todayStr();
+  $('forecast-grid').innerHTML = forecast.time.map((dateStr, idx) => {
+    const d    = new Date(dateStr + 'T00:00:00');
+    const cond = getCondition(forecast.weather_code[idx]);
+    const emoji = DB[cond].emoji;
+    const tmax  = Math.round(forecast.temperature_2m_max[idx]);
+    const tmin  = Math.round(forecast.temperature_2m_min[idx]);
+    const rain  = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+    const isToday = dateStr === today;
+
+    return `<div class="day-card${isToday ? ' today-card' : ''}"
+              onclick="selectDay(${idx})" id="day-card-${idx}">
+      <div class="day-wd">${isToday ? '오늘' : WEEKDAYS[d.getDay()]}</div>
+      <div class="day-dt">${d.getMonth()+1}/${d.getDate()}</div>
+      <span class="day-ico">${emoji}</span>
+      <div class="day-tmax">${tmax}°</div>
+      <div class="day-tmin">${tmin}°</div>
+      ${rain > 0.5 ? `<div class="day-rain">💧${rain}mm</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  SELECT DAY
+// ══════════════════════════════════════════
+function selectDay(idx) {
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('sel'));
+  const card = $('day-card-' + idx);
+  if(card) {
+    card.classList.add('sel');
+    // 선택 카드가 화면 안에 오도록 스크롤
+    card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
+
+  const dateStr = forecast.time[idx];
+  curCond = getCondition(forecast.weather_code[idx]);
+  const d = DB[curCond];
+
+  // 테마 변경
+  document.body.className = d.cls;
+
+  // 선택일 배너
+  const date    = new Date(dateStr + 'T00:00:00');
+  const today   = todayStr();
+  const isToday = dateStr === today;
+  const label   = isToday
+    ? `오늘 — ${date.getMonth()+1}월 ${date.getDate()}일`
+    : `${WEEKDAYS[date.getDay()]}요일, ${date.getMonth()+1}월 ${date.getDate()}일`;
+
+  $('sel-emoji').textContent = d.emoji;
+  $('sel-date').textContent  = '📅 ' + label;
+  $('sel-temp').textContent  = `최고 ${Math.round(forecast.temperature_2m_max[idx])}° / 최저 ${Math.round(forecast.temperature_2m_min[idx])}°`;
+  $('sel-cond').textContent  = d.name;
+  const rain = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+  $('sel-rain').textContent  = `💧 ${rain > 0 ? rain + 'mm' : '강수 없음'}`;
+  $('sel-wind').textContent  = `💨 ${Math.round(forecast.wind_speed_10m_max[idx])}km/h`;
+  $('sel-banner').style.display = 'flex';
+
+  // 콘텐츠 렌더
+  renderContent(curCond, dateStr);
+
+  $('quote-box').style.display   = 'block';
+  $('quote-box').style.background = 'var(--P)';
+  $('tab-bar').style.display = 'flex';
+  showTab('music');
+}
+
+// ══════════════════════════════════════════
+//  RENDER CONTENT (날짜 기반 pick)
+// ══════════════════════════════════════════
+function renderContent(cond, dateStr) {
+  const d     = DB[cond];
+  const isFirst = new Date(dateStr + 'T00:00:00').getDate() === 1;
+  const quote = isFirst ? pickForDate(d.quotes, dateStr) : pickForDate(QUOTES, dateStr);
+  const music = pickForDate(d.musics, dateStr);
+  const poem  = pickForDate(d.poems,  dateStr);
+  const art   = pickForDate(d.arts,   dateStr);
+
+  $('q-text').textContent = quote.t;
+  $('q-src').textContent  = (quote.s && !quote.s.includes('익명')) ? quote.s : '';
+
+  $('panel-music').innerHTML = `
+    <div class="music-artist">${music.artist}</div>
+    <div class="music-title">${music.title}</div>
+    <div class="music-why">${music.why}</div>
+    <a class="yt-cover" href="https://www.youtube.com/watch?v=${music.yt}" target="_blank" rel="noopener">
+      <img src="https://img.youtube.com/vi/${music.yt}/hqdefault.jpg"
+           onerror="musicErr(this,'${music.yt}')"
+           alt="${music.title}">
+      <div class="yt-play-btn"></div>
+    </a>`;
+
+  $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div><div style="margin:1.5rem 0 1rem;border-top:1px solid rgba(0,0,0,.12)"></div><img class="art-img" src="${art.img}" alt="${art.title}" onerror="this.style.display='none'" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+
+  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" onerror="artErr(this)" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+
+  $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<a class="place-item" href="https://www.google.com/maps/search/${encodeURIComponent(p.n.split('·')[0].trim())}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="place-icon">${p.i}</div><div class="place-name">${p.n} <span style="font-size:.7rem;opacity:.5">↗</span></div><div class="place-desc">${p.d}</div></a>`).join('')}</div>`;
+
+  $('panel-books').innerHTML = d.books.map(b=>`<div class="book-item"><div class="book-title">📖 ${b.t}</div><div class="book-author">${b.a}</div><div class="book-reason">${b.r}</div></div>`).join('');
+
+  $('panel-act').innerHTML = `
+    <select class="job-sel" id="job-sel" onchange="renderAct()">
+      <option value="student">🎓 학생</option>
+      <option value="office">💻 직장인</option>
+      <option value="home">🏠 주부·부모</option>
+      <option value="retired">🌿 은퇴자·시니어</option>
+      <option value="freelance">🖥️ 프리랜서·재택근무</option>
+      <option value="artist">🎨 크리에이터·예술가</option>
+    </select>
+    <ul id="act-list" class="act-list"></ul>`;
+  renderAct();
+}
+
+function renderAct() {
+  const job  = ($('job-sel') || {}).value || 'student';
+  const acts = DB[curCond]?.jobs[job] || [];
+  $('act-list').innerHTML = acts.map(a => `<li>${a}</li>`).join('');
+}
+
+function loadYT(el, id){
+  window.open('https://www.youtube.com/watch?v=' + id, '_blank');
+}
+
+function artErr(el) {
+  el.onerror = null;
+  el.src = 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200">' +
+    '<rect width="320" height="200" fill="#222"/>' +
+    '<text x="160" y="120" font-size="32" text-anchor="middle" fill="#666" font-family="sans-serif">이미지 없음</text>' +
+    '</svg>'
+  );
+}
+function musicErr(el, id) {
+  if (el.src.indexOf('hqdefault') > -1) {
+    el.src = 'https://img.youtube.com/vi/' + id + '/mqdefault.jpg';
+  } else {
+    el.onerror = null;
+    el.src = 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">' +
+      '<rect width="320" height="180" fill="#111"/>' +
+      '<text x="160" y="110" font-size="80" text-anchor="middle" fill="#444">&#9834;</text>' +
+      '</svg>'
+    );
+  }
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['music','poem','art','places','books','act'];
+    b.classList.toggle('active', tabs[i] === name);
+  });
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.toggle('active', t === name);
+  });
+}
+
+function showLoading() {
+  $('loading').style.display = 'block';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'none';
+  $('sel-banner').style.display = 'none';
+  $('quote-box').style.display  = 'none';
+  $('tab-bar').style.display    = 'none';
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.remove('active');
+  });
+}
+
+function showErr(msg) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'block';
+  $('err-box').innerHTML = `<p>⚠️ ${msg}</p><button class="err-btn" onclick="load(37.5665,126.9780,'서울')">서울 날씨로 보기</button>`;
+}
+
+// ── Init ─────────────────────────────────
+initHeader();
+window.addEventListener('load', getGeo);
+</script>
+</body>
+</html>

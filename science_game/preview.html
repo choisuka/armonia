@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>테마 미리보기</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;overflow:hidden;height:100vh}
+
+/* 전체 화면 슬라이드 */
+.slides{display:flex;height:100vh;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.slide{min-width:100vw;height:100vh;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center;padding:0 1.2rem 6rem}
+
+/* 상단 네비 바 */
+.nav-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.2rem;background:rgba(0,0,0,.45);backdrop-filter:blur(8px)}
+.nav-bar .theme-name{font-size:.9rem;font-weight:800;color:#fff}
+.nav-bar .nav-btns{display:flex;gap:.6rem}
+.nav-btn{background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:100px;padding:.4rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer}
+.nav-btn:hover{background:rgba(255,255,255,.28)}
+.nav-btn.apply{background:linear-gradient(135deg,#f97316,#a855f7)}
+.dots{display:flex;gap:.4rem}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:background .2s}
+.dot.on{background:#fff}
+
+/* 하단 좌우 화살표 */
+.arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:100;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:1.5rem;padding:.6rem .9rem;cursor:pointer;border-radius:50%;backdrop-filter:blur(4px)}
+.arrow:hover{background:rgba(0,0,0,.65)}
+.arr-l{left:.6rem}
+.arr-r{right:.6rem}
+
+/* 미리보기 화면 공통 */
+.mock{width:100%;max-width:860px;padding-top:4.5rem;text-align:center}
+.bus{font-size:5rem;display:block;animation:bf 2.5s ease-in-out infinite}
+@keyframes bf{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+.mtitle{font-size:clamp(2rem,5vw,3rem);font-weight:900;margin:.8rem 0 .4rem;
+  background:linear-gradient(135deg,#f97316,#eab308,#22c55e,#3b82f6,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.msub{font-size:1rem;margin-bottom:2rem;opacity:.75}
+.btn-link{display:inline-block;margin-bottom:1.5rem;padding:.65rem 1.6rem;border-radius:100px;background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.4);color:#c084fc;font-size:.9rem;font-weight:700;text-decoration:none}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem;text-align:left}
+.mcard{border-radius:14px;padding:1.2rem 1rem;cursor:pointer;border:1px solid rgba(255,255,255,.08)}
+.mcard-icon{font-size:2.2rem;display:block;margin-bottom:.45rem}
+.mcard h3{font-size:.95rem;font-weight:800;margin-bottom:.2rem}
+.mcard p{font-size:.72rem;opacity:.6;line-height:1.5}
+
+/* 테마 정의 */
+.s1{background:#0a0e1a}
+.s1 .mcard{background:#111827}
+.s1 .msub{color:#94a3b8}
+
+.s2{background:linear-gradient(160deg,#0c1445 0%,#1a237e 100%)}
+.s2 .mcard{background:rgba(30,58,138,.6)}
+.s2 .msub{color:#93c5fd}
+
+.s3{background:linear-gradient(160deg,#0a2818 0%,#064e3b 100%)}
+.s3 .mcard{background:rgba(6,78,59,.6)}
+.s3 .msub{color:#6ee7b7}
+
+.s4{background:linear-gradient(160deg,#1a0533 0%,#2d1b69 100%)}
+.s4 .mcard{background:rgba(55,48,163,.5)}
+.s4 .msub{color:#c4b5fd}
+
+.s5{background:linear-gradient(160deg,#1c0a00 0%,#431407 100%)}
+.s5 .mcard{background:rgba(124,45,18,.5)}
+.s5 .msub{color:#fed7aa}
+
+.s6{background:linear-gradient(160deg,#0c0c0c 0%,#1a1a2e 60%,#16213e 100%)}
+.s6 .mcard{background:rgba(22,33,62,.8)}
+.s6 .msub{color:#a78bfa}
+
+.s7{background:linear-gradient(160deg,#0f172a 0%,#0f3460 50%,#533483 100%)}
+.s7 .mcard{background:rgba(83,52,131,.4)}
+.s7 .msub{color:#e2d9f3}
+
+.s8{background:linear-gradient(160deg,#001219 0%,#005f73 100%)}
+.s8 .mcard{background:rgba(10,147,150,.3)}
+.s8 .msub{color:#94d2bd}
+
+.s9{background:linear-gradient(160deg,#240046 0%,#7b2d8b 60%,#c77dff 100%)}
+.s9 .mcard{background:rgba(123,45,139,.4)}
+.s9 .msub{color:#f8c8ff}
+
+.s10{background:radial-gradient(ellipse at top,#1b4332,#081c15)}
+.s10 .mcard{background:rgba(27,67,50,.7)}
+.s10 .msub{color:#95d5b2}
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <div class="dots" id="dots"></div>
+  <div class="theme-name" id="theme-name"></div>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="prev()">← 이전</button>
+    <button class="nav-btn apply" onclick="applyTheme()">✓ 이걸로!</button>
+    <button class="nav-btn" onclick="next()">다음 →</button>
+  </div>
+</div>
+
+<button class="arrow arr-l" onclick="prev()">‹</button>
+<button class="arrow arr-r" onclick="next()">›</button>
+
+<div class="slides" id="slides"></div>
+
+<script>
+const THEMES = [
+  {name:'① 다크 네이비 (원래 색)',      cls:'s1', bg:'#0a0e1a',  bg2:'#111827', bg3:'#1f2937', t2:'#94a3b8'},
+  {name:'② 딥 블루 (진한 파랑)',         cls:'s2', bg:'#0c1445',  bg2:'#1e3a8a', bg3:'#1e40af', t2:'#93c5fd'},
+  {name:'③ 다크 그린 (짙은 초록)',       cls:'s3', bg:'#0a2818',  bg2:'#065f46', bg3:'#047857', t2:'#6ee7b7'},
+  {name:'④ 다크 인디고 (남보라)',         cls:'s4', bg:'#1a0533',  bg2:'#3730a3', bg3:'#4338ca', t2:'#c4b5fd'},
+  {name:'⑤ 다크 오렌지 (불타는)',         cls:'s5', bg:'#1c0a00',  bg2:'#7c2d12', bg3:'#9a3412', t2:'#fed7aa'},
+  {name:'⑥ 블랙+남색 (우주 느낌)',        cls:'s6', bg:'#0c0c0c',  bg2:'#16213e', bg3:'#0f3460', t2:'#a78bfa'},
+  {name:'⑦ 그라디언트 (파랑→보라)',       cls:'s7', bg:'#0f172a',  bg2:'#1e1b4b', bg3:'#312e81', t2:'#e2d9f3'},
+  {name:'⑧ 딥 청록 (바다 느낌)',          cls:'s8', bg:'#001219',  bg2:'#0a9396', bg3:'#0e7490', t2:'#94d2bd'},
+  {name:'⑨ 비비드 보라 (밝은 보라)',      cls:'s9', bg:'#240046',  bg2:'#6b21a8', bg3:'#7e22ce', t2:'#f8c8ff'},
+  {name:'⑩ 포레스트 (숲 초록)',           cls:'s10',bg:'#081c15',  bg2:'#1b4332', bg3:'#166534', t2:'#95d5b2'},
+];
+
+const TOPICS = [
+  {icon:'🚀',name:'우주 탐험',desc:'태양계 · 별 · 블랙홀',color:'#3b82f6'},
+  {icon:'🫀',name:'인체의 비밀',desc:'심장 · 뼈 · 뇌',color:'#ef4444'},
+  {icon:'🌊',name:'바다 세계',desc:'심해 · 해양생물',color:'#0ea5e9'},
+  {icon:'⚡',name:'전기 마법',desc:'전류 · 번개',color:'#eab308'},
+  {icon:'🦕',name:'공룡 시대',desc:'쥐라기 · 멸종',color:'#22c55e'},
+  {icon:'🌈',name:'날씨 마법사',desc:'구름 · 태풍',color:'#a855f7'},
+];
+
+let cur = 0;
+
+// 슬라이드 생성
+const slidesEl = document.getElementById('slides');
+THEMES.forEach((t,i) => {
+  const cards = TOPICS.map(tp => `
+    <div class="mcard" style="border-color:${tp.color}22">
+      <span class="mcard-icon">${tp.icon}</span>
+      <h3 style="color:#f1f5f9">${tp.name}</h3>
+      <p>${tp.desc}</p>
+    </div>
+  `).join('');
+
+  slidesEl.innerHTML += `
+    <div class="slide ${t.cls}">
+      <div class="mock">
+        <span class="bus">🚌</span>
+        <div class="mtitle">과학탐험대</div>
+        <p class="msub">매직스쿨버스를 타고 떠나는 신비한 과학 여행!<br>10가지 주제, 주제마다 5문제 도전!</p>
+        <span class="btn-link">📖 과학 설명 먼저 보기</span>
+        <div class="mgrid">${cards}</div>
+      </div>
+    </div>
+  `;
+});
+
+// 점 생성
+const dotsEl = document.getElementById('dots');
+THEMES.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' on':'');
+  d.onclick = () => goto(i);
+  dotsEl.appendChild(d);
+});
+
+function goto(n){
+  cur = (n + THEMES.length) % THEMES.length;
+  slidesEl.style.transform = `translateX(-${cur*100}vw)`;
+  document.getElementById('theme-name').textContent = THEMES[cur].name;
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('on', i===cur));
+}
+
+function next(){ goto(cur+1); }
+function prev(){ goto(cur-1); }
+
+function applyTheme(){
+  const t = THEMES[cur];
+  alert(`"${t.name}" 테마를 선택하셨어요!\n\n이 번호를 저에게 알려주시면 바로 적용해드릴게요 😊`);
+}
+
+// 키보드
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft') prev();
+});
+
+// 스와이프
+let sx=0;
+document.addEventListener('touchstart', e=>sx=e.touches[0].clientX);
+document.addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - sx;
+  if(Math.abs(dx)>50){ dx<0?next():prev(); }
+});
+
+goto(0);
+</script>
+</body>
+</html>

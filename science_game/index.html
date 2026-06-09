@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>과학탐험대 🚌</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#001219;--bg2:#0a4a52;--bg3:#0e7490;
+  --text:#f1f5f9;--text2:#94d2bd;
+  --r:16px;
+}
+html,body{background:linear-gradient(160deg,#001219 0%,#005f73 100%);color:var(--text);font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;min-height:100%;overflow-x:hidden}
+
+/* ── 별 배경 ── */
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── 공통 ── */
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 1.2rem 4rem}
+.hidden{display:none!important}
+
+/* ── 홈 화면 ── */
+#home{text-align:center;padding-top:3.5rem}
+.bus-emoji{font-size:5rem;display:block;animation:busFloat 2.5s ease-in-out infinite}
+@keyframes busFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+#home h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;margin:.8rem 0 .4rem;
+  background:linear-gradient(135deg,#f97316,#eab308,#22c55e,#3b82f6,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#home .sub{color:var(--text2);font-size:1rem;margin-bottom:2.5rem}
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;text-align:left}
+.topic-card{
+  background:var(--bg2);border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r);padding:1.4rem 1.2rem;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  position:relative;overflow:hidden;
+}
+.topic-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.topic-card:hover{border-color:var(--tc)}
+.topic-icon{font-size:2.6rem;display:block;margin-bottom:.6rem}
+.topic-card h3{font-size:1.05rem;font-weight:800;margin-bottom:.3rem}
+.topic-card p{font-size:.78rem;color:var(--text2);line-height:1.6}
+.topic-badge{
+  position:absolute;top:.8rem;right:.8rem;
+  font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;
+  background:rgba(255,255,255,.08);color:var(--text2)
+}
+.topic-card.done .topic-badge{background:rgba(34,197,94,.2);color:#4ade80}
+
+/* ── 퀴즈 화면 ── */
+#quiz{padding-top:2rem}
+.quiz-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem}
+.back-btn{background:rgba(255,255,255,.07);border:none;border-radius:50%;width:40px;height:40px;
+  font-size:1.1rem;cursor:pointer;color:var(--text);transition:background .2s;flex-shrink:0}
+.back-btn:hover{background:rgba(255,255,255,.14)}
+.quiz-topic{font-weight:800;font-size:1.1rem}
+.progress-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;flex:1}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#f97316,#a855f7);transition:width .4s}
+.q-num{font-size:.8rem;color:var(--text2);white-space:nowrap}
+
+.scene-box{
+  background:var(--bg2);border-radius:var(--r);padding:1.6rem 1.4rem;
+  margin-bottom:1.4rem;border:1px solid rgba(255,255,255,.07);
+}
+.scene-icon{font-size:3.5rem;text-align:center;display:block;margin-bottom:.8rem;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.scene-text{font-size:.9rem;color:var(--text2);line-height:1.8;text-align:center}
+.scene-text strong{color:var(--text)}
+
+.question{font-size:1.15rem;font-weight:700;line-height:1.6;margin-bottom:1.2rem;text-align:center}
+
+.choices{display:grid;gap:.75rem}
+.choice{
+  background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:1rem 1.2rem;cursor:pointer;font-size:.95rem;
+  text-align:left;color:var(--text);transition:border-color .15s,background .15s;
+  display:flex;align-items:center;gap:.75rem;
+}
+.choice:hover:not(.disabled){background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2)}
+.choice.correct{background:rgba(34,197,94,.12);border-color:#22c55e;color:#4ade80}
+.choice.wrong{background:rgba(239,68,68,.12);border-color:#ef4444;color:#f87171}
+.choice.disabled{cursor:default}
+.choice-letter{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.choice.correct .choice-letter{background:rgba(34,197,94,.3)}
+.choice.wrong .choice-letter{background:rgba(239,68,68,.3)}
+
+.fact-box{
+  background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.25);
+  border-radius:12px;padding:1rem 1.2rem;margin-top:1.2rem;
+  font-size:.88rem;line-height:1.8;color:var(--text2);
+  animation:fadeIn .4s ease
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fact-box strong{color:#fbbf24}
+.next-btn{
+  width:100%;margin-top:1.2rem;padding:1rem;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;
+  font-size:1rem;font-weight:800;cursor:pointer;transition:opacity .2s
+}
+.next-btn:hover{opacity:.87}
+
+/* ── 주제 소개(영상) 화면 ── */
+#intro{text-align:center;padding-top:3rem}
+.intro-icon{font-size:5rem;display:block;margin-bottom:.6rem;animation:busFloat 2.5s ease-in-out infinite}
+.intro-name{font-size:2rem;font-weight:900;margin-bottom:.3rem}
+.intro-desc{color:var(--text2);font-size:.95rem;margin-bottom:1.6rem}
+.video-box{position:relative;width:100%;padding-top:56.25%;border-radius:var(--r);overflow:hidden;background:#000}
+.video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.no-vid{background:var(--bg2);border-radius:var(--r);padding:2.5rem 1rem;color:var(--text2);font-size:.9rem;margin-bottom:1.4rem}
+.vid-nav{display:flex;align-items:center;justify-content:space-between;margin:.6rem 0 1.2rem;gap:.5rem}
+.vid-nav-btn{background:rgba(255,255,255,.1);border:none;color:var(--text);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;flex-shrink:0}
+.vid-nav-btn:disabled{opacity:.25;cursor:default}
+.vid-counter{font-size:.78rem;color:var(--text2)}
+.intro-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-start{padding:.9rem 2.2rem;border-radius:100px;border:none;background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;font-size:1rem;font-weight:800;cursor:pointer}
+.btn-back2{padding:.9rem 1.6rem;border-radius:100px;border:none;background:var(--bg3);color:var(--text);font-size:1rem;font-weight:700;cursor:pointer}
+.story-section{background:var(--bg2);border-radius:var(--r);padding:1.4rem 1.2rem;margin-bottom:1.4rem;border:1px solid rgba(255,255,255,.07);text-align:left}
+.story-section h4{font-size:1rem;font-weight:900;margin-bottom:1rem;color:#7dd3c8}
+.story-block{margin-bottom:1rem}
+.story-block .s-label{font-size:.85rem;font-weight:800;margin-bottom:.3rem;color:var(--text)}
+.story-block p{font-size:.82rem;color:var(--text2);line-height:1.9}
+.s-intro{font-size:.88rem;color:var(--text2);margin-bottom:1rem;line-height:1.8}
+.story-block.tip{background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:.8rem 1rem;margin-top:.5rem}
+.story-block.tip .s-label{color:#fbbf24}
+
+/* ── 수료증 모달 ── */
+#cert-modal{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);padding:1rem}
+.cert-box{
+  background:linear-gradient(160deg,#001a2c 0%,#0a2a3a 60%,#0d3347 100%);
+  border:2px solid rgba(234,179,8,.5);border-radius:24px;padding:2.5rem 2rem;
+  max-width:480px;width:100%;text-align:center;
+  box-shadow:0 0 60px rgba(234,179,8,.2),0 0 120px rgba(234,179,8,.1);
+  animation:certIn .5s cubic-bezier(.175,.885,.32,1.275)
+}
+@keyframes certIn{from{transform:scale(.6) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.cert-badge{font-size:4.5rem;display:block;margin-bottom:.3rem;animation:badgeSpin 1s ease .2s both}
+@keyframes badgeSpin{from{transform:rotate(-180deg) scale(0)}to{transform:rotate(0) scale(1)}}
+.cert-stars-row{font-size:1.4rem;letter-spacing:.15rem;margin-bottom:1rem}
+.cert-title{font-size:2rem;font-weight:900;margin:.3rem 0 .2rem;
+  background:linear-gradient(135deg,#fbbf24,#f97316,#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cert-sub{font-size:.85rem;color:#94d2bd;letter-spacing:.12em;font-weight:700;margin-bottom:1.2rem}
+.cert-deco{display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:1.2rem}
+.cert-deco::before,.cert-deco::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(234,179,8,.4),transparent)}
+.cert-deco span{color:#fbbf24;font-size:.9rem}
+.cert-body{font-size:.9rem;color:var(--text2);line-height:1.9;margin-bottom:1.5rem}
+.cert-topics{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1.5rem}
+.cert-topic-chip{font-size:.75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:.25rem .7rem;color:var(--text2)}
+.cert-seal{font-size:.8rem;color:#fbbf24;font-weight:700;margin-bottom:1.4rem;opacity:.85}
+.cert-close{padding:.75rem 2rem;border-radius:100px;border:none;background:linear-gradient(135deg,#f97316,#a855f7);color:#fff;font-size:.95rem;font-weight:800;cursor:pointer;width:100%}
+/* ── 결과 화면 ── */
+#result{text-align:center;padding-top:3rem}
+.result-icon{font-size:5rem;display:block;margin-bottom:1rem;animation:spin .5s ease}
+@keyframes spin{from{transform:rotate(-20deg) scale(.8)}to{transform:rotate(0) scale(1)}}
+#result h2{font-size:2rem;font-weight:900;margin-bottom:.5rem}
+.stars{font-size:2.5rem;letter-spacing:.2rem;margin:1rem 0}
+.score-txt{color:var(--text2);font-size:1rem;margin-bottom:2rem}
+.result-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.result-btn{padding:.75rem 1.8rem;border-radius:100px;border:none;font-size:.95rem;font-weight:700;cursor:pointer}
+.btn-retry{background:var(--bg3);color:var(--text)}
+.btn-home{background:linear-gradient(135deg,#f97316,#a855f7);color:#fff}
+/* ── 우주 씬 애니메이션 ── */
+.space-scene{position:relative;width:100%;height:190px;overflow:hidden;border-radius:14px;background:radial-gradient(ellipse at 50% 55%,#0d1b3e 0%,#001015 100%);margin-bottom:1.2rem}
+.ss-star{position:absolute;border-radius:50%;background:#fff;animation:ssTwinkle 2s ease-in-out infinite}
+@keyframes ssTwinkle{0%,100%{opacity:.15}50%{opacity:1}}
+.ss-sun{position:absolute;left:50%;top:50%;font-size:2.8rem;transform:translate(-50%,-50%);z-index:4;animation:ssGlow 3s ease-in-out infinite}
+@keyframes ssGlow{0%,100%{filter:drop-shadow(0 0 8px #fbbf24) drop-shadow(0 0 20px #f97316)}50%{filter:drop-shadow(0 0 20px #fbbf24) drop-shadow(0 0 42px #f97316) drop-shadow(0 0 70px rgba(251,191,36,.25))}}
+.ss-orbit{position:absolute;left:50%;top:50%;border-radius:50%;border:1px dashed rgba(255,255,255,.1);animation:ssRot 10s linear infinite}
+@keyframes ssRot{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.ss-planet{position:absolute;top:-14px;left:50%;transform:translateX(-50%);line-height:1;font-size:1.5rem}
+</style>
+<script src="../toro_ai.js"></script>
+</head>
+<body>
+<a href="https://choisuka.github.io/" style="position:fixed;top:12px;left:12px;z-index:999;background:rgba(10,10,26,.88);border:1px solid rgba(168,85,247,.4);color:#c084fc;text-decoration:none;border-radius:20px;padding:6px 15px;font-family:'Jua',sans-serif;font-size:.8rem;backdrop-filter:blur(8px)">🏠 메인 허브</a>
+<canvas id="c"></canvas>
+
+<!-- ── 홈 ── -->
+<div class="wrap" id="home">
+  <span class="bus-emoji">🚌</span>
+  <h1>과학탐험대</h1>
+  <p class="sub">매직스쿨버스를 타고 떠나는 신비한 과학 여행!<br>11가지 주제, 주제마다 5문제 도전!</p>
+  <a href="story.html" style="display:inline-block;margin-bottom:1.5rem;padding:.65rem 1.6rem;border-radius:100px;background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.4);color:#c084fc;font-size:.9rem;font-weight:700;text-decoration:none">📖 과학 설명 먼저 보기</a>
+  <div class="topic-grid" id="topic-grid"></div>
+</div>
+
+<!-- ── 주제 소개 ── -->
+<div class="wrap hidden" id="intro">
+  <span class="intro-icon" id="intro-icon"></span>
+  <h2 class="intro-name" id="intro-name"></h2>
+  <p class="intro-desc" id="intro-desc"></p>
+  <div id="video-area"></div>
+  <div id="story-area"></div>
+  <div class="intro-btns">
+    <button class="btn-back2" onclick="goHome()">← 돌아가기</button>
+    <button class="btn-start" onclick="beginQuiz()">퀴즈 시작! 🚀</button>
+  </div>
+</div>
+
+<!-- ── 퀴즈 ── -->
+<div class="wrap hidden" id="quiz">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="quiz-topic" id="quiz-topic-name"></span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <span class="q-num" id="q-num"></span>
+  </div>
+  <div class="scene-box">
+    <span class="scene-icon" id="scene-icon"></span>
+    <p class="scene-text" id="scene-text"></p>
+  </div>
+  <p class="question" id="question-text"></p>
+  <div class="choices" id="choices"></div>
+  <div class="fact-box hidden" id="fact-box"></div>
+  <button class="next-btn hidden" id="next-btn" onclick="nextQ()">다음 →</button>
+</div>
+
+<!-- ── 수료증 모달 ── -->
+<div id="cert-modal" class="hidden">
+  <div class="cert-box">
+    <div class="cert-stars-row">🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟</div>
+    <span class="cert-badge">🏅</span>
+    <h2 class="cert-title">주니어 과학 대장</h2>
+    <p class="cert-sub">JUNIOR SCIENCE EXPLORER</p>
+    <div class="cert-deco"><span>✦ 매직스쿨버스 과학탐험대 ✦</span></div>
+    <p class="cert-body">과학탐험대의 <strong style="color:#fbbf24">11가지 주제</strong>를 모두 탐험하고<br>퀴즈를 완주하였기에 이 상장을 드립니다.<br><br>호기심 넘치는 탐험가 정신으로<br>과학의 세계를 빛내 주세요! 🚌💫</p>
+    <div class="cert-topics" id="cert-topics"></div>
+    <p class="cert-seal">🚌 매직스쿨버스 탐험대장 드림 · 2026</p>
+    <button class="cert-close" onclick="closeCert()">🎉 닫기</button>
+  </div>
+</div>
+
+<!-- ── 결과 ── -->
+<div class="wrap hidden" id="result">
+  <span class="result-icon" id="result-icon"></span>
+  <h2 id="result-title"></h2>
+  <div class="stars" id="result-stars"></div>
+  <p class="score-txt" id="result-score"></p>
+  <div class="result-btns">
+    <button class="result-btn btn-retry" onclick="retryTopic()">다시 도전 🔄</button>
+    <button class="result-btn btn-home" onclick="goHome()">다른 주제 탐험 🚌</button>
+  </div>
+</div>
+
+<script>
+// ── 별 배경 ──
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W,H,stars=[];
+function resizeCanvas(){W=cv.width=innerWidth;H=cv.height=innerHeight;stars=Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,a:Math.random()}))}
+function drawStars(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{ctx.globalAlpha=s.a;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;requestAnimationFrame(drawStars)}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();drawStars();
+
+// ── 주제 데이터 ──
+const TOPICS = [
+  {
+    id:'space', icon:'🚀', name:'우주 탐험', color:'#3b82f6',
+    desc:'태양계 · 별 · 블랙홀',
+    tip:'<strong>질문 던지기:</strong> "달이 매일 모양이 바뀌는 것 혹시 알았어?", "태양을 맨눈으로 보면 왜 안 될까?" 같은 질문으로 호기심을 불러일으켜 주세요.<br><br><strong>연결하기:</strong> "수업에서 배운 동그란 모양(구)이 지구, 달, 태양 모두 같은 모양이란다. 우주도 수학으로 설명돼!"',
+    vids:[{id:'',desc:'🌌 우주 탐험 가이드',storyHtml:`<div class="space-scene">
+<div class="ss-star" style="width:2px;height:2px;top:12%;left:8%;animation-delay:0s"></div>
+<div class="ss-star" style="width:3px;height:3px;top:20%;left:78%;animation-delay:.7s"></div>
+<div class="ss-star" style="width:2px;height:2px;top:68%;left:14%;animation-delay:1.1s"></div>
+<div class="ss-star" style="width:3px;height:3px;top:80%;left:87%;animation-delay:.3s"></div>
+<div class="ss-star" style="width:2px;height:2px;top:38%;left:92%;animation-delay:1.5s"></div>
+<div class="ss-star" style="width:2px;height:2px;top:55%;left:4%;animation-delay:.9s"></div>
+<div class="ss-star" style="width:3px;height:3px;top:10%;left:42%;animation-delay:1.8s"></div>
+<div class="ss-star" style="width:2px;height:2px;top:85%;left:57%;animation-delay:.4s"></div>
+<div class="ss-star" style="width:2px;height:2px;top:30%;left:25%;animation-delay:1.3s"></div>
+<div class="ss-star" style="width:3px;height:3px;top:75%;left:35%;animation-delay:.6s"></div>
+<div class="ss-sun">☀️</div>
+<div class="ss-orbit" style="width:100px;height:100px;animation-duration:6s"><span class="ss-planet" style="font-size:1rem;top:-12px">🌍</span></div>
+<div class="ss-orbit" style="width:150px;height:150px;animation-duration:11s;animation-direction:reverse"><span class="ss-planet" style="font-size:1.3rem;top:-15px">🪐</span></div>
+<div class="ss-orbit" style="width:60px;height:60px;animation-duration:3.5s"><span class="ss-planet" style="font-size:.85rem;top:-10px">🌙</span></div>
+<p style="position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:.68rem;color:rgba(148,210,189,.45);letter-spacing:.06em">✨ 우리 우주 동네 — 태양계 ✨</p>
+</div>
+<h4 style="color:#fbbf24">👨‍👩‍👧 우주 이야기, 이렇게 읽어주세요!</h4>
+<div class="story-block"><div class="s-label">🎙️ 팁 1. 목소리에 우주 효과음 넣기</div><p>엘리베이터가 올라갈 때는 "슈우우웅~", 행성이 뱅글뱅글 돌 때는 "빙글빙글~", 운석이 부딪힐 때는 "쾅쾅!" 실감 나게 소리를 내주세요. 아이가 영상 속에 직접 들어온 기분을 느낄 수 있어요!</p></div>
+<div class="story-block"><div class="s-label">🤸 팁 2. 몸을 움직이는 체험형 스토리텔링</div><p>"토성 고리를 피해 가고 있어!"라고 할 때 아이 손을 잡고 요리조리 피하는 흉내를 내보세요. "태양은 아주 뜨거워!"라고 할 때는 부채질을 하거나 덥다는 표정을 함께 지어주면 훨씬 잘 이해한답니다.</p></div>
+<div class="story-block"><div class="s-label">⭐ 팁 3. 아이 이름을 넣어 주인공 만들기</div><p>"옴섬이 엘리베이터를 탔어" 대신 <strong>"(아이 이름) 탐험가가 지금 우주 엘리베이터에 탔습니다! 안전벨트를 매세요!"</strong>라고 말해주면 아이가 훨씬 더 몰입해요.</p></div>
+<div class="story-block"><div class="s-label">❓ 상상력을 깨우는 질문들</div><p>🚀 <strong>우주 엘리베이터</strong><br>"달에 도착하면 제일 먼저 누구에게 전화를 걸어볼까?"<br>"달에 가면 어떤 간식을 제일 먼저 먹고 싶어?"<br><br>🪐 <strong>태양계 행성</strong><br>"태양한테 선물을 준다면, 뜨겁지 말라고 어떤 걸 선물해주고 싶어?" (예: 커다란 아이스크림!)<br>"토성은 고리 허리띠를 하고 있네? 어떤 색깔 고리를 갖고 싶니?"<br>"빨간 화성이 좋아? 아니면 누워서 자는 천왕성이 좋아?"<br><br>🌍 <strong>지구와 우주</strong><br>"달이 갑자기 숨바꼭질하러 숨어버리면 어떻게 달님을 찾을 수 있을까?"<br>"우주선 창밖으로 작아진 지구를 보면 사탕처럼 보일까, 공처럼 보일까?"</p></div>
+<div class="story-block tip"><div class="s-label">💡 부모님께 드리는 작은 조언</div><p>아이가 "왜?"라고 물었을 때 꼭 과학적인 정답을 말해주지 않아도 돼요. <strong>"와, 정말 멋진 생각이다! 엄마(아빠)는 생각도 못 했네?"</strong>라고 상상력을 먼저 칭찬해 주세요. 그다음 "영상에서는 이렇게 알려주네~" 하며 짚어주면 아이가 과학을 공부가 아닌 <strong>즐거운 놀이</strong>로 받아들이게 된답니다! 🚀</p></div>`
+},{id:'Td_A9H69eE8',desc:'우리의 대장님! 태양 이야기',storyHtml:`<h4>📖 거대하고 신비로운 우주 대탐험!</h4>
+<p class="s-intro">이번에는 "거대하고 신비로운 우주 대탐험"을 떠나볼 거예요! 태양부터 멀리 있는 별자리까지, 우주가 얼마나 크고 재미있는 곳인지 함께 알아볼까요? 🚀✨</p>
+<p class="s-intro">안녕, 꼬마 천문학자 친구! 우주는 정말 크고, 춥고, 아주아주 멋진 곳이야. 우리가 사는 지구 밖에는 어떤 비밀들이 숨어 있는지 선생님이 하나씩 들려줄게.</p>
+<div class="story-block"><div class="s-label">☀️ 1. 우리와 가장 가까운 별, 태양 (Sol) [00:36]</div><p>우리를 따뜻하게 해주는 태양은 사실 아주 거대한 별이야! 옛날 사람들은 태양을 '솔(Sol)'이라고 불렀단다. [00:42]<br>얼마나 뜨거울까? 태양의 중심은 무려 1,500만 도나 된대! [01:22]<br>얼마나 클까? 태양 안에 지구를 100만 개나 집어넣을 수 있을 정도로 어마어마하게 커. [01:42]<br>빛의 여행: 태양에서 출발한 빛이 지구까지 오는 데는 딱 8분밖에 안 걸린단다. [02:34]</p></div>
+<div class="story-block"><div class="s-label">🌌 2. 우주는 얼마나 클까? [03:32]</div><p>우주는 우리가 상상하는 것보다 훨씬 더 넓어.<br>빛의 속도: 빛은 1초에 지구를 7바퀴나 돌 정도로 빨라. [05:08]<br>광년(Light Year): 우주가 너무 넓어서 킬로미터(km) 대신 빛이 1년 동안 달린 거리인 '광년'이라는 단위를 써서 거리를 잰단다. [05:21]</p></div>
+<div class="story-block"><div class="s-label">⭐ 3. 별들도 성격이 다 달라요! [08:42]</div><p>밤하늘의 별들은 모두 똑같아 보이지만, 사실 색깔도 크기도 다 다르단다.<br>빨간색 별: 조금 '시원한' 별이야. (그래도 2,700도나 되지만!) [10:12]<br>파란색 별: 아주아주 뜨거운 별이야. [10:27]<br>우리 태양: 딱 중간인 예쁜 노란색 별이지. [10:35]</p></div>
+<div class="story-block"><div class="s-label">🏹 4. 밤하늘의 그림 공부, 별자리 [13:02]</div><p>옛날 사람들은 밤하늘의 별들을 이어보고 "어라? 이건 용 같네!", "이건 사자 같아!" 하며 이름을 붙여주었어. 이걸 별자리(Constellation)라고 해. [13:39]<br>유명한 별자리: 용자리(Draco), 헤라클레스자리, 날개 달린 말 페가수스자리 등이 있어. [15:23]<br>황도 12궁 (Zodiac): 지구가 태양 주위를 돌면서 매달 다르게 보이는 13개의 특별한 별자리들도 있단다. [18:02]</p></div>
+<div class="story-block"><div class="s-label">🔄 5. 지구가 움직여요: 황도 (Ecliptic) [21:57]</div><p>지구가 태양 주위를 뱅글뱅글 돌기 때문에, 우리가 하늘을 보면 마치 태양이 별자리 사이를 지나가는 것처럼 보여. [23:29] 태양이 지나가는 이 가상의 길을 '황도'라고 부른단다. [23:57]</p></div>
+<div class="story-block tip"><div class="s-label">💡 우리 아이와 함께하는 '우주 놀이':</div><p>태양과 지구 크기 비교: 커다란 비치볼(태양) 옆에 아주 작은 콩알(지구)을 놓아보며 우주가 얼마나 큰지 느껴보세요! [01:36]<br>별자리 그리기: 검은 종이에 하얀 스티커를 붙이고 선으로 연결해서 나만의 별자리를 만들어봐요. [13:44]</p></div>
+<div class="story-block tip"><div class="s-label">💡 아이에게 이렇게 말해주세요:</div><p>"우리는 아주 넓은 우주 속에 살고 있는 작은 탐험가들이야! [08:12] 태양이 우리를 따뜻하게 해주고, 별들이 밤하늘에서 길을 알려주지. 나중에 우리 친구도 멋진 우주선 엘리베이터를 타고 이 넓은 우주를 여행해 보고 싶지 않니?" 🚀🌕</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=Td_A9H69eE8" target="_blank">Space Compilation: Crash Course Kids</a></p>`,
+tip:''},{id:'e8YzKyot4Pc',desc:'태양계 행성 탐험',storyHtml:`<h4>📖 우리 동네 우주 한 바퀴!</h4>
+<p class="s-intro">이번에는 "우리 동네 우주 한 바퀴!"라는 주제로, 태양계에 사는 여덟 명의 행성 친구들을 만나러 떠나볼 거예요. 옴섬과 함께 우주선을 타고 신나게 출발해 볼까요? 🚀✨</p>
+<p class="s-intro">안녕, 꼬마 우주 비행사 친구! 우리 지구가 속해 있는 이 커다란 동네를 '태양계'라고 불러요. 여기에는 대장님인 태양과 여덟 명의 행성 친구들이 살고 있단다. [00:07]</p>
+<div class="story-block"><div class="s-label">☀️ 1. 우리 동네 대장님, 태양 [00:50]</div><p>태양은 아주아주 커다란 불꽃 공 같은 별이에요. 우리에게 따뜻한 열과 밝은 빛을 보내주지. 태양 빛이 지구까지 오는 데는 딱 8분밖에 안 걸린대! [00:42]</p></div>
+<div class="story-block"><div class="s-label">🪐 2. 개성 만점 행성 친구들 [01:27]</div><p>태양 주변을 뱅글뱅글 돌고 있는 여덟 친구를 순서대로 만나보자! [01:27]<br><br>수성 (Mercury) [02:52]: 태양과 가장 가까운 막내 행성이에요. 아주 작고 암석이 많아 달처럼 구멍(운석 구덩이)이 뽕뽕 나 있단다. [03:02]<br><br>금성 (Venus) [03:25]: 밤하늘에서 가장 밝게 빛나는 예쁜 친구지만, 사실은 태양계에서 가장 뜨거운 행성이에요! [03:33]<br><br>지구 (Earth) [04:12]: 우리가 사는 소중한 집! 물이 아주 많고(70%), 생물들이 숨 쉴 수 있는 공기가 있어서 특별해요. [04:20]<br><br>화성 (Mars) [04:45]: 온통 빨간색이라 '붉은 행성'이라고 불러요. 예전에는 물이 흘렀던 흔적도 있대서 과학자들이 아주 궁금해하는 친구지. [04:51]<br><br>목성 (Jupiter) [06:40]: 태양계에서 가장 덩치가 큰 거인 행성이에요! 가스로 만들어져서 땅이 없고, 아주 큰 폭풍인 '대적점'이라는 빨간 점이 있단다. [06:54]<br><br>토성 (Saturn) [07:22]: 멋진 고리를 두른 패셔니스타 행성이에요! 이 고리는 얼음과 먼지 알갱이들이 모여서 만들어졌지. [07:40]<br><br>천왕성 (Uranus) [08:12]: 옆으로 누워서 데굴데굴 굴러가듯 도는 신기한 친구예요. 메탄 가스 때문에 아주 예쁜 하늘색 빛을 띤단다. [08:40]<br><br>해왕성 (Neptune) [09:08]: 태양에서 가장 멀리 떨어져 있는 꽁꽁 얼어붙은 푸른 행성이에요. 바람이 엄청나게 세게 부는 곳이지! [09:29]</p></div>
+<div class="story-block tip"><div class="s-label">💡 우리 아이와 함께하는 '행성 기차' 놀이:</div><p>행성 순서 외우기: "수-금-지-화-목-토-천-해!" 하고 리듬을 타며 행성 이름을 함께 불러봐요. [01:27]<br>뱅글뱅글 공전 놀이: 엄마나 아빠가 '태양'이 되어 가운데 서고, 아이가 '지구'가 되어 주변을 뱅글뱅글 돌아보세요. "지구는 한 바퀴 도는 데 1년(365일)이 걸린단다!"라고 설명해 주면 좋아요. [01:48]<br>고리 던지기: 토성처럼 허리에 훌라후프를 돌리며 "나는 고리가 멋진 토성이다!"라고 놀아보세요. [07:22]</p></div>
+<div class="story-block tip"><div class="s-label">💡 아이에게 이렇게 말해주세요:</div><p>"우주에는 이렇게 저마다 다른 모습을 한 행성 친구들이 사이좋게 살고 있어. [10:37] 우리 친구도 나중에 커서 옴섬처럼 멋진 우주선을 타고 이 친구들을 직접 만나러 가보고 싶지 않니? 꿈을 크게 가지면 언젠가 우주로 여행을 떠날 수 있을 거야!" 🚀🌟</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=e8YzKyot4Pc" target="_blank">Planets in the Solar System for Kids - Learn Bright</a></p>`,
+tip:''},{id:'ya6Ko9bF5v8',desc:'밤하늘의 별 이야기',storyHtml:`<h4>📖 우리 우주 마을, 태양계 친구들을 만나요!</h4>
+<p class="s-intro">이번에는 "우리 우주 마을, 태양계 친구들을 만나요!"라는 주제로 신비한 우주 여행을 떠나볼까요? 우리가 사는 지구뿐만 아니라 개성 넘치는 행성 친구들이 모두 모여 있답니다! 🚀🌌</p>
+<p class="s-intro">안녕, 꼬마 우주 탐험가 친구! 오늘 우리가 여행할 곳은 태양과 그 주변을 도는 행성 가족들이 사는 '태양계'예요. [00:01]</p>
+<div class="story-block"><div class="s-label">☀️ 1. 우리 동네의 빛나는 주인공, 태양 [00:09]</div><p>태양계의 중심에는 아주 크고 뜨거운 태양이 있어요. 태양은 사실 별이에요! 우리에게 따뜻한 열과 밝은 빛을 나눠주는 아주 고마운 친구죠. [00:19] 모든 행성은 이 태양의 중력에 묶여 그 주변을 뱅글뱅글 돌고 있답니다. [00:34]</p></div>
+<div class="story-block"><div class="s-label">🪐 2. 개성 만점 여덟 행성 친구들 [00:54]</div><p>수성 (Mercury) [00:54]: 태양과 가장 가까운 첫 번째 친구예요. 행성들 중에서 덩치가 가장 작고, 표면은 우리 달처럼 울퉁불퉁해요. [01:05]<br><br>금성 (Venus) [01:23]: 두 번째 친구 금성은 태양계에서 가장 뜨거운 행성이에요! 밤하늘에서 보석처럼 반짝여서 미의 여신 이름을 따왔답니다. [01:34]<br><br>지구 (Earth) [01:51]: 우리가 사는 세 번째 행성! 물이 아주 많고(70%), 공기가 있어서 생물들이 살 수 있는 유일한 곳이에요. 예쁜 달님도 친구로 데리고 있죠. [02:12]<br><br>화성 (Mars) [02:34]: 네 번째 친구는 온통 빨간색인 '붉은 행성'이에요. 땅속에 녹슨 철 성분이 많아서 빨갛게 보인대요. 아주 춥고 먼지가 많은 사막 같은 곳이지요. [02:44]<br><br>목성 (Jupiter) [03:06]: 다섯 번째 친구는 태양계에서 가장 뚱뚱한 대장 행성이에요! 다른 행성들을 다 합친 것보다 2.5배나 더 크대요. [03:15] 가스로 만들어져서 발을 디딜 단단한 땅이 없답니다. [03:32]<br><br>토성 (Saturn) [03:41]: 여섯 번째 친구는 멋진 허리띠(고리)를 두르고 있어요. 가스로 된 거대한 몸집에 아주 아름다운 고리를 가진 특별한 친구죠. [03:58]<br><br>천왕성 (Uranus) [04:11]: 일곱 번째 친구는 신기하게도 옆으로 누워서 데굴데굴 굴러가며 태양 주위를 돌아요. [04:30] 초록빛과 파란빛이 섞인 예쁜 구슬처럼 보인답니다. [04:20]<br><br>해왕성 (Neptune) [04:43]: 여덟 번째, 태양에서 가장 멀리 있는 친구예요. 너무 멀어서 아주 춥고 어두우며, 바람이 엄청나게 세게 부는 파란색 행성이에요. [05:03]</p></div>
+<div class="story-block"><div class="s-label">🧊 꼬마 친구 플루토(명왕성) [05:11]</div><p>옛날에는 아홉 번째 행성이었지만, 지금은 아주 작은 '왜소행성'이 된 플루토도 있어요. 크기가 아주 작고 귀여운 친구랍니다. [05:20]</p></div>
+<div class="story-block tip"><div class="s-label">💡 우리 아이와 함께하는 '우주 마을' 놀이:</div><p>행성 특징 퀴즈: "가장 뜨거운 행성은 어디일까?" (금성!), "멋진 고리가 있는 행성은?" (토성!) 하고 퀴즈를 내주세요.<br>행성 나열하기: 귤(수성), 사과(지구), 수박(목성) 등 다양한 크기의 과일을 행성이라고 생각하고 태양(전등) 주변에 순서대로 놓아보는 놀이를 해보세요. [00:44]</p></div>
+<div class="story-block tip"><div class="s-label">💡 아이에게 이렇게 말해주세요:</div><p>"우주에는 이렇게 저마다 다른 매력을 가진 행성 친구들이 가득해! [05:35] 우리 친구도 지구라는 예쁜 별에서 행성 친구들처럼 반짝반짝 빛나는 사람이 될 거야. 오늘 밤엔 하늘을 보며 저 멀리 있는 행성 친구들에게 손을 흔들어줄까?" 🌍👋⭐</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=ya6Ko9bF5v8" target="_blank">SOLAR SYSTEM AND PLANETS - Kiddopedia</a></p>`,
+tip:''},{id:'osSkJuohjM8',desc:'우주의 신비로운 세계',storyHtml:`<h4>📖 꼬마 친구 토푸(Tofu)와 함께 떠나는 우주 대모험!</h4>
+<p class="s-intro">이번에는 "꼬마 친구 토푸(Tofu)와 함께 떠나는 우주 대모험!" 이야기를 들려줄게요. 생일을 맞은 토푸가 마법의 로켓을 타고 우주로 날아가 여덟 행성 친구들을 만나는 아주 신나는 이야기랍니다! 🚀🎂✨</p>
+<p class="s-intro">안녕, 꼬마 우주 대장님! 오늘은 토푸의 생일이야. 토푸는 생일 선물로 멋진 장난감 로켓을 받았어. [00:55] 밤이 깊어 잠자리에 든 토푸에게 놀라운 일이 벌어졌단다. 장난감 로켓이 갑자기 "안녕! 나는 미스터 로키야. 나랑 같이 우주 여행 갈래?" 하고 말을 거는 게 아니겠어? [02:26] 토푸는 우주복을 챙겨 입고 슈우웅~ 우주로 날아올랐어! [02:51]</p>
+<div class="story-block"><div class="s-label">🪐 우주에서 만난 신비한 풍경들</div><p>은하수와 태양계 대장님 [03:33]: 창밖을 보니 반짝이는 별들이 강물처럼 흐르는 '은하수'가 보여. 그리고 태양계의 대장, 태양님이 계셨지! 태양님은 아주 힘이 세서 모든 행성 친구들이 밖으로 튕겨 나가지 않게 꽉 잡아준단다. [04:57]<br><br>행성 친구들의 달리기 시합 [05:25]: 태양님 주변을 돌고 있는 여덟 친구를 순서대로 만나볼까?<br><br>수성: 제일 작지만 태양과 가장 가까워! [05:47]<br>금성: 지구랑 크기가 비슷하지만, 태양계에서 가장 뜨거운 행성이야. [06:04]<br>화성: 온통 빨간색이라 '붉은 행성'이라고 불러. 달을 두 개나 가지고 있단다! [06:26]<br>목성: 덩치가 제일 큰 대장 거인! 가스로 만들어졌어. [07:06]<br>토성: 아름다운 고리 허리띠를 두르고 있어. 멀리서 보면 단단해 보이지만 사실 얼음과 먼지로 되어 있대. [07:16]<br>천왕성: 옆으로 누워서 굴러가는 잠꾸러기 행성이야. [07:36]<br>해왕성: 태양에서 가장 멀리 있어서 한 바퀴 도는 데 무려 164년이나 걸려! [08:06]<br><br>토푸는 미스터 로키 덕분에 우주가 얼마나 넓고 신비로운지 알게 되었어. 우리 친구도 토푸처럼 멋진 우주 여행을 마쳤단다! [09:15]</p></div>
+<div class="story-block tip"><div class="s-label">📖 아이에게 읽어줄 때의 팁</div><p>등장인물마다 목소리를 바꿔주세요!<br>장난기 많은 토푸는 귀엽고 높은 목소리로, 듬직한 로켓 미스터 로키는 낮고 씩씩한 목소리로 읽어주면 아이가 훨씬 즐거워해요. [02:26]<br><br>우주복 입기 놀이를 함께 해요!<br>토푸가 우주복을 입는 장면[02:51]에서 아이와 함께 "자, 이제 우주 장화를 신자! 쏙! 우주 헬멧도 쓰자! 찰칵!" 하며 몸짓을 섞어주세요.<br><br>손가락으로 행성을 짚어주세요!<br>영상의 [08:55] 부분에서 행성들이 순서대로 나올 때 아이의 손가락을 잡고 하나하나 짚으며 이름을 함께 불러보세요.</p></div>
+<div class="story-block tip"><div class="s-label">❓ 아이와 함께 나누는 재미있는 질문</div><p>[상상력 쑥쑥] "토푸는 생일 선물로 로켓을 받았네? 우리 (아이 이름)는 우주에 갈 때 어떤 장난감을 꼭 가져가고 싶어?" [00:55]<br>[호기심 팡팡] "태양계 대장 태양님은 모든 행성을 꽉 잡아준대. 우리 친구는 태양님이 얼마나 힘이 셀 것 같니?" [04:57]<br>[최애 행성 고르기] "빨간색 화성, 고리가 예쁜 토성, 누워서 자는 천왕성 중에서 어떤 친구가 제일 마음에 들어?" [07:36]<br>[우주 음식] "우주선 안에서 배가 고프면 어떤 간식을 먹고 싶어? 둥둥 떠다니는 초코볼을 잡아먹어 볼까?"</p></div>
+<div class="story-block tip"><div class="s-label">💡 마무리 멘트:</div><p>"토푸가 용감하게 우주 여행을 다녀온 것처럼, 우리 친구도 오늘 밤 꿈속에서 미스터 로키를 타고 반짝이는 별나라 여행을 떠나볼까? 잘 자, 꼬마 우주 비행사!" 😴⭐🚀</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=osSkJuohjM8" target="_blank">A SPACE ADVENTURE - Kids Hut</a></p>`,
+tip:''},{id:'whSAgISrGME',desc:'블랙홀의 비밀',storyHtml:`<h4>📖 🕳️ 블랙홀의 비밀 — 빛도 삼켜버리는 우주의 괴물!</h4>
+<p class="s-intro">우주에는 아주 신기하고 무서운 곳이 있어. 빛조차도 한번 들어가면 절대 나오지 못하는 곳! 그게 바로 블랙홀이야. 같이 탐험해볼까? (단, 너무 가까이 가면 안 돼! 🚀)</p>
+<div class="story-block"><div class="s-label">🕳️ 블랙홀이 뭐야?</div><p>블랙홀은 엄청나게 무거운 물질이 아주 작은 공간에 꾹꾹 눌려 있는 곳이야. 중력이 너무너무 강해서 빛까지 빨아들인단다! 그래서 우리 눈에는 그냥 새까만 구멍처럼 보여.</p></div>
+<div class="story-block"><div class="s-label">⭐ 어떻게 만들어질까?</div><p>태양보다 훨씬 큰 별이 마지막에 펑! 하고 큰 폭발(초신성)을 해. 그러면 남은 핵이 엄청나게 무거워지면서 꾹 눌려서 블랙홀이 되는 거야. 마치 엄청 큰 스펀지를 손으로 꽉꽉 쥐어짜는 것처럼!</p></div>
+<div class="story-block"><div class="s-label">🚧 사건의 지평선이란?</div><p>블랙홀에는 '사건의 지평선(Event Horizon)'이라는 보이지 않는 선이 있어. 이 선을 넘으면 빛도, 로켓도, 아무것도 돌아올 수 없단다. 마치 놀이터 미끄럼틀에서 한번 내려가면 다시 올라올 수 없는 것처럼!</p></div>
+<div class="story-block"><div class="s-label">🍝 스파게티화!</div><p>블랙홀 가까이 가면 발쪽이 머리쪽보다 훨씬 더 강하게 당겨져서 몸이 기다란 스파게티처럼 쭉쭉 늘어나! 과학자들이 이걸 진짜로 '스파게티화(Spaghettification)'라고 불러. 재미있는 이름이지?</p></div>
+<div class="story-block"><div class="s-label">🌌 우리 은하에도 블랙홀이 있어!</div><p>우리가 사는 은하수 은하 한복판에도 태양보다 400만 배나 무거운 초대질량 블랙홀이 있대! 이름은 '궁수자리 A*'야. 걱정 마, 우리 지구와는 엄청 멀리 떨어져 있어!</p></div>
+<div class="story-block tip"><div class="s-label">💡 아이에게 이렇게 말해주세요:</div><p>"블랙홀은 무섭게 들리지만, 사실 우주가 얼마나 신기하고 다양한지 알려주는 증거야! 빛도 빨아들이는 블랙홀처럼, 우리 친구도 책과 지식을 쭉쭉 빨아들이는 지식 블랙홀이 되어볼까? 😄"</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"만약 블랙홀이 냉장고만큼 작다면, 그 안에 뭘 넣고 싶어?"<br>"블랙홀이 스파게티처럼 늘어나게 한대! 만약 내 장난감이 스파게티처럼 길어진다면 어떻게 될까?"<br>"우리 은하 한복판에 블랙홀이 있대. 만약 은하 탐험가가 된다면 블랙홀에 가까이 가볼 용기가 있어?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=whSAgISrGME" target="_blank">블랙홀의 비밀</a></p>`,
+tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"블랙홀은 무섭게 들리지만, 우주가 얼마나 신기하고 다양한지 알려주는 증거야! 빛도 빨아들이는 블랙홀처럼, 우리 친구도 책과 지식을 쭉쭉 빨아들이는 지식 블랙홀이 되어볼까?" 😄'},{id:'sePqPIXMsAc',desc:'우주 탐험 이야기',storyHtml:`<h4>📖 우리의 슈퍼히어로, 태양님!</h4>
+<p class="s-intro">이번에는 우리에게 매일 따뜻한 인사를 건네는 "우리의 슈퍼히어로, 태양님!" 이야기를 들려줄게요. 태양이 얼마나 대단한 친구인지, 왜 우리에게 꼭 필요한지 함께 알아봐요! ☀️✨</p>
+<p class="s-intro">안녕, 꼬마 햇살 친구! 아침이 되면 세상이 환해지고 따뜻해지지? 그건 바로 하늘 높이 떠 있는 태양님 덕분이야. [00:17]</p>
+<div class="story-block"><div class="s-label">태양은 거대한 불꽃 공 별! [00:35]</div><p>태양은 사실 밤하늘에 반짝이는 별들과 똑같은 별이야. 하지만 우리 지구와 가장 가까이 있어서 아주 크고 밝게 보이는 거란다. [00:42]</p></div>
+<div class="story-block"><div class="s-label">얼마나 크고 뜨거울까? [00:51]</div><p>태양은 지구가 32만 개나 들어갈 정도로 정말 어마어마하게 커! [00:51] 그리고 표면 온도가 무려 5,000도가 넘을 정도로 아주아주 뜨겁지. [01:02] 그래서 아주 멀리 떨어져 있는 우리에게까지 따뜻한 열기를 전해줄 수 있는 거야.</p></div>
+<div class="story-block"><div class="s-label">번개보다 빠른 태양 빛! [01:19]</div><p>태양과 지구는 아주 멀리 떨어져 있지만, 태양 빛은 엄청나게 빨라서 딱 8분 만에 우리 얼굴에 도착해! [01:19] 우리가 지금 느끼는 햇살은 8분 전에 태양에서 출발한 거란다.</p></div>
+<div class="story-block"><div class="s-label">태양도 나이를 먹어요 [01:24]</div><p>별들도 사람처럼 아기 별이 있고 할아버지 별이 있어. 우리 태양님은 지금 딱 중간 나이인 씩씩한 아저씨 별이래! [01:32] 앞으로도 아주 오랫동안 우리를 비춰줄 거야. [01:40]</p></div>
+<div class="story-block tip"><div class="s-label">📖 아이에게 읽어줄 때의 팁</div><p>온몸으로 따뜻함을 표현해요!<br>"태양은 따뜻한 온기를 줘~"라고 말할 때 아이를 포근하게 꽉 안아주세요. "태양님이 (아이 이름)를 안아주는 것처럼 따뜻하지?"라고 하면 아이가 태양의 고마움을 몸으로 느껴요. [00:28]<br><br>'8분'을 손가락으로 세어봐요!<br>"태양 빛이 지구까지 오는 데 8분!"이라고 말하며 아이와 함께 손가락 8개를 하나씩 꼽아보세요. 숫자를 익히는 재미도 있고, 빛의 여행이 얼마나 짧고 빠른지 상상하게 해줍니다. [01:19]<br><br>크기 비교를 과일로 해보세요!<br>태양은 커다란 수박, 지구는 아주 작은 깨알이라고 비유하며 설명해 주면 아이가 태양이 얼마나 거대한지 쉽게 이해할 수 있어요. [00:51]</p></div>
+<div class="story-block tip"><div class="s-label">❓ 아이와 함께 나누는 재미있는 질문</div><p>[상상력 퀴즈] "태양님이 오늘 하루 휴가를 가서 사라진다면, 우리는 어떤 옷을 입고 있어야 할까? 털모자랑 장갑이 필요할까?" [00:17]<br>[태양의 맛] "태양은 아주아주 뜨겁대! 만약 우리가 태양한테 요리를 부탁한다면 어떤 음식을 만들어 달라고 할까? 따끈따끈한 붕어빵? 아니면 군고구마?" [01:02]<br>[감사 인사] "태양님 덕분에 꽃도 피고 나무도 무럭무럭 자란대. 우리 창문 너머 태양님에게 '고마워!' 하고 손 흔들어줄까?" [00:35]<br>[미래 모습] "태양님이 나중에 더 커져서 거인 별이 된대! 그때는 태양님이 어떤 모양으로 변해있을까? 뚱뚱한 도넛 모양일까?" [01:48]</p></div>
+<div class="story-block tip"><div class="s-label">💡 마무리 멘트:</div><p>"태양님은 우리가 잠든 밤에도 반대편 나라 친구들을 비춰주느라 아주 바쁘대. 내일 아침에 다시 밝은 모습으로 만나기로 약속하고, 오늘은 예쁜 꿈 꾸자!" ☀️🌙💤</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=sePqPIXMsAc" target="_blank">Our Sun | Science videos for kids - Kids Academy</a></p>`,
+tip:''},{id:'NIn9IQwnuvA',desc:'목성에 빠지면 어떻게 될까요?',storyHtml:`<h4>📖 🪐 만약 우리가 거대한 목성으로 슝~ 떨어진다면?</h4>
+<p class="s-intro">태양계에서 가장 덩치가 큰 대장 행성, 목성! 만약 우주복을 입고 목성 속으로 쏙 들어간다면 어떤 일이 벌어질까? 선생님이랑 같이 탐험을 시작해보자!</p>
+<div class="story-block"><div class="s-label">🕳️ 바닥이 없는 행성</div><p>지구는 땅이 있어서 발을 딛고 설 수 있지? 하지만 목성은 거대한 가스 덩어리야. 발을 내딛는 순간 끝도 없이 아래로 아래로 계속 떨어지게 된단다. 마치 끝이 없는 미끄럼틀을 타는 것 같을 거야!</p></div>
+<div class="story-block"><div class="s-label">🌀 무시무시한 폭풍, 대적점</div><p>목성에는 지구보다 더 큰 빨간 눈 모양의 폭풍이 있어. 여기선 바람이 너무 세게 불어서 우리를 휘리릭 날려버릴지도 몰라. 하지만 걱정 마, 우리에겐 튼튼한 상상 우주복이 있으니까!</p></div>
+<div class="story-block"><div class="s-label">🔥 점점 뜨거워지고 무거워져</div><p>깊이 들어갈수록 공기가 우리를 꾹꾹 누르는 힘(압력)이 엄청나게 세져. 온도는 점점 뜨거워져서 마치 거대한 오븐 속에 들어온 것 같을 거야. 결국 목성의 중심에는 아주 단단하고 뜨거운 핵이 숨어 있단다.</p></div>
+<p class="s-intro" style="margin-top:.8rem">목성은 정말 아름답지만, 멀리서 바라볼 때 가장 멋진 행성인 것 같지 않니? 우리 지구처럼 발을 딛고 살 수 있는 땅이 있다는 게 얼마나 감사한 일인지 알게 될 거야!</p>`,
+tip:'이 영상을 보여주실 때 제목을 <strong>"목성 탐험대: 목성에 떨어지면?"</strong>이라고 소개해 주시면 아이들이 훨씬 호기심을 가질 거예요.<br><br>혹시 아이들이 <strong>"그럼 목성 말고 다른 행성에 떨어지면요?"</strong>라고 물어본다면 토성이나 화성 영상도 연결해서 보여주시면 최고의 우주 수업이 될 것 같습니다!',
+qs:[
+  {scene:'🪐',sceneText:'버스가 목성에 도착했어요! 내리려고 했더니 발이 닿을 땅이 없네요?',
+   q:'목성에는 발을 딛고 설 수 있는 \'땅\'이 있을까요?',
+   choices:['네, 아주 넓은 운동장이 있어요','아니요, 목성은 가스로 되어 있어서 계속 아래로 떨어져요','네, 하지만 너무 미끄러워서 스케이트를 타야 해요'],ans:1,
+   fact:'목성은 <strong>가스 행성</strong>이라 지구처럼 딱딱한 땅이 없답니다! 발을 내딛는 순간 끝도 없이 아래로 계속 떨어지게 돼요.'},
+  {scene:'🌀',sceneText:'목성 표면에 커다란 빨간 눈 모양이 보여요! 수백 년째 사라지지 않는다고 해요.',
+   q:'목성에 있는 아주 커다란 \'빨간 눈\' 모양의 정체는 무엇일까요?',
+   choices:['목성이 잠이 와서 생긴 눈병','아주아주 거대하고 강력한 태풍(폭풍)','외계인이 그려놓은 커다란 그림'],ans:1,
+   fact:'이것을 <strong>대적점(Great Red Spot)</strong>이라고 불러요! 지구보다 더 큰 폭풍이 수백 년 동안 쉬지 않고 불고 있답니다.'},
+  {scene:'🔥',sceneText:'목성 안으로 점점 깊이 들어가고 있어요. 뭔가 이상한 느낌이 들어요!',
+   q:'목성 안으로 깊이 들어갈수록 날씨와 느낌은 어떻게 변할까요?',
+   choices:['시원한 에어컨 바람이 불고 가벼워져요','점점 더 뜨거워지고 몸을 꾹 누르는 힘이 세져요','맛있는 솜사탕 냄새가 나고 기분이 좋아져요'],ans:1,
+   fact:'깊이 들어갈수록 <strong>엄청난 압력과 뜨거운 열기</strong>가 기다리고 있어요! 마치 거대한 오븐 속에 들어온 것 같을 거랍니다.'},
+]},{id:'MY7REwEGS0I',desc:'만약 달이 사라진다면?',storyHtml:`<h4>📖 🌙 만약 달이 사라진다면 어떻게 될까?</h4>
+<p class="s-intro">우리가 매일 밤 보는 달이 갑자기 펑! 하고 사라져버린다면 지구에는 어떤 일이 생길까? 같이 상상해보자!</p>
+<div class="story-block"><div class="s-label">🌑 밤이 더 캄캄해져</div><p>달은 태양빛을 받아서 우리에게 빛을 보내줘. 달이 없어지면 밤이 훨씬 더 어두워지고, 별들만 반짝반짝 빛날 거야. 손전등 없이 밖에 나가면 아무것도 안 보일지도 몰라!</p></div>
+<div class="story-block"><div class="s-label">🌊 바다 파도가 달라져</div><p>달은 보이지 않는 힘(중력)으로 바닷물을 잡아당겨서 밀물과 썰물을 만들어. 달이 사라지면 바다의 파도가 약해지고, 해변이 완전히 달라질 거야!</p></div>
+<div class="story-block"><div class="s-label">🌍 지구가 비틀비틀</div><p>달은 지구가 너무 기울거나 흔들리지 않도록 균형을 잡아주는 역할도 해. 달이 없어지면 지구가 조금씩 비틀거려서 계절이 엄청나게 변할 수도 있대!</p></div>
+<div class="story-block"><div class="s-label">🔭 달 탐험가 놀이</div><p>오늘 밤엔 달을 찾아봐! 둥글둥글 보름달인지, 반쪽짜리 반달인지, 눈썹처럼 얇은 초승달인지 관찰해보자. 달이 있어서 우리 지구가 얼마나 행복한지 느껴볼 수 있을 거야!</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/shorts/MY7REwEGS0I" target="_blank">What Would Happen if The Moon Disappears? - Peekaboo Kidz</a></p>`,
+tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"달은 우리 지구의 가장 친한 짝꿍이야! 달이 없으면 지구가 얼마나 힘들어질지 상상해봐. 오늘 밤엔 달님에게 \'고마워!\' 하고 인사해 볼까?"'
+},{id:'-3hYw1Fg5us',desc:'엘리베이터를 타고 달에 갈 수 있다면?',storyHtml:`<h4>📖 엘리베이터를 타고 달에 갈 수 있다면?</h4>
+<p class="s-intro">이번에는 "엘리베이터를 타고 달에 갈 수 있다면?"이라는 아주 신나는 상상을 해볼까요? 우리 아파트에 있는 엘리베이터가 하늘 위 구름을 지나 달까지 연결되어 있다면 어떤 일이 벌어질지, 옴섬(AumSum)과 함께 떠나봐요! 🚀🌕</p>
+<p class="s-intro">안녕, 미래의 우주 비행사 친구! 어느 날 아침, 옴섬이 하늘을 보다가 깜짝 놀랄 만한 걸 발견했어. 세상에서 가장 높은 빌딩보다 훨씬 더 높이, 구름 너머 저 멀리 달까지 뻗어 있는 거대한 엘리베이터였지! [00:00]</p>
+<div class="story-block"><div class="s-label">🎒 1. 우주 여행 준비 완료! [00:16]</div><p>옴섬은 맛있는 간식과 물통, 그리고 행운의 모자를 챙겨서 가방을 메고 엘리베이터에 탔어. [00:16] 문이 "슈욱~" 하고 닫히더니 엘리베이터가 아주 빠르게 올라가기 시작했단다! [00:23]</p></div>
+<div class="story-block"><div class="s-label">🌍 2. 창밖으로 보이는 멋진 지구 [00:32]</div><p>엘리베이터가 높이 올라갈수록 우리가 사는 도시와 숲, 커다란 바다가 아주 작게 보였어. [00:32] 옴섬은 창밖으로 보이는 아름다운 지구의 모습을 보며 감탄했지. 하지만 우주 여행은 쉽지만은 않았어!</p></div>
+<div class="story-block"><div class="s-label">☄️ 3. 슈우웅! 돌발 상황 발생! [00:39]</div><p>갑자기 어디선가 운석(우주 돌멩이)들이 엘리베이터를 향해 쌩쌩 날아오기 시작했어! [00:39] 위험한 순간, 옴섬은 얼른 '비상 방어막' 레버를 힘차게 당겼단다. [00:47] 그러자 엘리베이터 주변에 반짝이는 파란색 방어막이 생겨서 돌멩이들을 "통~ 통~" 튕겨냈어! [00:54]</p></div>
+<div class="story-block"><div class="s-label">🌕 4. 드디어 달에 도착! [01:03]</div><p>드디어 엘리베이터 문이 열리고, 옴섬은 먼지가 폴폴 날리는 달 표면에 발을 내디뎠어. [01:03] 저 멀리서 파랗게 빛나는 지구를 바라보며 옴섬은 정말 뿌듯했단다. [01:03]</p></div>
+<div class="story-block tip"><div class="s-label">💡 우리 아이와 함께하는 '우주 엘리베이터' 놀이:</div><p>엘리베이터 놀이: 아이와 함께 상자나 이불 속에 들어가서 "자, 이제 우주 엘리베이터 출발합니다! 5, 4, 3, 2, 1, 발사!"라고 외치며 위로 점프해 보세요.<br>방어막 놀이: 풍선이나 공을 던지며 "운석이 날아온다! 빨리 방어막을 켜자!"라고 말하며 아이가 베개나 방패 모양 장난감으로 막아내게 해주세요. [00:47]</p></div>
+<div class="story-block tip"><div class="s-label">💡 아이에게 이렇게 말해주세요:</div><p>"나중에 우리 친구가 어른이 되면 진짜로 엘리베이터를 타고 달나라에 놀러 갈 수 있을지도 몰라! [00:09] 옴섬처럼 용감하게 모험을 떠나고 싶은 곳이 있니? 우리 같이 상상해 보자!" 🚀✨</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/shorts/-3hYw1Fg5us" target="_blank">What if we could go to the Moon using an Elevator? - It's AumSum Time</a></p>`,
+tip:''
+},{id:'PCxjuDePdCI',desc:'🎵 태양계 행성 노래'},{id:'BQvo7vyCmuE',desc:'달의 모양은 왜 바뀔까요? (Phases of the Moon)',storyHtml:`<h4>📖 달님은 왜 모양이 바뀔까요?</h4>
+<p class="s-intro">이번에는 밤하늘의 변신쟁이, "달님은 왜 모양이 바뀔까요?"라는 이야기를 들려줄게요. 닥터 바이녹스(Dr. Binocs)와 함께 달님의 마법 같은 변신 비밀을 파헤쳐 봐요! 🌙✨</p>
+<p class="s-intro">안녕, 꼬마 우주 탐험가! 밤하늘을 보면 어떤 날은 달님이 동그랗고, 어떤 날은 손톱처럼 뾰족하지? 달님이 정말 마법을 부리는 걸까? [00:55]</p>
+<div class="story-block"><div class="s-label">달님은 스스로 빛나지 않아요! [01:24]</div><p>사실 달님은 스스로 빛을 내는 전등이 아니에요. 태양님이 비춰주는 빛을 거울처럼 반사해서 반짝이는 거란다. [01:35] 그래서 태양 빛을 받는 부분만 우리 눈에 보이는 거야.</p></div>
+<div class="story-block"><div class="s-label">달님의 숨바꼭질, '삭(New Moon)' [02:06]</div><p>달님이 지구와 태양 사이에 딱 들어가면, 지구에서는 달님의 어두운 뒷모습만 보여서 달님이 사라진 것처럼 보여. 이걸 '삭' 혹은 '신월'이라고 불러. [02:32]</p></div>
+<div class="story-block"><div class="s-label">점점 커지는 달님 (Waxing) [02:42]</div><p>달님이 지구 주변을 돌면서 태양 빛을 조금씩 더 받기 시작해. 처음엔 눈썹 같은 초승달이 되었다가, 일주일쯤 지나면 반쪽만 보이는 상현달이 되지. [03:09]</p></div>
+<div class="story-block"><div class="s-label">우와! 동그란 '보름달(Full Moon)' [03:40]</div><p>약 2주가 지나면 태양 빛을 정면으로 듬뿍 받아서 아주 크고 동그란 보름달이 돼! 밤하늘을 환하게 비춰주는 가장 아름다운 때야. [03:59]</p></div>
+<div class="story-block"><div class="s-label">다시 작아지는 달님 (Waning) [04:09]</div><p>보름달이 된 후에는 다시 조금씩 작아져. 반달인 하현달을 지나서, 아주 얇은 그믐달이 되었다가 다시 처음처럼 숨어버린단다. [04:47] 이 모든 과정이 한 바퀴 도는 데 약 29.5일이 걸려! [04:58]</p></div>
+<div class="story-block tip"><div class="s-label">📖 아이에게 읽어줄 때의 팁</div><p>손 모양으로 달을 만들어봐요!<br>초승달을 설명할 때는 손가락을 갈고리처럼 구부려 보여주고, 보름달을 말할 때는 양손으로 큰 원을 그려보세요. 아이가 달의 모양 변화를 훨씬 직관적으로 이해해요. [03:48]<br><br>'거울 놀이'로 빛의 반사를 알려주세요!<br>전등(태양)을 켜고 거울(달)로 빛을 반사해 벽에 비춰보며 설명해 주세요. "달님은 이렇게 태양 빛을 빌려와서 우리에게 보내주는 거란다"라고 하면 쏙쏙 이해가 돼요! [01:35]<br><br>달력을 함께 보며 체크해요!<br>오늘 밤 창밖의 달 모양을 보고, 달력에 그 모양을 그려보게 하세요. "내일은 달님이 더 뚱뚱해질까, 날씬해질까?" 하며 매일의 변화를 기대하게 해주세요.</p></div>
+<div class="story-block tip"><div class="s-label">❓ 아이와 함께 나누는 재미있는 질문</div><p>[마법의 이름] "달님이 점점 커질 때는 '왁싱(Waxing)', 작아질 때는 '웨이닝(Waning)'이라고 한대. 우리 (아이 이름)는 달님이 커지는 게 좋아, 작아지는 게 좋아?" [05:08]<br>[달나라 간식] "보름달은 아주 크고 노란색이라 맛있어 보여! 만약 보름달이 커다란 빵이라면, 어떤 맛이 날 것 같니? 치즈 맛? 아니면 달콤한 꿀맛?" [03:59]<br>[숨바꼭질] "달님이 완전히 숨어버리는 '삭'일 때는 달님이 어디서 무얼 하고 있을까? 지구 뒤에서 몰래 낮잠을 자고 있을까?" [02:32]<br>[달토끼 이야기] "보름달 속에 토끼가 살고 있다는 이야기를 들어봤니? 만약 달에 토끼가 산다면, 토끼는 달의 모양이 바뀔 때마다 집을 어떻게 옮길까?"</p></div>
+<div class="story-block tip"><div class="s-label">💡 마무리 멘트:</div><p>"달님은 매일 밤 모양을 바꾸며 우리에게 인사를 건네고 있어. 오늘 밤엔 달님이 어떤 모양으로 우리를 지켜주고 있는지 확인해 볼까? 달님처럼 예쁜 꿈 꾸렴!" 🌙💤</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=BQvo7vyCmuE" target="_blank">Phases Of The Moon - Peekaboo Kidz</a></p>`,
+tip:''},{id:'4srrN7uUAsU',desc:'🎵 Moon Song',storyHtml:`<h4>📖 🌙 지구의 단짝 친구, 달님의 노래! (The Moon Song)</h4>
+<p class="s-intro">이번에는 "지구의 단짝 친구, 달님의 노래" 이야기를 들려줄게요! 이 영상은 노래로 되어 있어서 리듬을 타며 읽어주면 아이가 훨씬 즐거워한답니다. 달님이 직접 자기소개를 하는 것처럼 재미있게 들려주세요. 🌕🎶</p>
+<p class="s-intro">"안녕! 나는 지구 곁을 지키는 너의 소중한 친구 달님이야. [00:11] 내가 어떤 비밀을 가지고 있는지 노래하듯 들려줄게!"</p>
+<div class="story-block"><div class="s-label">🌍 [00:15] 우리는 단짝 친구!</div><p>지구가 나를 꽉 잡아주는 힘(중력) 덕분에 나는 언제나 지구 곁에 있을 수 있어. 나는 지구보다 작지만, 바닷물을 밀었다 당겼다 하는 아주 힘센 능력도 가지고 있단다! [00:23]</p></div>
+<div class="story-block"><div class="s-label">🪨 [00:30] 내 몸은 무엇으로 되어 있을까?</div><p>내 몸속에는 단단한 철이 들어있고, 겉은 딱딱한 바위와 '레골리스'라고 부르는 보들보들한 먼지로 덮여 있어. [00:35] 내 얼굴에 있는 올록볼록한 구멍들은 '크레이터'라고 하는데, 티코나 케플러 같은 멋진 이름도 있단다. [00:46]</p></div>
+<div class="story-block"><div class="s-label">🔆 [01:08] 나는 반사쟁이 거울!</div><p>나는 스스로 빛을 내지 못해. 대신 태양님이 비춰주는 빛을 너희에게 반사해서 보여주는 거야. [01:15] 그래서 태양이 어디를 비추느냐에 따라 내 모양이 매일매일 달라 보이지!</p></div>
+<div class="story-block"><div class="s-label">🌑 [01:30] 달님의 신기한 마법, 일식과 월식</div><p>가끔 내가 태양과 지구 사이에 쏙 들어가서 해를 가리기도 하고(일식), 지구가 나를 가려서 내가 어둡게 변하기도 해(월식). [01:36] 정말 신기한 마법 같지?</p></div>
+<div class="story-block"><div class="s-label">🤫 [01:52] 언제나 같은 얼굴만 보여줄게!</div><p>신기하게도 나는 지구를 돌면서 스스로 도는 속도가 똑같아서, 너희는 언제나 나의 앞모습만 볼 수 있어. 나의 뒷모습은 비밀이야! [01:56]</p></div>
+<div class="story-block"><div class="s-label">🌕 [01:59] 여덟 가지 변신 모습</div><p>깜깜한 신월부터 눈썹 같은 초승달, 반쪽짜리 상현달, 그리고 아주 커다란 보름달까지! [02:17] 나는 30일이 안 되는 시간 동안 여덟 번이나 멋지게 변신하며 너희를 찾아가. [02:47]</p></div>
+<div class="story-block tip"><div class="s-label">📖 읽어줄 때의 팁</div><p><strong>노래의 리듬을 살려주세요!</strong><br>이 영상은 경쾌한 노래예요. "나는~ 너의~ 달님~" 하고 노래하듯 리드미컬하게 읽어주면 아이가 엉덩이를 들썩이며 집중한답니다. [03:20]<br><br><strong>'먼지 만지기' 흉내를 내보세요!</strong><br>달의 먼지 '레골리스'를 설명할 때[00:35] 아이의 손바닥을 간지럽히며 "달나라 먼지는 이렇게 부드럽대~"라고 속삭여주세요.<br><br><strong>'항상 같은 면' 보여주기 놀이</strong><br>아이(지구) 주위를 엄마나 아빠(달)가 돌면서, 얼굴은 계속 아이만 바라보며 돌아보세요. "달님은 이렇게 (아이 이름)만 바라보며 걷는단다!"라고 설명해 주세요. [01:52]</p></div>
+<div class="story-block tip"><div class="s-label">❓ 아이와 함께 나누는 재미있는 질문</div><p><strong>[달나라 여행]</strong> "달나라 먼지 '레골리스'는 아주 부드럽대. 만약 우리가 달에 가면 그 먼지로 어떤 모양의 모래성을 쌓고 싶어?" [00:35]<br><br><strong>[바닷물 놀이]</strong> "달님이 바닷물을 당기는 힘이 있대! 달님이 '영차!' 하고 당기면 바닷물은 어떤 기분이 들까?" [00:23]<br><br><strong>[달님의 이름]</strong> "달의 구멍(크레이터)들에 이름이 있대. 우리 (아이 이름)라면 저기 보이는 커다란 구멍에 어떤 이름을 붙여주고 싶니?" [00:46]<br><br><strong>[달나라 산소]</strong> "달에는 숨 쉴 공기가 거의 없대. 우주복을 입지 않고 달에 가면 우리는 어떻게 숨을 쉬어야 할까? 코끼리 코처럼 긴 빨대가 필요할까?" [01:45]</p></div>
+<p class="s-intro" style="margin-top:.8rem">"달님은 30일 동안 매일매일 다른 모습으로 우리를 찾아와 노래를 불러준대. [02:54] 오늘 밤엔 달님이 어떤 가사를 부르고 있을지 귀를 기울이며 잠들어볼까? 달님 노래 들으며 잘 자요!" 🌙🎶😴</p>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=4srrN7uUAsU" target="_blank">The Moon Song - Hopscotch Songs</a></p>`,
+tip:''}],
+    storyHtml:`<h4>📖 ☀️ 우리의 대장님! 태양 이야기 (Our Sun)</h4>
+<p class="s-intro">하늘 높이 떠 있는 저 뜨거운 태양은 사실 거대한 '가스 공'이라는 거, 믿겨지니?</p>
+<div class="story-block"><div class="s-label">☀️ 우주에서 가장 큰 불공</div><p>태양은 우리 지구보다 훨씬, 훨씬 더 커. 지구가 100만 개나 들어갈 수 있을 정도지!</p></div>
+<div class="story-block"><div class="s-label">🌟 빛과 열의 선물</div><p>태양이 없다면 지구는 꽁꽁 얼어붙은 얼음 나라가 될 거야. 태양 덕분에 식물들이 쑥쑥 자라고 우리도 따뜻하게 지낼 수 있는 거란다.</p></div>
+<div class="story-block"><div class="s-label">⭐ 우리의 대장 별</div><p>태양은 사실 우주에 있는 수많은 '별' 중 하나야. 하지만 우리 지구와 가장 가깝기 때문에 우리에게 가장 소중한 대장 별이 되었지!</p></div>
+<h4 style="margin-top:1.2rem;font-size:1rem;font-weight:900;color:#7dd3c8">📖 🌙 달에는 공기가 있을까요? (The Moon)</h4>
+<p class="s-intro">밤하늘에 예쁘게 뜬 달! 만약 우리가 우주선을 타고 달에 가면 어떤 일이 벌어질까요?</p>
+<div class="story-block"><div class="s-label">🤫 조용한 세상</div><p>달에는 공기가 없어요. 그래서 아무리 크게 소리를 질러도 소리가 들리지 않는 아주 조용한 곳이랍니다.</p></div>
+<div class="story-block"><div class="s-label">🦘 깡충깡충 점프</div><p>달은 지구보다 당기는 힘(중력)이 약해요. 그래서 한 번만 살짝 뛰어도 건물 2층 높이까지 붕~ 날아오를 수 있어요!</p></div>
+<div class="story-block"><div class="s-label">👨‍🚀 우주복은 필수</div><p>공기도 없고 햇빛이 너무 뜨겁거나 차갑기 때문에, 달에 갈 때는 꼭 튼튼한 우주복을 입어야 한답니다.</p></div>
+<h4 style="margin-top:1.2rem;font-size:1rem;font-weight:900;color:#7dd3c8">📖 🪐 목성에 빠지면 어떻게 될까요? (What if you fell into Jupiter?)</h4>
+<p class="s-intro">태양계에서 가장 덩치가 큰 대장 행성, 목성! 만약 목성 속으로 쏙 들어간다면 어떤 일이 벌어질까?</p>
+<div class="story-block"><div class="s-label">🕳️ 바닥이 없는 행성</div><p>지구는 땅이 있어서 발을 딛고 설 수 있지? 하지만 목성은 거대한 가스 덩어리야. 발을 내딛는 순간 끝도 없이 아래로 계속 떨어지게 된단다. 끝이 없는 미끄럼틀을 타는 것 같을 거야!</p></div>
+<div class="story-block"><div class="s-label">🌀 무시무시한 폭풍, 대적점</div><p>목성에는 지구보다 더 큰 빨간 눈 모양의 폭풍이 있어. 여기선 바람이 너무 세게 불어서 우리를 휘리릭 날려버릴지도 몰라. 이것을 '대적점'이라고 부르는데, 수백 년 동안 계속 불고 있대!</p></div>
+<div class="story-block"><div class="s-label">🔥 점점 뜨거워지고 무거워져</div><p>깊이 들어갈수록 공기가 우리를 꾹꾹 누르는 힘(압력)이 엄청나게 세지고, 온도는 점점 뜨거워져. 결국 목성의 중심에는 아주 단단하고 뜨거운 핵이 숨어 있단다.</p></div>
+`,
+    qs:[
+      {scene:'☀️',sceneText:'버스가 태양 가까이 다가갑니다! 엄청난 열기가 느껴지지만 선생님이 특수 방어막을 켰어요.',
+       q:'태양에는 지구가 몇 개나 들어갈 수 있을까요?',
+       choices:['약 10개','약 100개','약 10,000개','약 100만 개'],ans:3,
+       fact:'태양은 너무나 커서 지구가 무려 <strong>100만 개</strong>나 들어갈 수 있어요! 우리 눈에는 작게 보이지만 실제로는 엄청나게 큰 가스 덩어리랍니다.'},
+      {scene:'🌍',sceneText:'창밖으로 지구가 보입니다. 선생님이 "태양이 없으면 지구는 어떻게 될까?" 하고 물어봐요.',
+       q:'태양이 없어지면 지구는 어떻게 될까요?',
+       choices:['더 따뜻해진다','꽁꽁 얼어붙은 얼음 행성이 된다','아무것도 달라지지 않는다','더 빠르게 돈다'],ans:1,
+       fact:'태양이 없다면 지구는 <strong>꽁꽁 얼어붙은 얼음 행성</strong>이 돼요! 태양 덕분에 식물이 자라고, 우리가 따뜻하게 살 수 있어요. 태양은 지구의 대장 별이에요.'},
+      {scene:'🌙',sceneText:'달에 도착했어요! 밖이 너무 신기해요. 선생님이 큰 소리로 외쳐봐요.',
+       q:'달에서 큰 소리로 외치면 어떻게 될까요?',
+       choices:['메아리가 들린다','달 전체에 퍼진다','아무 소리도 들리지 않는다','더 크게 들린다'],ans:2,
+       fact:'달에는 공기가 없어서 소리가 전달되지 않아요! 아무리 크게 소리를 질러도 <strong>완전히 조용</strong>합니다. 소리는 공기가 있어야 전달될 수 있거든요.'},
+      {scene:'🪐',sceneText:'버스가 목성에 가까이 왔어요! 엄청나게 큰 줄무늬 행성이 눈앞에 펼쳐집니다.',
+       q:'목성에는 발을 딛고 설 수 있는 \'땅\'이 있을까요?',
+       choices:['네, 아주 넓은 운동장이 있어요','아니요, 가스 행성이라 계속 아래로 떨어져요','네, 하지만 너무 미끄러워요','네, 물로 이루어진 바다가 있어요'],ans:1,
+       fact:'목성은 <strong>가스 행성</strong>이라 지구처럼 딱딱한 땅이 없어요! 발을 내딛는 순간 끝도 없이 아래로 계속 떨어지게 된답니다.'},
+      {scene:'🌀',sceneText:'목성 표면에 커다란 빨간 눈 모양이 보여요! 수백 년째 사라지지 않는다고 해요.',
+       q:'목성의 빨간 눈 모양 정체는 무엇일까요?',
+       choices:['외계인이 그려놓은 커다란 그림','수백 년째 불고 있는 거대한 폭풍(대적점)','목성이 잠이 와서 생긴 눈병','화산 폭발 자국'],ans:1,
+       fact:'이것을 <strong>대적점(Great Red Spot)</strong>이라고 불러요! 지구보다 더 큰 폭풍이 수백 년 동안 쉬지 않고 불고 있답니다. 깊이 들어갈수록 엄청난 압력과 뜨거운 열기가 기다리고 있어요.'},
+    ]
+  },
+  {
+    id:'body', icon:'🫀', name:'인체의 비밀', color:'#ef4444',
+    desc:'심장 · 뼈 · 뇌',
+    tip:'<strong>질문 던지기:</strong> "지금 네 맥박을 한번 세볼까? 손목에 손가락 대봐!", "운동하고 나면 심장이 왜 더 빨리 뛸까?" 같은 신체 관찰 활동을 연결해 주세요.<br><br><strong>연결하기:</strong> "수학 문제를 열심히 풀 때도 지금 뇌가 아주 바쁘게 운동하고 있어! 뇌를 위한 운동이야."',
+    vids:[{id:'X2YgM1Zw4_E',desc:'우리 몸의 지휘관, 뇌 (The Brain)',
+      storyHtml:`<h4>📖 🧠 우리 몸의 똑똑한 지휘관, 뇌 이야기!</h4>
+<p class="s-intro">우리 몸 안에는 아주 특별한 '슈퍼컴퓨터'가 들어있어. 바로 머릿속에 있는 뇌란다. 뇌는 우리가 잠을 잘 때도, 수학 문제를 풀 때도 쉬지 않고 일하는 아주 부지런한 지휘관이야!</p>
+<div class="story-block"><div class="s-label">📡 명령을 내리는 대장님</div><p>우리가 '손을 흔들어야지!'라고 생각하면, 뇌는 아주 빠른 속도로 근육에게 신호를 보내. 그럼 우리 몸이 척척 움직이게 되지. 우리가 걷고, 뛰고, 춤추는 모든 건 다 뇌 대장님이 명령을 내린 덕분이야!</p></div>
+<div class="story-block"><div class="s-label">🗄️ 기억의 보관소</div><p>어제 먹은 맛있는 간식, 친구와 놀았던 즐거운 시간들을 뇌는 차곡차곡 저장해 둔단다. 뇌가 없으면 우리는 이름도, 집 주소도 다 잊어버릴지도 몰라. 뇌는 정말 대단한 기억 창고지?</p></div>
+<div class="story-block"><div class="s-label">😊 기분을 조절해요</div><p>우리가 기뻐서 웃거나 슬퍼서 눈물이 나는 것도 뇌가 하는 일이야. 뇌를 튼튼하게 하려면 맛있는 음식을 골고루 먹고 잠도 푹 자야 해!</p></div>`,
+      tip:'이 영상은 아이들이 <strong>"나는 왜 생각을 할까?"</strong>라는 궁금증을 가질 때 보여주면 정말 좋습니다.<br><br>특히 수학 문제를 풀 때 <strong>"지금 너희들의 뇌가 아주 열심히 운동하고 있는 거야!"</strong>라고 응원해 주시면 아이들이 더 뿌듯해할 거예요!',
+      qs:[
+        {scene:'🧠',sceneText:'버스가 머릿속으로 쏙 들어왔어요! 수많은 신호들이 번개처럼 빠르게 오가고 있어요.',
+         q:'우리 몸의 모든 움직임을 조절하고 명령을 내리는 \'지휘관\'의 이름은 무엇일까요?',
+         choices:['배꼽','뇌','엉덩이'],ans:1,
+         fact:'<strong>뇌</strong>는 우리 몸의 모든 행동과 생각을 조절하는 최고 지휘관이에요! 잠을 잘 때도, 수학 문제를 풀 때도 쉬지 않고 일하는 아주 부지런한 슈퍼컴퓨터랍니다.'},
+        {scene:'🗄️',sceneText:'뇌의 기억 창고에 도착했어요! 오늘 배운 것들이 차곡차곡 저장되고 있어요.',
+         q:'우리가 공부한 내용이나 즐거운 추억을 저장하는 곳은 어디일까요?',
+         choices:['뇌','손톱','양말'],ans:0,
+         fact:'뇌는 아주 커다란 <strong>기억 저장 공간</strong>을 가지고 있어요! 어제 먹은 음식, 친구 이름, 배운 수학 공식까지 모두 뇌에 차곡차곡 저장된답니다. 뇌가 없으면 이름도 주소도 다 잊어버릴 거예요.'},
+        {scene:'🌟',sceneText:'뇌 탐험을 마쳤어요! 이제 뇌를 건강하게 키우는 방법을 배워봐요.',
+         q:'뇌를 건강하고 똑똑하게 만드는 방법으로 가장 좋은 것은 무엇일까요?',
+         choices:['밤늦게까지 게임만 하기','골고루 잘 먹고, 충분히 잠자기, 그리고 즐겁게 공부하기','매일매일 사탕만 많이 먹기'],ans:1,
+         fact:'<strong>골고루 잘 먹고, 충분히 잠자고, 즐겁게 공부하기</strong>가 뇌를 반짝이게 해요! 수학 문제를 풀 때도 뇌가 열심히 운동하고 있어요. 지금 너희들의 뇌가 아주 바쁘게 일하고 있답니다!'},
+      ]},{id:'3pjkQcQBTtc',desc:'몸속 미끄럼틀! 소화 기관 여행',
+      storyHtml:`<h4>📖 🍇 길버트 포도와 함께 떠나는 몸속 미끄럼틀 탐험!</h4>
+<p class="s-intro">안녕, 꼬마 탐험가! 오늘은 우리가 맛있는 음식을 먹었을 때, 우리 몸 안에서 어떤 신기한 일이 벌어지는지 '길버트'라는 포도 친구와 함께 여행을 떠나볼 거야. 준비됐니? 입을 크게 벌리고 "아~" 해봐!</p>
+<div class="story-block"><div class="s-label">👄 1. 입: 소화 기계의 입구! [00:32]</div><p>음식물이 입속으로 들어오면 여행이 시작돼!<br>• 치아 형님: 딱딱한 이빨들이 음식을 잘게 잘게 부숴줘. [01:25]<br>• 침 홍수: 입속에서 침이 섞이면서 음식을 부드럽게 만들어준단다. 우리가 1년 동안 만드는 침은 욕조 두 개를 가득 채울 정도래! [01:11]</p></div>
+<div class="story-block"><div class="s-label">🎢 2. 식도: 꿀렁꿀렁 미끄럼틀! [02:13]</div><p>입을 통과하면 길고 좁은 미끄럼틀인 <strong>'식도'</strong>가 나와. 근육들이 꿀렁꿀렁 움직이면서 음식물을 아래로 밀어준단다. [02:37]</p></div>
+<div class="story-block"><div class="s-label">🧪 3. 위: 보글보글 마법의 주머니! [03:01]</div><p>식도를 지나면 튼튼한 주머니인 <strong>'위'</strong>에 도착해. 여기서는 아주 강한 <strong>'위산'</strong>이라는 액체가 나와서 음식을 죽처럼 걸쭉하게 만들어버려. [03:23] 아주 튼튼한 소화 공장이지!</p></div>
+<div class="story-block"><div class="s-label">🐍 4. 소장: 아주 긴 꼬불꼬불 터널! [03:55]</div><p>이제 <strong>'소장(작은창자)'</strong>이라는 곳으로 가보자. 여기는 무려 6미터나 될 정도로 아주 길어! 기린의 키만큼 길단다. [04:14]<br>이곳에서는 우리 몸에 꼭 필요한 영양분들을 쏙쏙 흡수해. 간에서 만든 <strong>'담즙'</strong>이라는 액체가 소화를 도와준단다. [04:35]</p></div>
+<div class="story-block"><div class="s-label">💩 5. 대장: 마지막 변신, 응가 공장! [05:03]</div><p>드디어 마지막 코스, <strong>'대장(큰창자)'</strong>이야. 여기에는 우리 몸을 도와주는 착한 세균 친구들이 아주 많이 살고 있어. [05:23] 여기서 음식물에 남은 물기를 쏙 빼면, 드디어 우리가 아는 <strong>'응가'</strong>가 완성된단다! [06:24]</p></div>
+<div class="story-block"><div class="s-label">🚽 6. 직장과 항문: "이제 나갈 시간이야!" [07:15]</div><p>응가가 다 만들어지면 엉덩이 근처에 있는 <strong>'직장'</strong>이라는 방에 모여. [07:15] 여기서 뇌한테 "똑똑, 화장실 가고 싶어요!"라고 신호를 보내면, 우리는 화장실로 달려가서 시원하게 여행을 마무리하게 되는 거지! [07:31]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=3pjkQcQBTtc" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: A Journey Inside Your Body - BRIGHT SIDE</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리가 먹은 음식이 이렇게 긴 여행을 거쳐서 우리를 튼튼하게 만들어준단다. 길버트 포도처럼 음식물들이 우리 몸속에서 열심히 일할 수 있게, 골고루 맛있게 먹는 게 중요하겠지?" 🥗💪'},
+    {id:'VwrsL-lCZYo',desc:'소화 공장 탐험! 음식이 에너지로 변하는 방법',
+      storyHtml:`<h4>📖 🎢 클로이와 함께 떠나는 몸속 소화 공장 탐험!</h4>
+<p class="s-intro">안녕, 꼬마 탐험가! 오늘은 우리가 맛있는 음식을 먹으면 몸속에서 어떤 일이 일어나는지, 마법의 잠수함을 타고 직접 구경해 볼 거야. 자, 입을 크게 벌리고 출발~!</p>
+<div class="story-block"><div class="s-label">👄 1. 입: 소화 공장의 정문! [01:03]</div><p>우리가 음식을 한 입 베어 물면, 소화 공장이 가동되기 시작해!<br>침 공격: 입속에 있는 침은 음식을 부드럽게 만들고, '효소'라는 친구들이 음식을 잘게 부수기 시작한단다. [01:36]</p></div>
+<div class="story-block"><div class="s-label">🎢 2. 식도: 쭈욱 미끄럼틀! [01:45]</div><p>입을 지난 음식은 목구멍 뒤에 있는 긴 통로인 <strong>'식도'</strong>를 타고 내려가. 여긴 아주 긴 미끄럼틀 같아! [01:45]</p></div>
+<div class="story-block"><div class="s-label">🧪 3. 위: 보글보글 마법 주스 공장! [02:06]</div><p>드디어 <strong>'위'</strong>에 도착했어! 위는 아주 튼튼한 주머니 같아.<br>• 위액: 여기서는 오렌지 주스 같은 '위액'이 나와서 음식을 죽처럼 걸쭉하게 만들어버려. [02:17]<br>• 꿀렁꿀렁: 위가 음식을 섞고 으깨면, 음식은 이제 '액체 죽' 같은 모습이 된단다. [02:23]</p></div>
+<div class="story-block"><div class="s-label">🐍 4. 소장: 영양분 보물찾기! [03:15]</div><p>이제 가늘고 긴 <strong>'소장(작은창자)'</strong>으로 갈 시간이야.<br>여기서는 간에서 만든 <strong>'담즙'</strong>과 췌장에서 만든 즙들이 나와서 단백질, 지방, 탄수화물을 더 작게 쪼개. [03:34]<br>소장은 우리 몸에 꼭 필요한 비타민과 미네랄을 쏙쏙 흡수해서 우리를 튼튼하게 만들어준단다! [03:41]</p></div>
+<div class="story-block"><div class="s-label">💩 5. 대장: 마지막 물기 꽉 짜기! [03:51]</div><p>영양분을 다 뺀 나머지는 <strong>'대장(큰창자)'</strong>으로 가. 대장은 남은 음식에서 물과 소금을 흡수하는 중요한 일을 해. [04:08]<br>이제 몸에 필요 없는 찌꺼기들만 남게 되는데, 이게 바로 우리가 아는 <strong>'응가'</strong>가 된단다! [04:17]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=VwrsL-lCZYo" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How the Digestive System Works - Nemours KidsHealth</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리가 먹은 피자 한 조각이 우리 몸속을 여행하면서 우리가 뛰어놀 수 있는 힘을 만들어준단다! 우리 몸속 소화 공장 친구들이 열심히 일할 수 있게, 오늘도 맛있는 음식을 골고루 잘 먹기로 약속하자!" 🥦🍗'},
+    {id:'_eVG45_iF9U',desc:'심장 속 네 개의 방 탐험!',
+      storyHtml:`<h4>📖 💓 우리 몸의 엔진, 심장 이야기!</h4>
+<p class="s-intro">안녕, 꼬마 탐험가! 우리 가슴에 손을 한번 얹어볼까? "두근두근" 소리가 들리지? 이건 우리 몸속에서 가장 부지런한 펌프인 <strong>'심장'</strong>이 열심히 일하고 있는 소리야. 심장 속으로 함께 들어가 보자!</p>
+<div class="story-block"><div class="s-label">💓 1. 심장은 우리 몸의 엔진! [01:05]</div><p>심장은 우리가 씩씩하게 뛰어놀 수 있게 피를 온몸으로 보내주는 역할을 해. 보통 우리 주먹만한 크기지만, 힘은 아주아주 세단다! [03:24]</p></div>
+<div class="story-block"><div class="s-label">🩸 2. 피를 나르는 고속도로: 혈관 [01:36]</div><p>피는 우리 몸 구석구석에 <strong>'산소'</strong>라는 선물을 배달해.<br>• 동맥: 심장에서 출발해서 온몸으로 선물을 배달하러 가는 길! [01:46]<br>• 정맥: 배달을 마치고 다시 심장으로 돌아오는 길이야. [01:46]<br>우리 발가락 끝까지 산소 선물이 잘 도착하려면 이 혈관 고속도로가 꼭 필요해! [02:00]</p></div>
+<div class="story-block"><div class="s-label">🏠 3. 심장 아파트의 네 개의 방 [03:41]</div><p>심장 안에는 4개의 방이 있어. 피 친구들은 순서대로 이 방들을 통과한단다.<br>• <strong>우심방:</strong> 온몸을 돌고 온 피가 처음 들어오는 대기실이야. [04:01]<br>• <strong>우심실:</strong> 여기서 피는 <strong>'폐(허파)'</strong>로 슝~ 날아가서 새로운 산소 선물을 가득 받아와. [04:07]<br>• <strong>좌심방:</strong> 산소를 듬뿍 받은 깨끗한 피가 다시 심장으로 돌아와서 쉬는 방이야. [04:23]<br>• <strong>좌심실:</strong> 여기가 가장 힘이 센 방이야! 여기서 피를 "팍!" 밀어서 온몸으로 다시 보내준단다. [04:32]</p></div>
+<div class="story-block"><div class="s-label">🚪 4. 일방통행 문, '판막' [04:14]</div><p>심장의 방들 사이에는 <strong>'판막'</strong>이라는 특별한 문이 있어. 이 문은 피가 한쪽으로만 가도록 도와주고, 거꾸로 돌아오지 못하게 막아주는 아주 중요한 문이야! [04:14]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=_eVG45_iF9U" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How Your Heart Works - Nemours KidsHealth</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리가 숨을 쉬면 폐에서 산소를 받고, 심장이 그 산소를 피에 실어 머리부터 발가락 끝까지 보내준단다. 우리가 건강하게 자랄 수 있는 건 이 부지런한 심장 덕분이야! 심장이 더 튼튼해지도록 즐겁게 뛰어놀고 건강한 음식도 잘 먹자!" 🏃‍♂️🍎'}],
+    storyHtml:`<h4>📖 🫀 우리 몸속 슈퍼 펌프! 심장 이야기 (The Heart)</h4>
+<p class="s-intro">가슴에 손을 얹어보세요. 콩닥콩닥 소리가 들리나요? 우리 몸속에는 1초도 쉬지 않고 일하는 엔진이 있어요!</p>
+<div class="story-block"><div class="s-label">💪 피를 보내주는 펌프</div><p>심장은 주먹만한 크기지만 힘이 아주 세요. 우리 몸 구석구석 발가락 끝까지 영양분이 담긴 피를 쏴주는 역할을 한답니다.</p></div>
+<div class="story-block"><div class="s-label">🌬️ 산소 배달부</div><p>우리가 숨을 쉴 때 들어오는 산소를 피에 실어서 온몸에 전달해 줘요.</p></div>
+<div class="story-block"><div class="s-label">🏃 운동하면 더 빨리!</div><p>우리가 운동장을 뛰면 심장도 더 빨리 뛰면서 "힘내라! 힘내!" 하고 에너지를 보내준답니다.</p></div>
+<h4 style="margin-top:1.2rem;font-size:1rem;font-weight:900;color:#7dd3c8">📖 🧠 우리 몸의 똑똑한 지휘관, 뇌 이야기!</h4>
+<p class="s-intro">우리 몸 안에는 아주 특별한 '슈퍼컴퓨터'가 들어있어. 바로 머릿속에 있는 뇌란다. 뇌는 우리가 잠을 잘 때도, 수학 문제를 풀 때도 쉬지 않고 일하는 아주 부지런한 지휘관이야!</p>
+<div class="story-block"><div class="s-label">📡 명령을 내리는 대장님</div><p>우리가 '손을 흔들어야지!'라고 생각하면, 뇌는 아주 빠른 속도로 근육에게 신호를 보내. 그럼 우리 몸이 척척 움직이게 되지. 우리가 걷고, 뛰고, 춤추는 모든 건 다 뇌 대장님이 명령을 내린 덕분이야!</p></div>
+<div class="story-block"><div class="s-label">🗄️ 기억의 보관소</div><p>어제 먹은 맛있는 간식, 친구와 놀았던 즐거운 시간들을 뇌는 차곡차곡 저장해 둔단다. 뇌가 없으면 우리는 이름도, 집 주소도 다 잊어버릴지도 몰라. 뇌는 정말 대단한 기억 창고지?</p></div>
+<div class="story-block"><div class="s-label">😊 기분을 조절해요</div><p>우리가 기뻐서 웃거나 슬퍼서 눈물이 나는 것도 뇌가 하는 일이야. 뇌를 튼튼하게 하려면 맛있는 음식을 골고루 먹고 잠도 푹 자야 해!</p></div>`,
+    qs:[
+      {scene:'🧠',sceneText:'버스가 머릿속으로 쏙 들어왔어요! 수많은 신호들이 번개처럼 빠르게 오가고 있어요.',
+       q:'우리 몸의 모든 움직임을 조절하고 명령을 내리는 \'지휘관\'의 이름은?',
+       choices:['배꼽','뇌','위장','심장'],ans:1,
+       fact:'<strong>뇌</strong>는 우리 몸의 모든 행동과 생각을 조절하는 최고 지휘관이에요! 잠을 잘 때도, 수학 문제를 풀 때도 쉬지 않고 일하는 아주 부지런한 슈퍼컴퓨터랍니다.'},
+      {scene:'📡',sceneText:'우리가 손을 흔들어야지 하고 생각하자 뇌가 신호를 보내기 시작해요!',
+       q:'우리가 손을 흔들려고 생각할 때, 뇌가 하는 일은?',
+       choices:['아무것도 안 한다','근육에 빠른 신호를 보내 움직이게 한다','심장에 신호를 보낸다','눈을 깜빡이게 한다'],ans:1,
+       fact:'뇌는 우리가 생각하면 <strong>아주 빠른 속도로 근육에 신호</strong>를 보내요! 우리가 걷고, 뛰고, 춤추는 모든 것이 다 뇌 대장님의 명령 덕분이랍니다.'},
+      {scene:'🗄️',sceneText:'뇌의 기억 창고에 도착했어요! 오늘 배운 것들이 차곡차곡 저장되고 있어요.',
+       q:'우리가 공부한 내용이나 즐거운 추억을 저장하는 곳은?',
+       choices:['뇌','손톱','양말','위장'],ans:0,
+       fact:'뇌는 아주 커다란 <strong>기억 저장 공간</strong>을 가지고 있어요! 어제 먹은 음식, 친구 이름, 배운 수학 공식까지 모두 뇌에 차곡차곡 저장된답니다. 뇌가 없으면 이름도 주소도 다 잊어버릴 거예요.'},
+      {scene:'😊',sceneText:'수업 시간에 칭찬을 받으니 기분이 너무 좋아요! 이 기쁜 감정은 어디서 올까요?',
+       q:'우리가 기뻐서 웃거나 슬퍼서 눈물이 나는 것도 누가 하는 일일까요?',
+       choices:['눈','뇌','코','귀'],ans:1,
+       fact:'기쁨, 슬픔, 무서움 같은 <strong>감정도 뇌가 조절</strong>해요! 뇌는 우리 마음의 날씨를 담당하는 기상청이에요. 기분이 좋을 때 행복 호르몬을 내보내는 것도 뇌의 일이랍니다.'},
+      {scene:'🌟',sceneText:'뇌 탐험을 마쳤어요! 이제 뇌를 건강하게 키우는 방법을 배워봐요.',
+       q:'뇌를 건강하고 똑똑하게 만드는 방법으로 가장 좋은 것은?',
+       choices:['밤늦게까지 게임만 하기','골고루 잘 먹고 충분히 잠자기','매일 사탕만 많이 먹기','하루 종일 TV만 보기'],ans:1,
+       fact:'<strong>골고루 잘 먹고, 충분히 잠자고, 즐겁게 공부하기</strong>가 뇌를 반짝이게 해요! 수학 문제를 풀 때도 뇌가 열심히 운동하고 있어요. 지금 너희들의 뇌가 아주 바쁘게 일하고 있답니다!'},
+    ]
+  },
+  {
+    id:'ocean', icon:'🌊', name:'바다 세계', color:'#0ea5e9',
+    desc:'심해 · 해양생물 · 물의 순환',
+    tip:'<strong>질문 던지기:</strong> "오늘 마신 물이 어디서 왔을까?", "비가 오면 빗물은 어디로 갈까?" 물의 여행을 같이 상상해 보세요.<br><br><strong>연결하기:</strong> "지구 표면의 71%가 바다라고 하는데, 100%에서 71%를 빼면 땅은 몇 %일까? 같이 계산해봐요!"',
+    vids:[{id:'UwVNkfCov1k',desc:'깊고 깊은 바닷속 탐험!',
+      storyHtml:`<h4>📖 🌊 깊고 깊은 바닷속 탐험!</h4>
+<p class="s-intro">안녕, 꼬마 잠수사 친구! 바다는 우리가 생각하는 것보다 훨씬, 어어어엄청나게 깊단다. 얼마나 깊은지 선생님이랑 같이 한 단계씩 내려가 보자!</p>
+<div class="story-block"><div class="s-label">🐋 1. 커다란 고래 친구들을 만나는 곳 [00:20]</div><p>먼저 바다 입구야. 여기에는 세상에서 가장 큰 동물인 흰긴수염고래가 살고 있어. [00:27] 고래는 보통 아파트 30층 높이 정도인 깊이까지 내려가서 먹이를 찾는단다.</p></div>
+<div class="story-block"><div class="s-label">🚢 2. 햇빛이 사라지는 '미드나잇 존' [03:10]</div><p>더 깊이, 더 깊이 내려가면 이제 햇빛이 전혀 닿지 않는 아주 깜깜한 곳이 나와. 여기를 <strong>'미드나잇 존(한밤중 구역)'</strong>이라고 불러. [01:17]<br>• 여기 사는 새우들은 눈이 없기도 하고, [01:25]<br>• 귀여운 코끼리를 닮은 <strong>'덤보 문어'</strong>도 살고 있어! [02:07]</p></div>
+<div class="story-block"><div class="s-label">🧊 3. 타이타닉호가 잠들어 있는 곳 [01:51]</div><p>세상에서 가장 유명한 배였던 타이타닉호는 아주 깊은 바닥에 가라앉아 있어. 그 깊이는 무려 3,800미터나 된단다! [01:51] 여기는 수박을 올려두면 순식간에 찌그러질 정도로 엄청난 힘(압력)이 누르고 있어.</p></div>
+<div class="story-block"><div class="s-label">🏔️ 4. 에베레스트산보다 깊은 곳! [02:20]</div><p>세상에서 가장 높은 산인 에베레스트산을 바다에 거꾸로 집어넣어도, 바다 밑바닥까지 닿지 않는대! [02:23] 바다는 정말 대단하지?</p></div>
+<div class="story-block"><div class="s-label">🕳️ 5. 지구의 끝, '챌린저 딥' [02:51]</div><p>바다에서 가장 깊은 곳의 이름은 <strong>'챌린저 딥'</strong>이야. [02:51] 여기는 너무 깊어서 지금까지 아주 소수의 사람만 가봤어. 2012년에는 '아바타'라는 영화를 만든 제임스 카메론 아저씨도 잠수정을 타고 이곳을 탐험했단다! [02:34]</p></div>
+<p style="margin-top:1rem;text-align:center">더 신기한 바다 깊이 이야기가 궁금하면 아래 영상을 같이 보자!<br>📺 <a href="https://www.youtube.com/watch?v=UwVNkfCov1k" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: This Incredible Animation Shows How Deep The Ocean Really Is</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"바다는 지구의 99%나 되는 생물들이 살 수 있는 거대한 집이야. 하지만 우리는 아직 바다의 아주 조금밖에 몰라. 우리 친구가 나중에 멋진 탐험가가 되어서, 저 깊은 바닷속에 어떤 신기한 물고기가 사는지 꼭 알려줘!" 🔱🐚'},
+    {id:'fi-jB6MX6WU',desc:'바다 아파트 탐험! 바다의 각 층을 알아봐요',
+      storyHtml:`<h4>📖 🏢 바다 아파트 탐험! 각 층에 누가 살까?</h4>
+<p class="s-intro">안녕, 꼬마 잠수사 친구! 바다는 아주 아주 아주 깊어서 마치 여러 층으로 나뉜 거대한 아파트 같단다. 박사님과 함께 바다 아파트의 각 층에 누가 사는지 구경하러 가볼까?</p>
+<div class="story-block"><div class="s-label">☀️ 1층: 햇님이 반짝이는 '햇빛 구역' (Sunlight Zone) [02:05]</div><p>바다의 가장 윗동네야! 여기는 햇빛이 아주 잘 들어서 밝고 따뜻해. [02:16]<br>누가 살까? 우리가 잘 아는 물고기들과 아주 커다란 흰긴수염고래가 여기서 놀고 있어. [02:27]</p></div>
+<div class="story-block"><div class="s-label">🌅 2층: 어둑어둑한 '트와일라잇 구역' (Twilight Zone) [02:38]</div><p>조금 더 내려가면 햇빛이 희미해져서 저녁 노을처럼 어둑어둑해져.<br>누가 살까? 다리가 아주 긴 대왕오징어와 무시무시한 이빨을 가진 팽투스 피쉬가 살고 있단다. [03:10] 여기는 수박을 누르는 힘보다 26배나 강한 힘이 우리를 눌러서, 사람이 그냥 들어가면 아주 위험해! [03:00]</p></div>
+<div class="story-block"><div class="s-label">🌑 3층: 한밤중 같은 '미드나잇 구역' (Midnight Zone) [03:24]</div><p>여기는 햇빛이 아예 한 줄기도 들어오지 않는 캄캄한 밤이야! [03:36]<br>비밀 무기: 너무 어두우니까 여기 사는 해파리들은 몸에서 스스로 빛을 내는 '반짝이 마법(생물 발광)'을 부려! [03:58]</p></div>
+<div class="story-block"><div class="s-label">🕳️ 4층: 끝이 없는 '어비설 구역' (Abyssal Zone) [04:10]</div><p>'어비시'는 '바닥이 없다'는 뜻의 옛날 말에서 왔어. 옛날 사람들은 여기가 너무 깊어서 바닥이 없는 줄 알았대! [04:20] 바다 밑바닥의 대부분이 바로 이 구역이란다.</p></div>
+<div class="story-block"><div class="s-label">🌋 지하층: 깊은 골짜기 '트렌치 구역' (Trench Zone) [04:38]</div><p>바다의 가장 깊은 골짜기, 마리아나 해구야! [04:50]<br>얼마나 깊을까? 세상에서 가장 높은 에베레스트산을 여기 집어넣어도 꼭대기가 바닷속에 쏙 잠길 만큼 깊어! [05:44]<br>누가 살까? 이렇게 깊고 차가운 곳에서도 아주 작은 미생물 친구들이 씩씩하게 살고 있단다. [05:13]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=fi-jB6MX6WU" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How Deep Is The Ocean?</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리가 사는 땅은 지구의 아주 작은 부분일 뿐이야. 바다는 지구의 99%나 되는 생명체들이 살 수 있는 엄청나게 넓은 곳이란다! 아직 우리가 모르는 비밀이 바닷속에 아주 많이 숨겨져 있어. 우리 친구가 나중에 그 비밀을 찾아내 주면 정말 멋지겠다!" 🦈🌟'}],
+    qs:[
+      {scene:'🐳',sceneText:'잠수함이 바다 깊이 내려갑니다. 빛이 점점 사라지고 이상한 생물들이 나타나요!',
+       q:'지구에서 가장 깊은 바다 지점은?',
+       choices:['마리아나 해구 (약 11km)','대서양 중앙 (약 5km)','인도양 (약 7km)','북극해 (약 5.4km)'],ans:0,
+       fact:'<strong>마리아나 해구</strong>의 챌린저 딥은 약 11,034m! 에베레스트산을 거꾸로 넣어도 1.6km 더 깊어요. 수압이 1,000기압이 넘는 극한 환경에서도 생물이 살고 있어요.'},
+      {scene:'🐙',sceneText:'문어가 인사를 해요! 문어가 색깔을 바꾸더니 투명해집니다.',
+       q:'문어의 특별한 능력이 아닌 것은?',
+       choices:['색깔 변환','먹물 분사','피부로 호흡','날아다니기'],ans:3,
+       fact:'문어는 색맹인데도 피부 색깔을 자유롭게 바꾸고, 먹물로 천적을 혼란시키고, 피부로도 호흡합니다! 심장이 3개이고, 피는 파랑색이에요. <strong>날아다니는 것</strong>은 문어 능력이 아니랍니다.'},
+      {scene:'💧',sceneText:'물이 어떻게 여행하는지 보여드릴게요! 바다에서 하늘로 올라가는 물방울을 따라가 봐요.',
+       q:'물의 순환 과정을 순서대로 나열하면?',
+       choices:['증발→응결→강수→유출','강수→증발→응결→유출','응결→증발→강수→유출','유출→강수→증발→응결'],ans:0,
+       fact:'물은 <strong>증발(바다/강→수증기)→응결(수증기→구름)→강수(비·눈)→유출(강→바다)</strong> 순환을 반복해요! 지구의 물은 새로 만들어지거나 없어지지 않고 이 사이클을 수십억 년째 계속하고 있어요.'},
+      {scene:'🐠',sceneText:'산호초 마을에 도착했어요! 형형색색의 물고기들이 인사를 해요.',
+       q:'산호는 무엇인가요?',
+       choices:['돌의 일종','식물','동물','균류'],ans:2,
+       fact:'산호는 놀랍게도 <strong>동물</strong>이에요! 아주 작은 폴립이라는 동물들이 모여 형성합니다. 지구 바다의 25%의 해양생물이 산호초에 의존하며 살아가요. 바다의 열대우림이라 불립니다.'},
+      {scene:'🌡️',sceneText:'해수면 온도계가 올라가고 있어요. 선생님의 표정이 걱정스러워집니다.',
+       q:'바다가 지구 온난화에서 하는 역할은?',
+       choices:['온난화를 악화시킨다','CO₂와 열의 90%를 흡수한다','아무 역할이 없다','오존층을 파괴한다'],ans:1,
+       fact:'바다는 인간이 배출한 CO₂의 약 30%, 온난화 열의 무려 <strong>90% 이상</strong>을 흡수해 왔어요! 바다가 없었다면 지구는 이미 훨씬 더 뜨거웠을 거예요. 그래서 바다 보호가 중요합니다.'},
+    ]
+  },
+  {
+    id:'electricity', icon:'⚡', name:'전기 마법', color:'#eab308',
+    desc:'전류 · 회로 · 번개',
+    tip:'<strong>질문 던지기:</strong> "집에서 전기가 없으면 못 하는 것 3가지만 말해봐!", "왜 젖은 손으로 콘센트를 만지면 안 될까?" 안전 교육과 연결해 주세요.<br><br><strong>연결하기:</strong> "전기 회로에서 전선이 이어지지 않으면 전기가 못 흘러 — 수학 문제도 하나라도 틀리면 답이 안 되는 것처럼!"',
+    vids:[{id:'mc979OhitAg',desc:'전기가 만들어지는 과정',
+      storyHtml:`<h4>📖 ⚡🕵️ 전기는 어떻게 흐를까? 보물찾기 탐험!</h4>
+<p class="s-intro">안녕, 꼬마 공학자 친구! 우리 주변에는 전기가 흐르고 있지만, 눈으로는 볼 수 없지? 전기가 어떻게 만들어지고 움직이는지 선생님이 아주 쉽게 설명해 줄게.</p>
+<div class="story-block"><div class="s-label">⚛️ 1. 세상 모든 것은 '원자'로 되어 있어! [00:20]</div><p>우리의 몸, 장난감, 책상... 이 모든 것들은 아주아주 작은 알갱이인 <strong>'원자'</strong>로 만들어졌단다. [00:27]<br>• 원자 안에는 <strong>양성자(+)</strong>와 중성자가 가운데에 찰떡처럼 붙어 있고, [00:43]<br>• 그 주변을 <strong>전자(-)</strong>라는 작은 친구들이 빛처럼 빠른 속도로 뱅글뱅글 돌고 있어. [01:09]</p></div>
+<div class="story-block"><div class="s-label">🏃‍♂️ 2. 전자가 이동하면 전기가 돼요! [01:40]</div><p>• <strong>도체(금속):</strong> 구리 같은 금속은 전자들이 아주 잘 옮겨 다닐 수 있는 길이야. [01:48]<br>• <strong>부도체(고무, 유리):</strong> 고무나 유리는 전자들이 움직이지 못하게 꽉 붙잡는 방패 같은 친구들이지. [01:54]</p></div>
+<div class="story-block"><div class="s-label">🔋 3. 건전지는 '밀어주는 힘'이에요! [02:32]</div><p>전선만 있다고 전기가 흐르지는 않아. 건전지(배터리)를 연결하면 <strong>'전압'</strong>이라는 힘이 생겨서, 전자들을 한쪽 방향으로 "어서 가!" 하고 밀어준단다. [03:11]<br>회로: 전자들이 건전지의 한쪽 끝에서 출발해서 전구를 지나 다시 반대쪽 끝으로 돌아오는 길을 '회로'라고 해. [02:43]</p></div>
+<div class="story-block"><div class="s-label">💡 4. 전기를 쓰는 방법들 [04:39]</div><p>전자들이 전선을 타고 가다가 전구를 지나가면 빛이 나고, 저항기라는 곳을 지나가면 열이 나기도 해. [05:13]<br>자기장: 전기가 흐르는 전선을 칭칭 감으면 힘센 자석(전자석)이 되기도 한단다! [05:40]</p></div>
+<div class="story-block"><div class="s-label">🌊 5. 두 가지 전기: 직류(DC)와 교류(AC) [08:19]</div><p>• <strong>직류(DC):</strong> 건전지처럼 전자가 한 방향으로만 쭉 가는 거야. [09:03]<br>• <strong>교류(AC):</strong> 우리 집 벽에 있는 콘센트 전기처럼 전자가 앞뒤로 왔다 갔다 하며 흐르는 거야. 마치 바다의 파도 같지! [08:40]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=mc979OhitAg" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How ELECTRICITY works - The Engineering Mindset</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리 친구가 텔레비전을 볼 때, 전선 안에서는 아주 작은 전자 친구들이 빛보다 빠르게 달리기 경주를 하고 있는 거야! 전자들이 힘차게 달려준 덕분에 우리는 재미있는 만화도 볼 수 있고 예쁜 불빛도 켤 수 있는 거란다. 전기는 정말 부지런한 친구지?" ⚡🏃‍♂️'},{id:'Dx3RpXdJw2k',desc:'찌릿찌릿! 전기는 어디서 올까요?',
+      storyHtml:`<h4>📖 ⚡ 찌릿찌릿! 전기는 어디서 올까요?</h4>
+<p class="s-intro">안녕, 꼬마 전기 탐험가! 혹시 번개가 번쩍하는 걸 본 적 있니? 번개는 자연이 만드는 아주 힘센 전기란다. 무려 태양 표면보다 더 뜨겁대! [00:27] 하지만 우리 집에서 쓰는 전기는 다른 곳에서 만들어져서 우리에게 온단다.</p>
+<div class="story-block"><div class="s-label">🔋 1. 건전지 속의 작은 전기 [01:37]</div><p>우리가 쓰는 장난감 조종기나 손전등에는 <strong>건전지(배터리)</strong>가 들어가지? [02:03]<br>건전지에는 플러스(+)와 마이너스(-) 두 개의 얼굴이 있어. 전기는 이 두 친구 사이를 뱅글뱅글 한 방향으로 돌면서 힘을 낸단다. 이걸 '직류'라고 불러. [01:48]</p></div>
+<div class="story-block"><div class="s-label">☀️ 2. 햇님과 바람이 만드는 전기 [02:58]</div><p>• <strong>태양광:</strong> 지붕 위에 있는 검은 판(태양전지)은 햇빛을 받아서 전기를 만들어내. [03:23]<br>• <strong>발전소:</strong> 아주 커다란 공장(발전소)에서는 석탄이나 가스, 또는 흐르는 물과 바람을 이용해서 엄청나게 많은 전기를 만들어낸단다. [05:56]</p></div>
+<div class="story-block"><div class="s-label">🔌 3. 우리 집까지 오는 전기의 긴 여행 [04:19]</div><p>발전소에서 만든 전기는 긴 전선을 타고 우리 동네까지 여행을 와. 전봇대에 달린 통(변압기)은 전기가 우리 집 가전제품에 딱 알맞은 힘으로 들어오도록 조절해 주는 아주 중요한 일을 해. [05:05]</p></div>
+<div class="story-block"><div class="s-label">🎈 4. 찌릿찌릿! 정전기 놀이 [07:37]</div><p>양말을 신고 카펫 위를 걷다가 문고리를 잡으면 "찌릿!" 할 때가 있지? 이건 <strong>'정전기'</strong>라고 해. [07:46] 풍선을 머리카락에 문지르면 머리카락이 풍선에 착 달라붙는 것도 바로 이 정전기 마법 때문이란다! [08:17]</p></div>
+<div class="story-block"><div class="s-label">🛡️ 5. 전기가 잘 통하는 것과 안 통하는 것 [08:38]</div><p>• <strong>도체(친구):</strong> 철, 구리, 은 같은 금속은 전기가 아주 잘 지나가. 물이나 우리 몸도 전기가 잘 통해서 번개가 칠 때는 꼭 실내에 있어야 해! [08:50]<br>• <strong>절연체(방패):</strong> 플라스틱, 고무, 유리는 전기가 지나가지 못하게 막아줘. 그래서 전선 겉은 항상 고무나 플라스틱으로 감싸져 있단다. [09:12]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=Dx3RpXdJw2k" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: Electricity for Kids - Learn Bright</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"전기는 우리 생활을 아주 편리하게 해주지만, 함부로 만지면 위험할 수 있어. 젖은 손으로 콘센트를 만지지 않고, 전선은 조심해서 다루는 멋진 어린이가 되자!" ⚡🙅‍♂️'},{id:'SK4uLmodN6A',desc:'전기로 만드는 마법 자석, 전자석!',
+      storyHtml:`<h4>📖 ⚡🧲 전기로 만드는 마법 자석, 전자석 이야기!</h4>
+<p class="s-intro">안녕, 꼬마 발명가 친구! 우리가 평소에 쓰는 자석은 언제나 철을 끌어당기지? 그런데 마음대로 껐다 켰다 할 수 있는 '스위치 자석'이 있다면 어떨까? [00:51]</p>
+<div class="story-block"><div class="s-label">🧵 1. 전자석은 어떻게 만들까요? [00:16]</div><p>만드는 방법은 아주 간단해!<br>• 철 막대에 구리선을 칭칭 감고, [00:28]<br>• 양쪽 끝을 배터리에 연결하면 끝! [00:33]<br>이렇게 하면 구리선을 타고 전기가 흐르면서, 철 막대가 갑자기 힘센 자석으로 변신한단다. [00:41]</p></div>
+<div class="story-block"><div class="s-label">🧲 2. 전자석의 신기한 점! [00:51]</div><p>• <strong>내 마음대로 껐다 켰다:</strong> 전기를 끊으면 자석의 힘이 바로 사라져. [01:00] 이게 일반 자석과 가장 큰 차이점이야!<br>• <strong>어디에 쓰일까?</strong> 우리가 학교에서 듣는 전기종(벨) 소리도 이 전자석을 이용해서 만든단다. [01:17]</p></div>
+<div class="story-block"><div class="s-label">💡 영상 속 또 다른 재미있는 이야기들</div><p>• <strong>자석이 세상에서 사라진다면? [02:31]</strong> 냉장고 스티커도 다 떨어지고, 병원의 MRI 기계도 쓸 수 없게 된대. [03:06]<br>• <strong>북극과 남극은 왜 추울까? [03:39]</strong> 햇님이 비스듬하게 비춰서 에너지가 약하고, 하얀 눈이 햇빛을 튕겨내 버려서래! [04:35]<br>• <strong>건전지는 어떻게 힘을 낼까? [04:45]</strong> 안에 있는 작은 알갱이들이 한쪽으로 슝~ 이동하면서 전기를 만들어준단다. [05:04]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=SK4uLmodN6A" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How do Electromagnets Work? - It's AumSum Time</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리 친구가 좋아하는 장난감 속에도 전기로 만든 마법 자석이 숨어 있을지도 몰라! 전기가 흐르면 힘센 자석이 되고, 전기를 끄면 다시 평범한 쇠막대가 되는 게 정말 신기하지 않니?" ⚡🤖'},
+    {id:'-aNpmCSZHbk',desc:'자석과 자기장의 비밀!',
+      storyHtml:`<h4>📖 🧲 자석과 자기장의 비밀 이야기!</h4>
+<p class="s-intro">안녕, 꼬마 과학자 친구! 혹시 자석이 쇠붙이를 가까이 가져가기만 해도 "툭!" 하고 잡아당기는 걸 본 적 있니? 그건 마법이 아니라 바로 <strong>'자기장'</strong>이라는 힘 때문이야. [00:32]</p>
+<div class="story-block"><div class="s-label">🧲 1. 자석은 어떤 친구일까? [00:40]</div><p>자석은 철이나 특별한 금속들을 자기 쪽으로 끌어당기는 힘을 가진 돌이나 금속 조각을 말해. 이 힘을 <strong>'자기성'</strong>이라고 부른단다. [00:40]</p></div>
+<div class="story-block"><div class="s-label">🏢 2. 자석의 세 가지 유형 [00:50]</div><p>자석에는 크게 세 종류가 있어!<br>• <strong>임시 자석:</strong> 잠시 동안만 자석이 되었다가 힘이 금방 사라지는 친구야. [00:50]<br>• <strong>영구 자석:</strong> 한 번 자석이 되면 아주 오랫동안 그 힘을 유지하는 튼튼한 친구지. [01:01]<br>• <strong>전자석:</strong> 아주아주 센 힘이 필요할 때 전기를 써서 만드는 특별한 자석이야. [01:12]</p></div>
+<div class="story-block"><div class="s-label">↔️ 3. 서로 밀어내고 당기는 '극'의 비밀 [01:30]</div><p>모든 자석에는 <strong>N극(북극)</strong>과 <strong>S극(남극)</strong>, 두 개의 얼굴이 있어. [01:30]<br>• <strong>"저리 가!" (척력):</strong> 똑같은 극끼리 만나면 서로 밀어내. [01:47]<br>• <strong>"이리 와!" (인력):</strong> 서로 다른 극끼리 만나면 "착!" 하고 달라붙는단다. [02:03]</p></div>
+<div class="story-block"><div class="s-label">🚫 4. 자석이 싫어하는 물건들도 있어! [02:25]</div><p>• <strong>안 붙어요:</strong> 플라스틱, 고무, 물, 유리는 자석이 잡아당길 수 없어. [02:25]<br>• <strong>잘 붙어요:</strong> 철(못, 나사), 코발트, 니켈 같은 금속들은 자석을 아주 좋아해! [02:36]</p></div>
+<div class="story-block"><div class="s-label">🌍 5. 지구는 커다란 자석! [03:02]</div><p>사실 우리가 사는 이 커다란 지구도 하나의 거대한 자석이라는 사실, 알고 있었니? [03:02] 지구 안쪽에 철과 니켈이 가득 차 있어서 지구 전체에 커다란 자기장이 흐르고 있단다. [03:08]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=-aNpmCSZHbk" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: Magnets and Magnetism - Learning Junction</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"냉장고 문이 꽉 닫히는 것도, 컴퓨터 속에 정보를 저장하는 것도, 우리가 좋아하는 음악을 들려주는 스피커 속에도 자석 친구가 숨어서 열심히 일하고 있어! 오늘 우리 집 어디에 자석이 숨어 있는지 탐험가가 되어서 한번 찾아볼까?" 🕵️‍♂️🏠'}],
+    storyHtml:`<h4>📖 ⚡ 찌릿찌릿! 전기는 어디서 올까? (Electricity)</h4>
+<p class="s-intro">우리가 게임기를 하고, 밤에 전등을 켤 수 있게 해주는 '전기'! 이 힘은 대체 어디서 오는 걸까요?</p>
+<div class="story-block"><div class="s-label">⚡ 전기는 '흐름'이에요</div><p>아주 작은 알갱이(전자)들이 긴 고속도로(전선)를 따라 엄청나게 빨리 달리는 게 바로 전기야.</p></div>
+<div class="story-block"><div class="s-label">🏭 전기 공장(발전소)</div><p>거대한 바람개비를 돌리거나(풍력), 뜨거운 열을 이용해 전기를 만들어내지. 이렇게 만들어진 전기는 구불구불한 전선을 타고 우리 집 콘센트까지 여행을 온단다.</p></div>
+<div class="story-block"><div class="s-label">⚠️ 주의!</div><p>전기는 힘이 아주 세서 조심해야 해. 젖은 손으로 만지면 전기가 우리 몸으로 소풍을 오려고 해서 위험할 수 있으니 꼭 조심하자!</p></div>
+`,
+    qs:[
+      {scene:'🔋',sceneText:'버스가 전선 안으로 들어갔어요! 아주 작은 알갱이들이 엄청난 속도로 달려가고 있어요.',
+       q:'전기란 무엇이 이동하는 것인가요?',
+       choices:['물','빛','아주 작은 알갱이(전자)','바람'],ans:2,
+       fact:'전기는 아주 작은 알갱이인 <strong>전자</strong>들이 전선이라는 고속도로를 따라 엄청나게 빨리 달리는 거예요! 그 흐름이 바로 우리가 쓰는 전기랍니다.'},
+      {scene:'💡',sceneText:'전구가 켜졌어요! 필라멘트가 빨갛게 달궈지면서 빛이 납니다.',
+       q:'LED가 기존 전구보다 좋은 이유는?',
+       choices:['더 강한 빛','전기를 빛으로만 전환(열 낭비 적음)','더 저렴하다','더 크다'],ans:1,
+       fact:'일반 전구는 전기 에너지의 겨우 5~10%만 빛으로 바꾸고 나머지는 열로 낭비해요. 반면 <strong>LED</strong>는 80~90%를 빛으로 변환합니다! 그래서 전기도 덜 쓰고 오래 사용할 수 있어요.'},
+      {scene:'⛈️',sceneText:'번개가 치는 구름 속으로 들어갔어요! 얼음 알갱이들이 부딪히며 정전기가 쌓여요.',
+       q:'번개가 치는 과학적 원리는?',
+       choices:['구름이 마찰로 정전기가 생겨 방전','신이 화가 났을 때','구름 속 수소가 폭발','대기 중 산소 연소'],ans:0,
+       fact:'구름 속 얼음 알갱이들이 충돌하면서 <strong>정전기</strong>가 쌓입니다. 전압이 수억 볼트에 달하면 한순간에 방전(번개)이 일어나요! 번개의 온도는 태양 표면(6,000°C)의 4배인 약 30,000°C예요.'},
+      {scene:'⚠️',sceneText:'선생님이 갑자기 버스를 멈춰요! "저기 위험한 상황이 있어요!" 하고 가리킵니다.',
+       q:'전기가 위험한 상황은 언제인가요?',
+       choices:['건조한 손으로 콘센트를 만질 때','젖은 손으로 전기 제품을 만질 때','불을 끌 때','낮에 전기를 쓸 때'],ans:1,
+       fact:'물은 전기가 잘 통해요! <strong>젖은 손으로 전기 제품을 만지면</strong> 전기가 물을 타고 우리 몸으로 흘러 매우 위험합니다. 전기를 다룰 때는 꼭 마른 손으로 해야 해요.'},
+      {scene:'☀️',sceneText:'태양광 발전소에 도착했어요! 태양 빛이 전기로 바뀌고 있어요.',
+       q:'태양광 패널이 전기를 만드는 원리는?',
+       choices:['태양열로 물을 끓여 터빈 돌리기','빛이 반도체를 때리면 전자 이동(광전효과)','거울로 빛을 모아 폭발','자석으로 발전'],ans:1,
+       fact:'태양광 패널은 <strong>광전효과</strong>를 이용해요. 빛(광자)이 실리콘 반도체를 때리면 전자가 튀어나와 전류가 흐릅니다. 아인슈타인이 이 광전효과를 설명해 노벨 물리학상을 받았어요!'},
+    ]
+  },
+  {
+    id:'dino', icon:'🦕', name:'공룡 시대', color:'#22c55e',
+    desc:'쥐라기 · 백악기 · 멸종',
+    tip:'<strong>질문 던지기:</strong> "어떤 공룡이 제일 좋아?", "만약 공룡이 지금도 살아있었다면 어떨 것 같아?" 상상력을 자극해 주세요.<br><br><strong>연결하기:</strong> "6600만 년이라는 숫자, 천만 단위로 읽으면 어떻게 될까? 같이 큰 수 읽기를 연습해봐요!"',
+    vids:[{id:'dFCbJmgeHmA',desc:'공룡들이 사라진 그날',
+      storyHtml:`<h4>📖 🦖 공룡들이 사라진 그날 이야기!</h4>
+<p class="s-intro">안녕, 꼬마 탐험가! 아주 아주 먼 옛날, 지금으로부터 6,600만 년 전 지구는 공룡들의 천국이었어. 무시무시한 티라노사우루스부터 목이 긴 거인 공룡까지 모두 행복하게 살고 있었지. 그런데 어느 날, 아주 신기한 일이 벌어졌어.</p>
+<div class="story-block"><div class="s-label">🌓 1. 하늘에 나타난 '새로운 달'? [01:23]</div><p>공룡들이 밤하늘을 보는데, 아주 작고 반짝이는 점 하나가 나타났어. 이 점은 매일매일 조금씩 커지더니, 어느 날 밤에는 하늘에 달이 두 개나 뜬 것처럼 아주 커졌단다! [01:38] 하지만 이건 달이 아니라, 우주에서 엄청나게 빠르게 달려오는 <strong>'커다란 바위(소행성)'</strong>였어.</p></div>
+<div class="story-block"><div class="s-label">💥 2. 쾅! 지구가 깜짝 놀랐어! [02:44]</div><p>에베레스트산보다 더 큰 이 바위가 멕시코라는 곳의 바다에 "쾅!" 하고 떨어졌어. [02:25] 이때 얼마나 힘이 셌는지, 바다가 옆으로 밀려나고 땅이 녹아서 용암처럼 흘러내렸어. 전 세계가 아주 커다란 지진으로 흔들렸지! [04:00]</p></div>
+<div class="story-block"><div class="s-label">🌊 3. 거대한 파도와 뜨거운 비 [04:59]</div><p>바위가 떨어진 충격으로 아파트보다 훨씬 높은 엄청난 파도가 생겨서 해변을 덮쳤어. [05:06] 그리고 하늘로 솟구쳤던 돌가루들이 다시 땅으로 떨어지면서 공기를 아주 뜨겁게 만들었지. 마치 뜨거운 오븐 속에 들어온 것처럼 말이야! [06:05]</p></div>
+<div class="story-block"><div class="s-label">🌑 4. 해님이 사라진 긴 겨울 [06:51]</div><p>가장 무서운 건 그다음이었어. 먼지와 연기가 하늘을 꽉 채워서 해님을 가려버렸거든. 지구는 아주 깜깜해졌고, 해님이 없으니까 날씨가 너무너무 추워졌어. [07:18] 식물들이 시들고, 식물을 먹던 공룡들도, 또 그 공룡을 먹던 공룡들도 먹을 게 없어서 하나둘 사라지게 되었단다.</p></div>
+<div class="story-block"><div class="s-label">✨ 5. 하지만 희망이 남았어! [08:29]</div><p>공룡들은 대부분 사라졌지만, 작고 똑똑한 동물들은 땅속 구멍에 숨어서 살아남았어.<br>• 하늘을 날던 공룡 중 일부는 살아남아서 지금의 <strong>'새'</strong>가 되었고, [08:33]<br>• 작았던 포유류 동물들이 자라나서 나중에 우리 <strong>'사람'</strong>들의 조상이 되었어! [08:37]</p></div>
+<p style="margin-top:1rem;text-align:center">더 생생한 이야기가 궁금하면 엄마, 아빠랑 같이 영상을 봐보자!<br>📺 <a href="https://www.youtube.com/watch?v=dFCbJmgeHmA" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: 공룡들이 사라진 그날</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"공룡들이 사라진 건 정말 슬픈 일이지만, 그 덕분에 우리 같은 사람들과 귀여운 강아지, 고양이들이 지구에서 살 수 있는 자리가 생겼단다. 우리는 공룡들보다 훨씬 더 똑똑하니까, 우리 지구를 아끼고 소중히 지켜줘야겠지?" 🌍❤️'},
+    {id:'czFbQ-sCgeE',desc:'공룡은 왜 사라졌을까? - 여러 가지 추측들',
+      storyHtml:`<h4>📖 🦕 공룡은 왜 사라졌을까? — 여러 가지 추측들</h4>
+<p class="s-intro">6600만 년 전, 지구를 지배하던 공룡들이 갑자기 모두 사라졌어. 과학자들도 아직 완전히 확신하지 못할 만큼 신비로운 이 수수께끼, 함께 추리해볼까? 🔍</p>
+<div class="story-block"><div class="s-label">☄️ 가장 유력한 설: 소행성 충돌!</div><p>지금으로부터 6600만 년 전, 서울보다 넓은 거대한 소행성이 지구에 쾅! 하고 떨어졌어. 엄청난 열기와 먼지가 온 지구를 뒤덮었고, 하늘이 먼지로 가려져서 태양빛이 들어오지 못하게 됐단다. 식물이 죽고, 공룡의 먹이가 사라진 거야!</p></div>
+<div class="story-block"><div class="s-label">🌋 또 다른 설: 화산 폭발!</div><p>같은 시기, 인도 땅에서는 엄청나게 많은 화산들이 동시에 폭발했어. 화산에서 나온 독한 가스와 재가 하늘을 뒤덮어 지구가 점점 차가워졌단다. 공룡들은 급격한 환경 변화를 버티지 못했을지도 몰라.</p></div>
+<div class="story-block"><div class="s-label">🌡️ 기후 변화설</div><p>어떤 과학자들은 그 전부터 지구가 점점 추워지고 있었다고 해. 따뜻한 환경에 익숙했던 공룡들이 추위에 적응하지 못했을 수도 있대.</p></div>
+<div class="story-block"><div class="s-label">🐦 그런데 공룡이 완전히 사라진 건 아니야!</div><p>깜짝 놀랄 비밀이 있어! 오늘날 우리 주변의 새들이 사실 공룡의 후손이야! 작고 날개 달린 공룡들은 살아남아서 진화했고, 지금의 새가 된 거란다. 그러니까 공룡은 아직 우리 곁에 있는 셈이야!</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"탐정 놀이: 아이에게 '너라면 공룡이 왜 사라졌다고 생각해?'라고 물어보고, 아이만의 이론을 만들어보게 해주세요. 정답이 없어도 괜찮아요! 과학자처럼 추리하는 과정이 중요하답니다."</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"만약 소행성이 안 떨어졌다면 공룡들이 아직도 지구에 살고 있을까? 그럼 우리는 어디서 살고 있을까?"<br>"새가 공룡의 후손이래! 우리 집 근처에서 볼 수 있는 새 중에 어떤 공룡을 닮았을 것 같아?"<br>"만약 네가 공룡 시대로 돌아갈 수 있다면, 공룡에게 소행성이 온다고 미리 알려줄 수 있을까?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=czFbQ-sCgeE" target="_blank">공룡은 왜 사라졌을까? - 여러 가지 추측들</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"과학자들도 아직 모든 걸 알지 못해. 모르는 게 있다는 게 바로 과학을 계속 연구하는 이유야! 우리 친구도 언젠가 공룡의 비밀을 푸는 과학자가 될 수 있을지도 몰라!"'}],
+    storyHtml:`<h4>📖 🦖 공룡은 왜 사라졌을까요? (Dinosaur Extinction)</h4>
+<p class="s-intro">옛날 옛적 지구의 왕이었던 공룡들! 그런데 그 많던 공룡들이 왜 지금은 없을까요?</p>
+<div class="story-block"><div class="s-label">☄️ 하늘에서 떨어진 돌</div><p>아주 오래전, 커다란 돌덩이(운석)가 하늘에서 땅으로 '쾅!' 하고 떨어졌대요.</p></div>
+<div class="story-block"><div class="s-label">🌑 추워진 지구</div><p>먼지가 하늘을 가득 덮어 태양 빛을 막아버렸고, 지구가 아주아주 추워졌어요.</p></div>
+<div class="story-block"><div class="s-label">🦴 안녕, 공룡들</div><p>날씨가 변하자 공룡들이 먹을 풀과 열매가 사라졌고, 결국 공룡들은 모두 지구를 떠나게 되었답니다. 하지만 그들의 흔적은 '화석'이 되어 우리에게 이야기를 들려주고 있어요!</p></div>`,
+    qs:[
+      {scene:'🌿',sceneText:'버스가 시간을 거슬러 1억 년 전으로! 거대한 숲에서 공룡 발소리가 들려요.',
+       q:'지구에서 공룡이 살던 시대는?',
+       choices:['고생대(5~2.5억 년 전)','중생대(2.5~0.66억 년 전)','신생대(0.66억 년~현재)','선캄브리아대(40~5억 년 전)'],ans:1,
+       fact:'공룡은 <strong>중생대</strong>(트라이아이스기~백악기, 약 2억 3천만~6,600만 년 전)에 살았어요! 인류의 역사 300만 년에 비해 공룡은 1억 6,000만 년 이상 지구를 지배했습니다.'},
+      {scene:'☄️',sceneText:'6,600만 년 전! 갑자기 하늘에서 커다란 불덩이가 날아옵니다. 선생님이 빨리 피하라고 소리쳐요!',
+       q:'공룡이 사라진 가장 큰 원인은?',
+       choices:['포유류가 다 잡아먹음','거대한 운석(소행성)이 지구에 떨어짐','홍수가 났다','공룡들끼리 싸워서'],ans:1,
+       fact:'약 6,600만 년 전 지름 약 10km의 <strong>거대한 운석(소행성)</strong>이 지구에 충돌했어요! 엄청난 폭발과 함께 하늘을 뒤덮는 먼지로 지구 환경이 완전히 바뀌었습니다.'},
+      {scene:'🌑',sceneText:'운석 충돌 후 하늘이 먼지로 가득 찼어요. 태양빛이 가려지기 시작하네요.',
+       q:'운석 충돌 후 지구는 어떻게 변했나요?',
+       choices:['더 따뜻해졌다','먼지가 태양을 가려 지구가 아주 추워졌다','아무것도 달라지지 않았다','비가 더 많이 왔다'],ans:1,
+       fact:'운석 충돌로 엄청난 <strong>먼지와 재</strong>가 하늘을 덮어 태양빛을 막았어요! 지구가 추워지고 식물이 죽으면서 공룡들의 먹이가 모두 사라졌답니다.'},
+      {scene:'🦴',sceneText:'공룡이 사라진 자리에 돌이 된 뼈들이 발견됩니다. 과학자들이 조심스럽게 파내고 있어요.',
+       q:'공룡의 흔적이 지금까지 전해지는 방법은?',
+       choices:['사진으로','화석으로','그림으로','동영상으로'],ans:1,
+       fact:'공룡의 뼈나 발자국이 오랜 세월 동안 돌로 굳어진 것을 <strong>화석</strong>이라고 해요! 화석 덕분에 우리는 공룡의 모습과 크기를 알 수 있답니다.'},
+      {scene:'🐓',sceneText:'공룡 뼈 옆에 닭이 서 있어요. 선생님이 "사실 이 둘은 먼 친척이야"라고 합니다.',
+       q:'오늘날 공룡의 직계 후손은?',
+       choices:['악어','도마뱀','새(조류)','거북이'],ans:2,
+       fact:'<strong>새(조류)</strong>가 바로 공룡의 직계 후손이에요! 수각류 공룡에서 진화했어요. 치킨을 먹는 건 공룡을 먹는 거나 마찬가지랍니다.'},
+    ]
+  },
+  {
+    id:'weather', icon:'🌈', name:'날씨 마법사', color:'#a855f7',
+    desc:'구름 · 비 · 태풍',
+    tip:'<strong>질문 던지기:</strong> "오늘 하늘을 보면 구름 모양이 어때?", "비가 오기 전이랑 후에 냄새가 다른 거 느껴봤어?" 바깥 날씨 관찰과 연결해 주세요.<br><br><strong>연결하기:</strong> "온도계 눈금을 읽고 오늘이 어제보다 몇 도 올랐는지 빼기로 계산해봐요!"',
+    vids:[{id:'zBnKgwnn7i4',desc:'비는 어디서 오는 걸까요?',
+      storyHtml:`<h4>📖 🌤️ 물의 끝없는 여행, 물의 순환 이야기!</h4>
+<p class="s-intro">안녕, 꼬마 기상캐스터 친구! 비가 오는 날 창밖을 보며 "저 물은 다 어디서 왔을까?" 하고 궁금해한 적 있니? 그건 바로 물의 끊임없는 여행 때문이란다. [00:05]</p>
+<div class="story-block"><div class="s-label">☀️ 1. 물의 변신: 증발 [00:14]</div><p>햇님이 방긋 웃으며 바다나 강물을 따뜻하게 데워주면, 물은 눈에 보이지 않는 공기인 <strong>'수증기'</strong>로 변해. [00:19] 마치 마법처럼 가벼워진 수증기는 하늘 높이높이 올라간단다. 이걸 <strong>'증발'</strong>이라고 불러. [00:28]</p></div>
+<div class="story-block"><div class="s-label">☁️ 2. 구름 아파트 만들기: 응결 [00:34]</div><p>하늘 위로 올라갈수록 공기는 점점 차가워져. 그러면 수증기 친구들은 다시 작은 물방울로 변해서 서로 "꼭" 껴안는단다. [00:42] 이 작은 물방울들이 모여서 우리가 보는 구름이 만들어지는 거야. 이걸 <strong>'응결'</strong>이라고 해. [00:52]</p></div>
+<div class="story-block"><div class="s-label">🌧️ 3. 빗방울의 탄생: 강수 [01:01]</div><p>구름 속에서 작은 물방울들이 서로 부딪히고 합쳐지면 점점 크고 무거워져. [01:01] 이제 너무 무거워져서 하늘에 떠 있을 수 없게 되면, 땅으로 "슈웅~" 하고 떨어지는데 그게 바로 비야! [01:08] 우리가 보는 큰 빗방울 하나는 아주 작은 물방울이 무려 백만 개나 모여서 만들어진 거란다. [01:15]</p></div>
+<div class="story-block"><div class="s-label">🔄 4. 멈추지 않는 여행: 물의 순환 [01:24]</div><p>땅으로 떨어진 빗방울은 다시 강으로, 바다로 흘러가. 그러다 햇님이 다시 나타나면 또다시 하늘로 여행을 떠나지. [01:33] 이렇게 물이 계속해서 돌고 도는 것을 <strong>'물의 순환'</strong>이라고 해. 덕분에 식물도, 동물도, 우리 사람도 물을 마시고 살 수 있는 거야. [01:38]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=zBnKgwnn7i4" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: How does rain form and what is the water cycle? - Met Office</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"오늘 내리는 비는 아주 먼 옛날 공룡이 마셨던 물일지도 몰라! 물은 사라지지 않고 하늘과 땅을 계속 여행하며 우리를 도와준단다. 비가 오는 날엔 \'물의 여행이 시작됐구나!\' 하고 반갑게 인사해 줄까?" ☔🦖'}],
+    storyHtml:`<h4>📖 🌧️ 비는 어디서 오는 걸까요? (The Water Cycle)</h4>
+<p class="s-intro">어제는 맑았는데 오늘은 왜 비가 내릴까요? 지구가 물을 재활용하는 신비한 마법을 부리고 있거든요!</p>
+<div class="story-block"><div class="s-label">☀️ 하늘로 올라가는 물</div><p>강물과 바닷물이 태양 빛을 받아 따뜻해지면, 눈에 안 보이는 작은 알갱이(수증기)가 되어 하늘로 소풍을 가요.</p></div>
+<div class="story-block"><div class="s-label">☁️ 구름 친구들</div><p>하늘로 올라간 물 알갱이들이 서로 꽉 껴안으면 우리가 보는 뭉게구름이 돼요.</p></div>
+<div class="story-block"><div class="s-label">🌧️ 다시 땅으로 뚝뚝</div><p>구름이 너무 무거워지면 "더 이상 못 들겠어!" 하고 물방울을 떨어뜨리는데, 그게 바로 비랍니다.</p></div>`,
+    qs:[
+      {scene:'☁️',sceneText:'구름 속으로 날아들었어요! 하얗고 폭신해 보이지만 사실 엄청 무겁다고 해요.',
+       q:'구름은 무엇으로 만들어졌나요?',
+       choices:['솜','수증기만','아주 작은 물방울과 얼음 결정','연기'],ans:2,
+       fact:'구름은 <strong>아주 작은 물방울(또는 얼음 결정)</strong>이 수십억 개 모인 거예요! 평범한 적운 구름 하나의 무게가 약 500톤에 달합니다. 하지만 물방울이 너무 작아 공기 중에 떠 있을 수 있어요.'},
+      {scene:'☀️',sceneText:'뜨거운 태양이 바다를 비춥니다. 물방울들이 하늘로 올라가기 시작해요!',
+       q:'바닷물이 태양 빛을 받으면 어떻게 되나요?',
+       choices:['끓어서 사라진다','눈에 안 보이는 수증기가 되어 하늘로 올라간다','그대로 있는다','얼음이 된다'],ans:1,
+       fact:'물이 따뜻해지면 눈에 안 보이는 <strong>수증기</strong>가 되어 하늘로 올라가요! 이것을 "증발"이라고 해요. 강, 바다의 물이 모두 이렇게 하늘로 소풍을 떠난답니다.'},
+      {scene:'🌧️',sceneText:'구름이 점점 무거워지더니 비가 내리기 시작해요!',
+       q:'구름에서 비가 내리는 이유는?',
+       choices:['구름이 심심해서','물방울이 점점 커지고 무거워져서','바람이 불어서','태양이 구름을 눌러서'],ans:1,
+       fact:'구름 속 물방울들이 서로 합쳐져 <strong>점점 크고 무거워지면</strong> 더 이상 하늘에 떠 있지 못하고 빗방울이 되어 떨어져요!'},
+      {scene:'🔄',sceneText:'물의 여행을 처음부터 정리해봐요. 바다에서 시작해서 어디로 갈까요?',
+       q:'물의 순환 과정을 순서대로 나열하면?',
+       choices:['증발→구름→비→강/바다','비→증발→구름→강/바다','구름→증발→비→강/바다','강/바다→비→구름→증발'],ans:0,
+       fact:'물은 <strong>증발(바다→수증기)→구름(응결)→비(강수)→강과 바다</strong> 순서로 끊임없이 여행을 반복해요! 지구의 물은 없어지지 않고 이 사이클을 수십억 년째 계속하고 있어요.'},
+      {scene:'🌡️',sceneText:'온도계 앞에서 오늘 날씨를 예측하려고 해요.',
+       q:'일기 예보에서 강수 확률 60%의 의미는?',
+       choices:['60% 지역에 비가 온다','하루의 60% 시간 동안 비가 온다','예보 지역에 비가 올 가능성이 60%','6mm 비가 온다'],ans:2,
+       fact:'강수 확률 60%는 <strong>"이런 기상 조건에서 100번 중 60번은 비가 왔다"</strong>는 통계적 의미예요! 특정 장소나 시간을 뜻하지 않습니다. 현재 슈퍼컴퓨터로 계산하지만 날씨 예측은 7일이 넘으면 정확도가 크게 낮아져요.'},
+    ]
+  },
+  {
+    id:'plant', icon:'🌿', name:'식물의 비밀', color:'#16a34a',
+    desc:'광합성 · 씨앗 · 식충식물',
+    tip:'<strong>질문 던지기:</strong> "우리가 먹는 밥(쌀)은 식물의 어떤 부분일까?", "나뭇잎이 가을에 빨개지는 이유가 뭘까?" 주변 식물을 관찰해봐요.<br><br><strong>연결하기:</strong> "씨앗에서 싹이 트는 날짜를 달력으로 표시하며 며칠이 지났는지 세어봐요!"',
+    vids:[{id:'TE6xptjgNR0',desc:'씨앗의 마법 같은 성장 여행!',
+      storyHtml:`<h4>📖 🌱 씨앗의 마법 같은 성장 여행!</h4>
+<p class="s-intro">안녕, 꼬마 정원사 친구! 우리 손바닥 위에 있는 이 작은 씨앗 안에는 아주 놀라운 비밀이 숨어 있어. 식물의 생명이 시작되는 마법 같은 과정을 함께 살펴볼까? [00:26]</p>
+<div class="story-block"><div class="s-label">🧥 1. 씨앗의 튼튼한 외투 (씨껍질) [00:33]</div><p>씨앗은 겉에 아주 단단한 외투를 입고 있어. 이걸 <strong>'씨껍질'</strong>이라고 불러. [00:42] 이 외투 안에는 아주 작고 귀여운 아기 식물인 <strong>'배(Embryo)'</strong>가 잠을 자며 보호받고 있단다. [00:54]</p></div>
+<div class="story-block"><div class="s-label">🧪 2. 쑥쑥 자라기 위한 5가지 보물 [01:07]</div><p>씨앗이 잠에서 깨어나려면 꼭 필요한 보물들이 있어!<br>촉촉한 물, 따뜻한 온기, 영양 가득한 흙, 반짝이는 햇빛, 그리고 튼튼한 씨앗이 필요해. [01:07]</p></div>
+<div class="story-block"><div class="s-label">💧 3. 잠에서 깨어나는 씨앗 [01:35]</div><p>씨앗을 흙에 심고 물을 주면, 씨앗이 물을 꿀꺽꿀꺽 마셔. [01:44] 그러면 씨앗 안에 있던 아기 식물이 기지개를 켜면서 자라날 준비를 한단다. [02:05]</p></div>
+<div class="story-block"><div class="s-label">👣 4. 첫 번째 신호, 귀여운 뿌리! [02:19]</div><p>씨앗이 자라기 시작할 때 가장 먼저 나타나는 건 뭘까? 바로 아주 작은 <strong>'뿌리'</strong>야! [02:34] 뿌리는 땅속으로 쑥 내려가서 씨앗이 흔들리지 않게 꽉 잡아주고, 흙 속에 숨겨진 맛있는 영양분을 찾아낸단다. [03:44]</p></div>
+<div class="story-block"><div class="s-label">☀️ 5. 햇님을 향해 영차! (발아) [03:10]</div><p>뿌리가 자리를 잡으면, 이제 <strong>'싹'</strong>이 딱딱한 외투를 벗어던지고 땅 위로 고개를 내밀어. [03:30] "안녕, 햇님!" 하고 인사하며 햇빛을 받아서 스스로 음식을 만드는 '광합성'을 시작하지. [03:34]</p></div>
+<div class="story-block"><div class="s-label">🌿 6. 짜잔! 아기 식물이 되었어요 [04:16]</div><p>줄기가 위로 쑥쑥 자라고 초록색 작은 잎들이 나오면, 이제 어엿한 아기 식물이 된 거야! [04:26] 이렇게 씨앗이 식물로 자라나는 과정을 <strong>'발아'</strong>라고 부른단다. [04:40]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=TE6xptjgNR0" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: Seed Germination - It's AumSum Time</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리가 심은 작은 씨앗이 땅속에서 물을 마시고 힘을 내서 멋진 싹을 틔웠어! 우리 친구도 맛있는 음식을 먹고 쑥쑥 자라는 것처럼, 씨앗도 햇빛과 물을 먹으며 이렇게 열심히 자란단다. 정말 기특하지?" 🌻💧'},
+    {id:'3CCOWHa-qfc',desc:'씨앗들의 신나는 여행!',
+      storyHtml:`<h4>📖 🌱 씨앗들의 신나는 여행! — 씨앗은 어떻게 새 집을 찾을까?</h4>
+<p class="s-intro">나무와 꽃들은 발이 없어서 걸어다닐 수가 없어. 그럼 씨앗들은 어떻게 멀리멀리 퍼져나갈까? 씨앗들의 놀라운 여행 방법을 함께 알아보자!</p>
+<div class="story-block"><div class="s-label">💨 바람을 타고 훨훨!</div><p>민들레 씨앗을 본 적 있어? 하얀 솜털이 달린 씨앗이 바람에 훨훨 날아가지! 단풍나무 씨앗은 프로펠러 모양이라 빙글빙글 돌면서 날아간단다. 바람이 세게 불수록 더 멀리 여행할 수 있어!</p></div>
+<div class="story-block"><div class="s-label">🐿️ 동물 친구들의 도움!</div><p>맛있는 열매(체리, 딸기)를 새나 동물이 먹으면, 씨앗은 소화되지 않고 똥과 함께 다른 곳에 떨어져! 찔레나 도꼬마리 씨앗은 갈고리처럼 생겨서 동물 털이나 사람 옷에 쫙 달라붙어서 여행을 해. 재미있지?</p></div>
+<div class="story-block"><div class="s-label">💧 물을 타고 둥둥!</div><p>코코넛 열매는 바닷물에 둥둥 떠서 멀리멀리 여행을 해! 두꺼운 껍질 덕분에 물속에서도 안 죽고 수천 킬로미터를 떠내려갈 수 있단다. 그래서 열대 섬들에 야자나무가 많은 거야.</p></div>
+<div class="story-block"><div class="s-label">💥 혼자서 펑!</div><p>어떤 씨앗은 스스로 폭발해서 날아가! 봉숭아나 콩 꼬투리가 익으면 비틀리면서 씨앗을 멀리 쏘아 보낸단다. 여름에 봉숭아 꼬투리를 건드려보면 깜짝 놀랄 거야!</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"씨앗 탐험대 놀이: 공원에서 민들레를 찾아 후~ 불어보세요. '씨앗아, 좋은 집 찾아가렴!'이라고 말해주면 아이가 씨앗의 여행을 더 특별하게 느껴요. 가을엔 옷에 달라붙는 도꼬마리 씨앗을 찾아보는 것도 재미있어요!"</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"만약 씨앗이 말할 수 있다면, 여행 중에 어떤 이야기를 할까? '오늘 바람이 너무 세서 너무 멀리 왔어!'라고 할까?"<br>"민들레 씨앗처럼 내 몸에 솜털이 달려서 바람을 타고 날 수 있다면 어디로 날아가고 싶어?"<br>"코코넛은 바다를 건너 여행한대! 우리 친구도 바다를 건너간다면 어느 나라에 가고 싶어?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=3CCOWHa-qfc" target="_blank">씨앗들의 신나는 여행!</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"씨앗들도 새 집을 찾아 모험을 떠나는 거야! 우리 친구도 씨앗처럼 멀리멀리 꿈을 향해 날아갈 수 있어!"'},
+    {id:'O1S8WzwLPlM',desc:'애벌레에서 나비로! 나비의 한살이',
+      storyHtml:`<h4>📖 🦋 애벌레에서 나비로! — 나비의 놀라운 변신 이야기</h4>
+<p class="s-intro">꽃밭에서 팔랑팔랑 나는 예쁜 나비가 처음엔 꿈틀꿈틀 기어다니는 애벌레였다는 거 알고 있어? 나비의 놀라운 변신 이야기를 함께 들어보자!</p>
+<div class="story-block"><div class="s-label">🥚 1단계: 아주 작은 알</div><p>나비 엄마는 애벌레가 태어났을 때 바로 먹을 수 있도록, 맛있는 나뭇잎 위에 알을 낳아. 알은 아주 작아서 잘 보이지 않을 정도야. 그 안에서 아기 애벌레가 조금씩 자라고 있단다!</p></div>
+<div class="story-block"><div class="s-label">🐛 2단계: 먹보 애벌레</div><p>알에서 깨어난 애벌레는 하루 종일 나뭇잎을 우적우적 먹어! 먹고 또 먹고, 먹고 또 먹어서 몸이 엄청 커진단다. 너무 커지면 낡은 옷처럼 껍질을 벗고 새 껍질로 갈아입어. 이걸 '탈피'라고 해.</p></div>
+<div class="story-block"><div class="s-label">🫘 3단계: 번데기 — 마법의 캡슐!</div><p>애벌레는 어느 날 나뭇가지에 달라붙어서 스스로를 실로 꽁꽁 감싸. 그게 바로 '번데기'야! 겉으로 보면 조용히 자는 것 같지만, 안에서는 엄청난 변화가 일어나고 있어. 마치 몸 전체가 녹아서 완전히 새로운 모습으로 만들어지는 것처럼!</p></div>
+<div class="story-block"><div class="s-label">🦋 4단계: 드디어 나비 탄생!</div><p>번데기 껍질이 벌어지면서 예쁜 나비가 나와! 처음엔 날개가 쭈글쭈글하지만 조금씩 펴면서 아름다운 무늬가 나타나. 이렇게 완전히 다른 모습으로 변하는 걸 '완전변태'라고 해.</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"나비 변신 놀이: 아이가 애벌레처럼 바닥을 기어다니다가, 이불 속에 쏙 들어가 번데기가 되고, '짠!'하고 나오면서 날개를 펼치는 나비 변신 놀이를 해보세요! 변신할 때 '나비 마법!'이라고 외치면 더 신나요."</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"애벌레가 번데기 안에서 변신할 때 어떤 기분일까? '아, 새 날개가 생기고 있어! 얼른 나가고 싶다!'라고 할까?"<br>"만약 우리도 나비처럼 완전히 다른 모습으로 변할 수 있다면 어떤 모습이 되고 싶어?"<br>"나비는 꽃의 꿀을 먹어. 만약 내가 나비라면 가장 먼저 어떤 꽃으로 날아갈 것 같아?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=O1S8WzwLPlM" target="_blank">애벌레에서 나비로! 나비의 한살이</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"애벌레가 나비가 되는 것처럼, 우리 친구도 매일매일 조금씩 성장하고 있어! 지금은 작아 보여도 언젠가 아름다운 날개를 펼치게 될 거야!"'}],
+    qs:[
+      {scene:'🌱',sceneText:'씨앗 하나가 땅에 떨어졌어요. 물을 받으니 뿌리가 나오고 새싹이 올라옵니다!',
+       q:'식물이 광합성으로 만드는 것은?',
+       choices:['산소와 물','포도당과 산소','이산화탄소와 물','질소와 포도당'],ans:1,
+       fact:'광합성은 <strong>빛에너지 + 물(H₂O) + 이산화탄소(CO₂) → 포도당 + 산소</strong>입니다! 식물은 포도당을 에너지원으로 쓰고, 산소는 부산물로 내보내요. 우리가 숨 쉬는 산소는 모두 식물의 광합성 덕분이에요.'},
+      {scene:'🌻',sceneText:'해바라기 밭을 지나가고 있어요. 해바라기들이 모두 태양을 바라보고 있어요!',
+       q:'해바라기가 태양을 따라 움직이는 현상을 무엇이라 하나요?',
+       choices:['굴중성','굴광성','굴수성','굴화성'],ans:1,
+       fact:'식물이 빛을 향해 움직이는 것을 <strong>굴광성</strong>이라 해요! 성장 호르몬(옥신)이 빛이 적은 쪽에 더 많이 모여 그쪽이 더 빨리 자라며 빛 쪽으로 굽습니다. 뿌리는 반대로 빛을 피해 자라요.'},
+      {scene:'🪲',sceneText:'파리지옥이 벌레를 기다리고 있어요. 벌레가 닿으면 0.1초 안에 닫힙니다!',
+       q:'파리지옥이 곤충을 잡아먹는 이유는?',
+       choices:['곤충이 맛있어서','질소 부족한 토양에서 영양 보충','물이 없어서','보호를 위해'],ans:1,
+       fact:'파리지옥은 <strong>질소</strong>가 부족한 습지에 살아서 단백질이 풍부한 곤충을 잡아 질소를 보충해요! 덫이 닫히면 소화액을 분비해 10일 정도 걸쳐 소화합니다. 짝이 아닌 물체에는 반응하지 않는 영리함도 있어요.'},
+      {scene:'🌳',sceneText:'거대한 나무 앞에 섰어요. 나이테를 세어보니 500개나 돼요!',
+       q:'나무 나이테에서 알 수 있는 것이 아닌 것은?',
+       choices:['나무의 나이','그 해의 기후(비 많고 적음)','어느 방향이 남쪽인지','나무가 수분을 얼마나 흡수했는지'],ans:3,
+       fact:'나이테로 나무 나이, 기후(넓으면 좋은 해, 좁으면 건조/추운 해), 심지어 <strong>남북 방향</strong>도 알 수 있어요(남쪽 나이테가 더 넓음)! 하지만 정확한 수분 흡수량은 나이테만으로 알기 어렵습니다.'},
+      {scene:'🌸',sceneText:'꽃이 활짝 피었어요! 벌이 날아와 꿀을 가져갑니다.',
+       q:'식물이 꽃을 피우는 주된 이유는?',
+       choices:['예쁘게 보이려고','사람들을 위해','수분(가루받이)을 통해 씨앗 만들기','산소 만들기'],ans:2,
+       fact:'꽃의 아름다운 색깔과 향기는 <strong>벌, 나비, 새</strong> 등을 유인해 꽃가루를 옮기게 하는 전략이에요! 수분이 이루어져야 열매와 씨앗이 만들어집니다. 식물이 수억 년에 걸쳐 개발한 생존 전략이에요.'},
+    ]
+  },
+  {
+    id:'micro', icon:'🔬', name:'작은 세계', color:'#f97316',
+    desc:'세포 · 바이러스 · 박테리아',
+    tip:'<strong>질문 던지기:</strong> "손을 씻지 않으면 어떤 일이 생길까?", "요구르트 안에도 세균이 있는데 왜 먹어도 될까?" 일상 속 세균 이야기를 해보세요.<br><br><strong>연결하기:</strong> "1cm 안에 세균 100만 마리! 100만을 0의 개수로 세어볼까요?"',
+    vids:[],
+    qs:[
+      {scene:'🧫',sceneText:'현미경으로 들어갔어요! 믿을 수 없을 만큼 작은 세계가 펼쳐집니다.',
+       q:'세포의 에너지 공장 역할을 하는 세포 소기관은?',
+       choices:['핵','세포막','미토콘드리아','리보솜'],ans:2,
+       fact:'<strong>미토콘드리아</strong>는 세포의 에너지 공장으로, 포도당과 산소를 이용해 ATP(에너지)를 만들어요! 원래는 독립 생명체였다가 세포 안에 들어온 것으로 추정됩니다. 그래서 자체 DNA를 가지고 있어요.'},
+      {scene:'🦠',sceneText:'바이러스가 보입니다! 생각보다 훨씬 단순한 구조네요.',
+       q:'바이러스와 세균(박테리아)의 차이점은?',
+       choices:['크기만 다르다','바이러스는 스스로 증식 불가, 세균은 가능','세균이 더 위험하다','바이러스는 치료 가능, 세균은 불가'],ans:1,
+       fact:'<strong>바이러스</strong>는 스스로 복제를 못 하고 반드시 살아있는 세포 안에 들어가야 해요. 세균은 자체적으로 분열·번식이 가능한 단세포 생물입니다. 세균은 항생제로 치료하지만, 바이러스에는 항생제가 듣지 않아요!'},
+      {scene:'🧬',sceneText:'DNA 나선 구조가 빙글빙글 돌고 있어요! 엄청난 정보가 담겨있어요.',
+       q:'인체 세포 하나에 들어있는 DNA를 펼치면 길이는?',
+       choices:['1mm','1cm','약 2m','약 2km'],ans:2,
+       fact:'세포 하나의 핵 속 DNA를 펼치면 약 <strong>2m</strong>! 몸의 모든 세포를 합치면 약 370억 개 세포 × 2m = 지구에서 명왕성까지 거리의 약 8배나 됩니다. 이 정보가 0.005mm 핵에 압축되어 있어요.'},
+      {scene:'💉',sceneText:'백신이 몸 안으로 들어갔어요! 면역 세포들이 훈련을 시작합니다.',
+       q:'백신이 감염병을 예방하는 원리는?',
+       choices:['바이러스를 죽이는 약','약한 항원으로 면역계를 미리 훈련','몸을 강하게 만드는 영양제','바이러스가 못 들어오게 막는 벽'],ans:1,
+       fact:'백신은 <strong>죽이거나 약화된 병원체(또는 그 일부)</strong>를 투여해 실제 감염 전에 면역계가 항체를 만들도록 훈련시켜요! 실제 병원체가 들어오면 이미 훈련된 면역계가 빠르게 제거합니다.'},
+      {scene:'🫧',sceneText:'비눗물이 세균과 만났어요! 세균들이 퍼지지 못하고 사라집니다.',
+       q:'비누가 세균을 제거하는 원리는?',
+       choices:['세균을 죽이는 독','세균의 기름막(세포막)을 파괴','물로 씻어내는 것과 같다','산성으로 세균 제거'],ans:1,
+       fact:'비누 분자는 한쪽은 기름(세균 막), 다른 쪽은 물과 결합해요. 이로 인해 <strong>세균의 지질 세포막이 파괴</strong>되고, 세균이 물과 함께 씻겨 내려갑니다! 바이러스도 외막이 있으면 같은 원리로 제거돼요.'},
+    ]
+  },
+  {
+    id:'earth', icon:'🌍', name:'지구 속으로', color:'#dc2626',
+    desc:'지층 · 화산 · 판구조론',
+    tip:'<strong>질문 던지기:</strong> "지구본이 왜 동그랗게 생겼을까?", "달에서 지구를 찍은 사진 본 적 있어?" 지구 모양에 대한 호기심을 자극해주세요.<br><br><strong>연결하기:</strong> "지구 둘레가 약 40,000km! 우리 집에서 학원까지 거리의 몇 배인지 같이 계산해볼까요?"',
+    vids:[{id:'6ZfbaPZYiAM',desc:'만약 지구가 평평하다면? (What If Earth Was Flat?)',
+      storyHtml:`<h4>📖 🌍 만약 지구가 평평하다면? (What If Earth Was Flat?)</h4>
+<p class="s-intro">안녕, 꼬마 과학자! 지구가 둥글다는 건 알지? 그런데 만약 지구가 납작한 원반처럼 평평했다면 어떤 일이 벌어질까? 이 엉뚱한 상상을 따라가다 보면, 왜 지구가 꼭 둥글어야 하는지 그 이유가 쏙 이해될 거야!</p>
+<div class="story-block"><div class="s-label">🌅 1. 낮과 밤이 완전히 이상해져요! [00:45]</div><p>지구가 둥글기 때문에 태양빛이 절반은 낮, 절반은 밤으로 나뉘어. 하지만 지구가 평평하다면? 태양이 마치 램프처럼 판 전체를 한꺼번에 비추게 돼. [01:05] 그러면 모든 사람이 동시에 낮을 보거나 동시에 밤을 맞이하게 되는 이상한 세상이 펼쳐지지. 해가 지고 별이 뜨는 아름다운 저녁도 사라지고 말아!</p></div>
+<div class="story-block"><div class="s-label">⬇️ 2. 중력이 삐뚤어져요! [01:30]</div><p>둥근 지구에서는 중력이 지구 중심을 향해 모든 방향에서 고르게 잡아당겨. 그런데 평평한 지구라면? [01:48] 중심에서 멀리 떨어진 가장자리에 사는 사람들은 발이 중심 쪽으로 당겨지는 비스듬한 중력을 느끼게 돼. 마치 기울어진 미끄럼틀 위에 서 있는 것처럼! 강물도 중심이 아닌 가장자리로 흘러가 결국 폭포처럼 끝에서 떨어져 버릴 거야. [02:10]</p></div>
+<div class="story-block"><div class="s-label">🌊 3. 바닷물이 사라질 수도 있어요! [02:25]</div><p>평평한 지구의 가장자리 — 이른바 '끝'이 있다면, 강과 바다는 전부 그쪽으로 흘러 떨어질 거야. [02:40] 지구 위의 물이 전부 없어지면 식물도 동물도 살 수 없게 되지. 그러면 생명이 살기 아주 어려운 건조한 세상이 되어버려!</p></div>
+<div class="story-block"><div class="s-label">🌡️ 4. 날씨와 바람도 달라져요! [02:58]</div><p>둥근 지구이기 때문에 태양에너지가 위도에 따라 다르게 들어와서 적도는 덥고 극지방은 춥지. 이 온도 차이가 바람과 해류를 만들고, 덕분에 지구 곳곳에 비가 내리고 사계절이 생겨. [03:15] 하지만 평평한 지구라면 이런 복잡한 기상 현상 자체가 생기기 어려워서 날씨가 아주 단순하거나 극단적이 되어버려!</p></div>
+<div class="story-block"><div class="s-label">🔵 5. 지구가 둥글다는 증거는? [03:45]</div><p>실제로 지구는 왜 둥근 걸까? [04:00] 첫 번째 증거: 배가 수평선 너머로 멀어질 때 선체 아래부터 서서히 사라져! 평평하면 그냥 작아질 뿐이야. 두 번째 증거: 월식 때 달에 드리운 지구의 그림자가 항상 동그란 원 모양이야. [04:20] 세 번째 증거: 우주에서 찍은 사진들이 모두 동그란 지구를 보여줘. 네 번째 증거: 비행기가 한 방향으로 계속 날아가면 출발한 곳으로 돌아와 — 이건 지구가 구형이어야만 가능한 일이야! [04:38]</p></div>
+<div class="story-block"><div class="s-label">🌐 6. 그럼 왜 지구는 둥글게 됐을까? [05:00]</div><p>아주 오래전 우주에서 먼지와 가스가 모여 지구가 만들어질 때, 중력이 모든 방향에서 고르게 당겼어. [05:15] 중력이 고르게 당기면 덩어리는 자연스럽게 가장 안정된 모양인 '구(球)'가 돼. 지구뿐만 아니라 달, 태양, 목성 — 크기가 충분히 큰 천체는 모두 둥글어! 이것이 자연의 법칙이야. [05:35]</p></div>
+<p style="margin-top:1rem;font-size:.93rem;color:#94a3b8">💡 <strong>생각해봐요:</strong> 만약 지구가 평평하다면 우리 생활에서 어떤 것이 가장 크게 달라질까? 아이와 함께 이야기해 보세요!</p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"\'만약 ~라면?\'이라는 질문이 과학에서 아주 중요해. 이런 상상 실험(thought experiment)을 통해 과학자들은 왜 세상이 지금처럼 되어있는지 이해하게 된단다. 아인슈타인도 \'만약 내가 빛과 함께 달린다면?\'이라는 상상에서 상대성 이론을 시작했어. 우리 친구도 엉뚱한 상상을 많이 해봐 — 그게 과학의 시작이야!" 🔭✨'},{id:'lHyNpI6ei18',desc:'지구 반대편까지 구멍을 뚫으면?',
+      storyHtml:`<h4>📖 🌍⛏️ 지구 반대편까지 구멍을 뚫으면 어떻게 될까?</h4>
+<p class="s-intro">안녕, 꼬마 탐험가! 혹시 "지구 반대편에 있는 친구를 만나러 땅속으로 쑥~ 들어가면 어떨까?" 하고 생각해 본 적 있니? 오늘 박사님이랑 같이 마법의 드릴을 타고 지구 속으로 여행을 떠나보자!</p>
+<div class="story-block"><div class="s-label">🚜 1. 출발! 껍질을 뚫어라 (지각) [01:30]</div><p>우리가 밟고 있는 땅을 <strong>'지각'</strong>이라고 해. 사과의 껍질처럼 지구의 겉면이지. [01:41] 사람이 판 가장 깊은 구멍은 러시아에 있는데, 겨우 12km 정도밖에 못 뚫었대. 지구 전체로 보면 살짝 긁은 정도지! 조금만 더 내려가면 쇠를 녹일 정도로 뜨거워지기 시작한단다. [02:15]</p></div>
+<div class="story-block"><div class="s-label">🔥 2. 지글지글 끓는 '맨틀' 기차역 [02:27]</div><p>지각을 지나면 엄청나게 두꺼운 <strong>'맨틀'</strong>이 나와. 여기는 온도가 1,400도가 넘어서 평범한 드릴은 순식간에 녹아버려! [02:42] 아주 단단한 타이타늄으로 만든 마법 드릴이 있어야만 통과할 수 있지.</p></div>
+<div class="story-block"><div class="s-label">🌊 3. 뜨거운 금속 바다 (외핵) [02:53]</div><p>이제 지구 더 깊은 곳, <strong>'외핵'</strong>에 도착했어! 여기는 철이랑 니켈이 녹아서 마치 '뜨거운 금속 수프'처럼 출렁거리는 바다 같아. [03:18] 온도는 무려 5,000도나 돼서 태양 표면만큼 뜨겁단다!</p></div>
+<div class="story-block"><div class="s-label">💎 4. 꽉 눌린 단단한 공 (내핵) [03:36]</div><p>드디어 지구의 정중앙, <strong>'내핵'</strong>이야! 여기는 너무너무 뜨겁지만, 위에서 누르는 힘(압력)이 어마어마하게 세서 금속들이 녹지 못하고 아주 단단한 공 모양을 하고 있어. [03:48]</p></div>
+<div class="story-block"><div class="s-label">🎢 5. 중력의 장난! [04:07]</div><p>지구 중심을 지나면 신기한 일이 벌어져. 이제부터는 다시 올라가는 길인데, 지구가 우리를 다시 중심 쪽으로 당기려고 해(중력). [04:17] 마치 거꾸로 매달려 올라가는 것처럼 힘이 들 거야!</p></div>
+<div class="story-block"><div class="s-label">🌊 6. 짠! 도착했는데... 바다 한가운데? [05:10]</div><p>드디어 반대편 껍질을 뚫고 밖으로 나왔어! 그런데 조심해야 해. 지구는 대부분이 바다라서, 운이 나쁘면 나오자마자 물고기들이랑 수영을 해야 할지도 몰라! [05:40]</p></div>
+<p style="margin-top:1rem;text-align:center">📺 <a href="https://www.youtube.com/watch?v=lHyNpI6ei18" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: What if We Dug a Hole Through The Earth? - Peekaboo Kidz</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"지구 속은 우리가 생각하는 것보다 훨씬 더 뜨겁고 신비로운 곳이야. 실제로 구멍을 뚫기는 아주 어렵지만, 과학자들은 지진파라는 마법의 돋보기를 써서 지구 속이 어떻게 생겼는지 다 알고 있단다. 우리 친구도 나중에 지구의 비밀을 더 많이 밝혀내는 멋진 과학자가 되어볼래?" 🚀🌟'}],
+    storyHtml:`<h4>📖 🌍 만약 지구가 평평하다면? (What If Earth Was Flat?)</h4>
+<p class="s-intro">지구가 왜 둥근지 알아? 이 엉뚱한 상상을 해보면 그 이유가 쏙 이해될 거야!</p>
+<div class="story-block"><div class="s-label">🌅 낮과 밤이 이상해져요</div><p>지구가 둥글어서 태양빛이 절반씩 나눠지고 낮과 밤이 생겨요. 평평하다면 전 세계가 동시에 낮이 되거나 밤이 되어 모두가 함께 자고 깨는 이상한 세상이 될 거야!</p></div>
+<div class="story-block"><div class="s-label">⬇️ 중력이 이상해져요</div><p>지구가 둥글어서 중력이 지구 중심으로 고르게 당겨요. 평평하다면 가장자리에 사는 사람은 옆으로 쏠리는 이상한 중력을 느끼고, 강물도 전부 끝으로 흘러가 사라져버릴 거야!</p></div>
+<div class="story-block"><div class="s-label">🔵 지구가 둥글다는 증거</div><p>배가 수평선 너머로 사라질 때 아래부터 보이지 않아요. 월식 때 달에 비친 지구 그림자가 둥글어요. 우주에서 찍은 사진도 모두 증거! 지구는 확실히 둥근 공 모양이에요.</p></div>`,
+    qs:[
+      {scene:'🌋',sceneText:'화산이 폭발하고 있어요! 마그마가 솟구칩니다. 버스에 방열 방패가 켜집니다.',
+       q:'마그마와 용암의 차이는?',
+       choices:['같은 것이다','마그마는 땅 속, 용암은 지표에 나온 것','온도 차이','색깔 차이'],ans:1,
+       fact:'<strong>마그마(Magma)</strong>는 지구 내부의 녹은 암석이고, 화산 폭발로 지표에 나오면 <strong>용암(Lava)</strong>이라 해요! 용암 온도는 700~1,200°C이고, 흐르는 속도는 종류에 따라 걷는 속도(1km/h)에서 시속 60km까지 다양해요.'},
+      {scene:'🪨',sceneText:'거대한 지층 절벽 앞에 있어요. 색깔이 다른 줄무늬가 층층이 쌓여있어요.',
+       q:'지층에서 더 오래된 층은 어디에 있나요?',
+       choices:['위쪽','아래쪽','중간','랜덤'],ans:1,
+       fact:'지층은 퇴적물이 차곡차곡 쌓여 형성되므로 <strong>아래쪽이 더 오래된 층</strong>입니다! 이를 지층 누중의 법칙이라 해요. 지층에서 공룡 화석이 발견되면 그 지층이 형성된 시대에 공룡이 살았다는 증거가 돼요.'},
+      {scene:'🌏',sceneText:'지구 내부 단면이 보입니다! 층층이 다른 구조로 이루어져 있어요.',
+       q:'지구 내부 구조를 바깥부터 순서대로 나열하면?',
+       choices:['지각-맨틀-외핵-내핵','맨틀-지각-외핵-내핵','지각-외핵-내핵-맨틀','내핵-외핵-맨틀-지각'],ans:0,
+       fact:'지구는 <strong>지각→맨틀→외핵→내핵</strong> 구조예요! 내핵은 고체 철/니켈이고, 외핵은 액체 상태예요. 외핵의 움직임이 지구 자기장을 만들어요.'},
+      {scene:'🌍',sceneText:'우주에서 지구를 바라봐요! 사진 속 지구가 완전히 둥글게 보여요.',
+       q:'지구가 둥글다는 증거가 아닌 것은?',
+       choices:['우주에서 찍은 사진 속 지구의 모습','월식 때 달에 생기는 둥근 지구 그림자','배가 수평선 너머로 아래부터 사라지는 것','지구 끝이 평평해서 눈에 보인다'],ans:3,
+       fact:'배는 수평선 너머로 <strong>아래부터</strong> 사라지고, 월식 때 달에 비친 지구 그림자도 항상 둥글어요! 우주에서 찍은 사진도 지구가 둥근 공 모양임을 보여준답니다.'},
+      {scene:'🔄',sceneText:'지구가 평평하다면 어떤 일이 생길지 상상해봐요!',
+       q:'지구가 평평했다면 나타날 현상으로 맞는 것은?',
+       choices:['지금처럼 낮과 밤이 생긴다','중력이 가장자리로 쏠려 강물이 끝으로 흘러가 버린다','사계절이 더 뚜렷해진다','달이 더 크게 보인다'],ans:1,
+       fact:'지구가 평평했다면 중력이 가장자리 방향으로 쏠려 <strong>강물과 바다가 모두 끝으로 흘러가</strong>버릴 거예요! 낮과 밤도 전 세계가 동시에 같아지고, 계절도 사라지게 됩니다.'},
+    ]
+  },
+  {
+    id:'element', icon:'⚗️', name:'원소 여행', color:'#8b5cf6',
+    desc:'원자 · 주기율표 · 물질',
+    tip:'<strong>질문 던지기:</strong> "냉장고에서 꺼낸 얼음이 녹으면 뭐가 될까?", "수증기를 우리 주변에서 어디서 볼 수 있을까?" 일상 속 변신을 찾아봐요.<br><br><strong>연결하기:</strong> "물처럼 같은 수가 분수, 소수, 퍼센트로 변신하는 것처럼 과학도 모습이 바뀌어도 본질은 같아!"',
+    vids:[{id:'O-48znAg7VE',desc:'원자와 주기율표 이야기',
+      storyHtml:`<h4>📖 🧩 세상을 만드는 마법의 퍼즐 조각, 원소 이야기!</h4>
+<p class="s-intro">안녕! 오늘은 우리가 사는 세상을 만드는 <strong>'마법의 퍼즐 조각'</strong>에 대한 아주 재미있는 이야기를 해줄게! 🌟<br>우리가 발을 딛고 있는 땅, 마시는 물, 그리고 반짝이는 별들까지! 세상의 모든 것들은 아주 작은 <strong>'원소'</strong>라는 퍼즐 조각들로 만들어져 있어. 이 조각들이 어떻게 모여서 지금의 멋진 세상을 만들었는지 함께 알아볼까?</p>
+<div class="story-block"><div class="s-label">✨ 1. 별이 보내준 선물 [00:25]</div><p>아주 아주 먼 옛날, 우주에 있는 별들이 '펑!' 하고 터지면서 수많은 퍼즐 조각들을 우주로 보내주었어. 이 조각들이 바로 '원소'야. 옛날 사람들은 금이나 은처럼 반짝이는 조각들을 먼저 발견해서 장난감이나 보석을 만들기도 했단다.</p></div>
+<div class="story-block"><div class="s-label">🧪 2. 엉뚱한 과학자의 '오줌' 실험! [01:55]</div><p>옛날에 헤닝 브란트라는 아주 엉뚱한 아저씨가 있었어. 이 아저씨는 "우리 몸 안에도 금이 있지 않을까?"라고 생각했대. 그래서 노란색인 '오줌'을 잔뜩 모아서 보글보글 끓여봤어! [02:02]<br>금은 나오지 않았지만, 대신 어둠 속에서 하얗게 빛나는 <strong>'인'</strong>이라는 새로운 조각을 찾아냈단다. 정말 대단하지?</p></div>
+<div class="story-block"><div class="s-label">🧩 3. 퍼즐 조각의 규칙을 찾아라! [03:03]</div><p>세상에는 너무 많은 퍼즐 조각들이 있어서 과학자들은 이걸 예쁘게 정리하고 싶어 했어.<br><br>라부아지에 아저씨: "이건 기체야, 이건 금속이야!"라고 처음으로 이름을 붙여주었어. [02:48]<br><br>도베라이너 아저씨: 비슷한 성격의 조각들을 모아봤어. 어떤 조각들은 물에 넣으면 '치익~' 소리를 내며 춤을 추기도 한대! [03:21]</p></div>
+<div class="story-block"><div class="s-label">😴 4. 꿈속에서 완성된 마법의 표 [03:42]</div><p>마지막으로 멘델레예프라는 아저씨가 나타났어. 이 아저씨는 퍼즐 조각들을 어떻게 정리할지 3일 밤낮을 고민하다가 깜빡 잠이 들었어. 그런데 꿈속에서 조각들이 스스로 자리를 찾아가는 마법 같은 표를 보게 된 거야! [03:54]<br>아저씨는 잠에서 깨어나 그 표를 그렸고, 아직 찾지 못한 미래의 퍼즐 조각들이 어디에 들어갈지도 미리 맞춰놓았단다. 이게 바로 우리가 과학 시간에 배우는 <strong>'주기율표'</strong>야!</p></div>
+<p style="margin-top:1rem;text-align:center">더 자세한 이야기가 궁금하면 아래 영상을 함께 봐보자!<br>📺 <a href="https://www.youtube.com/watch?v=O-48znAg7VE" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: Solving the puzzle of the periodic table</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리 몸도, 네가 좋아하는 장난감도 사실은 이 작은 퍼즐 조각들이 모여서 만들어진 거란다. 너도 나중에 이 세상의 숨겨진 새로운 퍼즐 조각을 찾는 멋진 탐험가가 될 수 있어!" 🚀'},
+    {id:'jMW_0Ro6b5c',desc:'세상을 만드는 가장 작은 알갱이, 원자!',
+      storyHtml:`<h4>📖 ⚛️ 세상을 만드는 가장 작은 알갱이, 원자!</h4>
+<p class="s-intro">지금 이 순간, 네 손, 의자, 공기, 물, 모든 것이 아주 작은 알갱이들로 만들어져 있어. 그 알갱이의 이름은 바로 '원자(Atom)'야! 눈에는 보이지 않지만 세상 모든 것을 만드는 마법 같은 알갱이, 같이 만나볼까?</p>
+<div class="story-block"><div class="s-label">🔬 얼마나 작을까?</div><p>원자는 너무너무 작아서 맨눈으로는 절대 볼 수 없어. 머리카락 하나의 너비에 원자가 무려 100만 개나 늘어설 수 있을 정도야! 우리 몸 안에도 수조 개의 원자가 있단다.</p></div>
+<div class="story-block"><div class="s-label">🌟 원자 속 세계</div><p>원자 한가운데에는 '핵(Nucleus)'이 있어. 그 주변을 아주 빠르게 뱅글뱅글 도는 것이 '전자(Electron)'야. 마치 태양(핵) 주변을 지구(전자)가 도는 것처럼!</p></div>
+<div class="story-block"><div class="s-label">🧩 원소마다 다른 원자</div><p>수소, 산소, 철, 금 같은 원소들은 각각 다른 종류의 원자로 만들어져 있어. 원자의 종류가 달라지면 완전히 다른 물질이 된단다! 수소 원자 2개 + 산소 원자 1개 = 물이 돼. 신기하지?</p></div>
+<div class="story-block"><div class="s-label">💡 원자가 합쳐지면 분자!</div><p>원자들이 모여서 '분자(Molecule)'를 만들어. 물(H₂O), 이산화탄소(CO₂) 모두 원자들이 손잡고 만든 분자야. 레고 블록처럼 원자들이 합쳐져서 세상 모든 것을 만드는 거야!</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"레고 원자 놀이: 레고나 클레이를 꺼내서 '이건 수소 원자, 이건 산소 원자!'라고 이름 붙이고 합쳐서 물 분자를 만들어보세요. 눈에 보이지 않는 원자를 손으로 느낄 수 있어요!"</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"지금 앉아 있는 의자도 원자로 만들어졌대! 의자 속 원자들이 서로 이야기를 한다면 어떤 말을 할까?"<br>"원자가 레고 블록 같다면, 세상에서 어떤 걸 만들어보고 싶어?"<br>"수소랑 산소가 합쳐지면 물이 된대. 만약 네가 원자라면 어떤 원자랑 손잡고 싶어?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=jMW_0Ro6b5c" target="_blank">세상을 만드는 가장 작은 알갱이, 원자!</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"우리 몸도, 공기도, 물도 모두 같은 원자로 만들어져 있어. 우리는 모두 우주의 재료로 만들어진 거야!"'},
+    {id:'e9GuJUaX0UM',desc:'원자 속 세 친구: 양성자, 전자, 중성자!',
+      storyHtml:`<h4>📖 ⚛️ 원자 속 세 친구: 양성자, 전자, 중성자!</h4>
+<p class="s-intro">원자 안에는 세 명의 친구가 살고 있어. 아주 작아서 보이지 않지만, 이 세 친구 덕분에 세상 모든 물질이 만들어진단다! 원자 속으로 쏙 들어가 세 친구를 만나보자!</p>
+<div class="story-block"><div class="s-label">➕ 양성자 (Proton) — 긍정 에너지 친구!</div><p>양성자는 원자 한가운데 핵 속에 살아. (+) 양전하를 갖고 있어서 항상 밝고 긍정적인 친구야! 양성자의 개수가 바로 원소의 번호가 된단다. 수소는 1개, 산소는 8개!</p></div>
+<div class="story-block"><div class="s-label">➖ 전자 (Electron) — 빠른 달리기 선수!</div><p>전자는 (-) 음전하를 갖고 있어서 양성자에게 끌려! 핵 주변을 엄청 빠르게 뱅글뱅글 돌아. 전자가 원자 밖으로 튀어나오면? 바로 그게 전기야! 전자가 줄줄이 이동하는 게 전류란다.</p></div>
+<div class="story-block"><div class="s-label">😐 중성자 (Neutron) — 평화로운 중재자!</div><p>중성자는 핵 속에서 양성자 옆에 붙어 있는데, 전하가 없어 (0). 중간에서 평화롭게 지내는 중재자야. 중성자 덕분에 핵이 너무 불안정해지지 않고 안정적으로 유지된단다.</p></div>
+<div class="story-block"><div class="s-label">🏠 원자핵이라는 집</div><p>양성자와 중성자는 함께 핵이라는 집에 살고, 전자는 그 주변을 빠르게 돌아다녀. 핵에 비하면 원자 전체는 엄청 넓어서, 원자의 99.9%는 사실 텅 빈 공간이래! 세상이 거의 텅 비어 있다니 신기하지?</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"원자 가족 역할 놀이: 아빠나 엄마는 '핵(양성자+중성자)', 아이는 '전자'가 되어 주변을 빠르게 돌아다니는 놀이를 해보세요! 전자가 핵에서 멀리 달아나면 '이온이 됐어!'라고 말해주세요."</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"양성자는 (+), 전자는 (-)래. 서로 반대인데 왜 사이좋게 한 원자 안에 있을까?"<br>"원자가 99.9% 텅 빈 공간이래! 그럼 우리가 의자에 앉아도 통과하지 않는 건 왜일까?"<br>"전자가 움직이면 전기가 된대. 우리 집에서 전자가 일하고 있는 물건을 몇 가지나 찾을 수 있어?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=e9GuJUaX0UM" target="_blank">원자 속 세 친구: 양성자, 전자, 중성자!</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"양성자, 전자, 중성자는 서로 다르지만 함께 원자를 만들어. 우리도 서로 다른 친구들이 함께 모여서 더 멋진 걸 만들 수 있어!"'},
+    {id:'efaaNH-LbTQ',desc:'변신의 귀재! 물질의 상태',
+      storyHtml:`<h4>📖 🍦 물 변신 로봇 이야기! 물질의 상태</h4>
+<p class="s-intro">안녕, 꼬마 과학자 친구들! 오늘은 우리가 매일 먹는 맛있는 아이스크림 속에 숨겨진 <strong>'변신의 비밀'</strong>을 알려줄게. 준비됐니? 출발!</p>
+<div class="story-block"><div class="s-label">🍦 1. 아이스크림의 비밀을 찾아라! [00:04]</div><p>친구들, 달콤한 아이스크림이 어떻게 만들어지는지 알아? 아주 차가운 곳에 두면 액체였던 우유가 꽁꽁 얼어서 우리가 좋아하는 아이스크림이 된단다! [03:48] 이처럼 세상 모든 것들은 온도에 따라 변신을 할 수 있어.</p></div>
+<div class="story-block"><div class="s-label">🌧️ 2. 하늘에서 내리는 비와 눈은 형제일까? [00:12]</div><p>하늘에서 내리는 축축한 비, 보들보들한 눈, 그리고 딱딱한 우박! 이 세 가지는 사실 모두 같은 '물' 가족이야. [01:06] 온도가 어떠냐에 따라 모습만 바뀐 거란다.</p></div>
+<div class="story-block"><div class="s-label">♨️ 3. 주방에서 만나는 물 변신 로봇! [01:31]</div><p>우리 집 주방은 물이 변신하기 가장 좋은 곳이야.<br><br><strong>첫 번째 변신 (기체):</strong> 냄비에 물을 담고 불을 켜면, 물이 아주 뜨거워지면서 가벼운 <strong>'수증기'</strong>로 변해 하늘하늘 위로 올라가. [02:07]<br><br><strong>두 번째 변신 (고체):</strong> 물을 얼음 틀에 넣고 냉동실에 두면, 아주 차가워져서 딱딱한 <strong>'얼음'</strong>이 되지! [03:00]<br><br><strong>세 번째 변신 (액체):</strong> 얼음이 녹거나 수증기가 다시 식으면 우리가 마시는 찰랑찰랑한 <strong>'물'</strong>이 된단다.</p></div>
+<div class="story-block"><div class="s-label">🔄 4. 되돌릴 수 있는 변신 vs 못 돌아오는 변신! [05:44]</div><p>물은 얼음이 되었다가 다시 물이 될 수 있지? 이런 걸 <strong>'되돌릴 수 있는 변신(가역 변화)'</strong>이라고 해. 하지만 모든 게 다 그런 건 아니야!<br><br><strong>계란의 비밀:</strong> 액체 같은 계란을 프라이팬에 구우면 하얗고 딱딱해지지? 하지만 이 계란은 다시 액체로 돌아갈 수 없어! [05:51]<br><br><strong>종이의 비밀:</strong> 종이를 불에 태우면 까만 재가 돼버려. 이 재를 다시 하얀 종이로 만들 수는 없지. [06:50] 이런 건 <strong>'다시 돌아올 수 없는 변신(비가역 변화)'</strong>이라고 불러.</p></div>
+<div class="story-block"><div class="s-label">💡 엄마/아빠와 함께하는 퀴즈! [07:05]</div><p>우리 주변에서 또 어떤 변신을 찾을 수 있을까?<br>• 주스를 얼리면 뭐가 될까? (힌트: 맛있는 하드!)<br>• 초콜릿이 햇볕에 녹으면 다시 굳힐 수 있을까?<br><br>우리 친구들도 오늘부터 주변 물건들이 어떻게 변신하는지 잘 관찰해 봐! 👋</p></div>`},{id:'QQsybALJoew',desc:'What is Matter? 물질이란 무엇일까요?',
+      storyHtml:`<h4>📖 🧪 물질이란 무엇일까요? — 세상 모든 것의 비밀!</h4>
+<p class="s-intro">지금 네 주위를 둘러봐. 책상, 컵, 공기, 물... 이 모든 것들에는 공통점이 있어. 바로 '물질(Matter)'이라는 거야! 물질이 뭔지, 어떤 종류가 있는지 같이 알아보자!</p>
+<div class="story-block"><div class="s-label">🤔 물질이란?</div><p>물질은 공간을 차지하고 무게가 있는 모든 것이야. 우리가 만지고, 보고, 냄새 맡을 수 있는 것들은 모두 물질이란다! 빛이나 열, 소리는 물질이 아니야.</p></div>
+<div class="story-block"><div class="s-label">🧊 고체 — 모양이 있는 물질</div><p>고체는 모양이 정해져 있어서 마음대로 변하지 않아. 돌멩이, 나무, 얼음, 책 모두 고체야. 손으로 잡을 수 있고, 눌러도 모양이 잘 안 변해!</p></div>
+<div class="story-block"><div class="s-label">💧 액체 — 흘러다니는 물질</div><p>액체는 담는 그릇에 따라 모양이 바뀌어. 물을 네모난 컵에 담으면 네모, 동그란 컵에 담으면 동그랗게 되지! 물, 주스, 꿀, 기름 모두 액체야.</p></div>
+<div class="story-block"><div class="s-label">💨 기체 — 눈에 안 보이는 물질</div><p>기체는 눈에 보이지 않지만 분명히 있어! 지금 숨쉬는 공기, 풍선 속 공기, 탄산음료의 거품 모두 기체야. 기체는 담는 공간 전체에 퍼지는 특성이 있어.</p></div>
+<div class="story-block"><div class="s-label">🔄 변신하는 물질!</div><p>물은 얼리면 얼음(고체), 가열하면 수증기(기체)가 돼. 같은 물질인데 온도에 따라 모습이 완전히 달라진다니, 정말 신기하지? 이걸 '상태 변화'라고 해.</p></div>
+<div class="story-block tip"><div class="s-label">💡 놀이 팁</div><p>"물질 탐험 놀이: 집 안을 돌아다니며 고체, 액체, 기체를 각각 5개씩 찾아보는 게임을 해보세요! '이건 고체! 왜냐하면 모양이 안 변하거든요!'처럼 이유도 말해보게 하면 과학적 사고력이 쑥쑥!"</p></div>
+<div class="story-block tip"><div class="s-label">❓ 재미있는 질문들</div><p>"아이스크림은 처음엔 고체인데 먹다 보면 어떻게 돼? 왜 그럴까?"<br>"만약 공기가 보인다면 어떤 색깔일 것 같아?"<br>"물이 얼면 얼음이 되고, 끓이면 수증기가 돼. 우리 몸도 뜨겁거나 차가워지면 모습이 변할까?"</p></div>
+<p class="s-intro" style="margin-top:.8rem">📺 영상 다시 보기: <a href="https://www.youtube.com/watch?v=QQsybALJoew" target="_blank">What is Matter? 물질이란 무엇일까요?</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"세상 모든 것이 물질로 이루어져 있어. 우리 몸도 물질이고, 공기도 물질이야. 눈에 보이지 않아도 존재하는 게 있다는 걸 기억해!"'}],
+    storyHtml:`<h4>📖 🧱 세상 모든 것은 무엇으로 만들어졌을까요? (What is Matter?)</h4>
+<p class="s-intro">우리 주변에 있는 모든 것들, 의자, 주스, 그리고 숨 쉬는 공기까지! 이 모든 것들을 과학자들은 '물질(Matter)'이라고 불러.</p>
+<div class="story-block"><div class="s-label">🎯 물질의 두 가지 조건</div><p>물질이 되려면 두 가지 조건이 필요해! 첫째, 자리를 차지해야 해. 네가 가방에 책을 넣으면 자리가 차는 것처럼. 둘째, 무게가 있어야 해. 아주 가볍더라도 저울에 올리면 무게가 나가는 친구들이 바로 물질이야!</p></div>
+<h4 style="margin-top:1.2rem;font-size:1rem;font-weight:900;color:#7dd3c8">📖 🧊 변신의 귀재! 물질의 상태 (States of Matter)</h4>
+<p class="s-intro">물질은 세 가지 모습으로 변신할 수 있어! 물 하나만 봐도 알 수 있지.</p>
+<div class="story-block"><div class="s-label">🧊 딱딱한 고체</div><p>얼음처럼 모양이 딱딱하게 정해져 있는 친구들이야. 입자들이 서로 꼭 껴안고 있어서 움직이지 않지. 마치 수업 시간에 집중해서 자리에 앉아 있는 우리 모습 같아!</p></div>
+<div class="story-block"><div class="s-label">💧 찰랑찰랑 액체</div><p>물처럼 컵에 담으면 컵 모양으로 변하는 친구들이야. 입자들이 손을 잡고 조금씩 움직일 수 있거든. 미끄럼틀을 타고 내려오는 것처럼 자유롭지.</p></div>
+<div class="story-block"><div class="s-label">💨 둥실둥실 기체</div><p>공기나 수증기처럼 눈에 잘 보이지도 않고 어디로든 날아가는 친구들이야. 입자들이 서로 멀리 떨어져서 신나게 뛰어다니고 있어. 마치 운동장에서 뛰어노는 시간 같지?</p></div>
+`,
+    qs:[
+      {scene:'🧱',sceneText:'우리 주변을 둘러봐요! 의자, 물, 공기... 이 중에 물질이 아닌 것이 있을까요?',
+       q:'다음 중 \'물질\'이 아닌 것은 무엇일까요?',
+       choices:['맛있는 사과','시원한 물','행복한 마음','하얀 구름'],ans:2,
+       fact:'사과, 물, 구름은 모두 <strong>자리를 차지하고 무게가 있어서</strong> 물질이에요! 하지만 <strong>행복한 마음</strong>은 무게를 잴 수 없기 때문에 물질이 아니랍니다.'},
+      {scene:'⚖️',sceneText:'물질이 되려면 어떤 조건이 필요할까요? 저울 위에 여러 가지를 올려봐요!',
+       q:'물질이 되기 위해 꼭 필요한 두 가지 조건은?',
+       choices:['예쁜 색깔과 좋은 냄새','자리를 차지하는 것과 무게가 있는 것','이름이 있는 것과 소리가 나는 것','크기와 모양'],ans:1,
+       fact:'물질이 되려면 <strong>자리를 차지하고 무게가 있어야</strong> 해요! 아주 가볍더라도 저울에 올리면 무게가 나가면 물질이에요. 마음이나 빛은 자리를 차지하지 않아서 물질이 아니랍니다.'},
+      {scene:'💨',sceneText:'기체 친구들이 자유롭게 날아다니고 있어요! 기체의 특징은 무엇일까요?',
+       q:'기체 친구들에 대한 설명 중 맞는 것은?',
+       choices:['딱딱해서 모양이 변하지 않아요','컵에 담으면 컵 모양으로 찰랑거려요','눈에 잘 보이지 않지만 어디든 자유롭게 날아다녀요','항상 냄새가 나요'],ans:2,
+       fact:'공기 같은 기체는 <strong>눈에 보이지 않아도 우리 곁에 항상 있답니다!</strong> 기체 입자들은 서로 멀리 떨어져 신나게 뛰어다녀서 어디든 자유롭게 퍼져나가요.'},
+      {scene:'💨',sceneText:'물을 팔팔 끓이니 수증기가 올라가요. 사라지는 것처럼 보이지만 어디 갔을까요?',
+       q:'물을 끓이면 무엇이 될까요?',
+       choices:['사라진다','기체(수증기)가 된다','고체(얼음)가 된다','더 많아진다'],ans:1,
+       fact:'물을 가열하면 <strong>기체(수증기)</strong>가 되어 공중으로 날아가요! 사라진 게 아니라 눈에 안 보이는 수증기가 된 거랍니다. 공기처럼 둥실둥실 날아다녀요.'},
+      {scene:'🔄',sceneText:'물질의 세 가지 상태를 모두 배웠어요. 정리해볼까요?',
+       q:'물질의 상태 3가지를 모두 바르게 말한 것은?',
+       choices:['크다, 작다, 중간','딱딱하다, 부드럽다, 뾰족하다','고체, 액체, 기체','뜨겁다, 차갑다, 미지근하다'],ans:2,
+       fact:'물질은 <strong>고체(딱딱), 액체(찰랑), 기체(둥실)</strong> 세 가지 상태로 존재해요! 같은 물질도 온도에 따라 상태가 바뀔 수 있어요. 물(H₂O)이 대표적인 예랍니다.'},
+    ]
+  },
+  {
+    id:'ai', icon:'🤖', name:'인공지능', color:'#06b6d4',
+    desc:'AI · 머신러닝 · 미래 기술',
+    tip:'<strong>질문 던지기:</strong> "유튜브가 왜 내가 좋아하는 영상을 알고 추천해주는 걸까?", "인공지능이 못 하는 게 뭐가 있을까?" 함께 생각해봐요.<br><br><strong>연결하기:</strong> "AI가 배우는 데이터(정보)가 바로 수학의 통계와 그래프야. 우리가 배우는 수학이 AI의 기초가 된다는 것 알고 있었어?"',
+    vids:[{id:'ttIOdAdQaUE',desc:'인공지능이란 무엇일까요?',
+      storyHtml:`<h4>📖 🤖 생각하는 기계 친구, 인공지능 이야기!</h4>
+<p class="s-intro">안녕, 우리 꼬마 친구! 오늘은 우리가 사는 세상에서 아주아주 똑똑한 '생각하는 기계 친구' 이야기를 해줄게. 이름은 조금 어렵지만 <strong>'인공지능(AI)'</strong>이라고 해! 🤖✨</p>
+<div class="story-block"><div class="s-label">🧠 1. "지능"이 뭐예요? [01:26]</div><p>친구야, 우리가 유치원에서 가나다나 ABC를 배우고, 그 글자들로 단어를 만들고 문제를 푸는 능력을 '지능'이라고 해. 우리가 공부해서 똑똑해지는 것처럼 말이야!</p></div>
+<div class="story-block"><div class="s-label">🤖 2. 기계가 공부를 한다고? '인공지능'! [01:49]</div><p>우리가 머리로 생각하는 것처럼, 로봇이나 컴퓨터도 배운 정보를 가지고 문제를 풀 수 있어. 하지만 이건 사람의 머리가 아니라 기계가 하는 거라서 <strong>'인공지능(Artificial Intelligence)'</strong>이라고 불러.<br><br>혹시 "헤이 구글"이나 "시리야"라고 불러본 적 있니? [00:53] 스스로 운전하는 자동차나, 얼굴을 보고 잠금을 해제하는 핸드폰도 모두 이 인공지능 친구가 도와주고 있는 거란다! [01:03]</p></div>
+<div class="story-block"><div class="s-label">⚡ 3. 인공지능은 무엇을 잘할까요? [03:07]</div><p>인공지능 친구는 엄청나게 많은 정보를 아주아주 빠르게 읽고 정리할 수 있어!<br>• 병원에서: 아픈 사람을 빨리 낫게 도와주고, [02:44]<br>• 공장에서: 로봇이 물건을 척척 만들게 도와주고,<br>• 도로에서: 스스로 운전하는 자동차가 사고 나지 않게 길을 찾아준단다! [02:54]</p></div>
+<div class="story-block"><div class="s-label">⚠️ 4. 인공지능 친구와 사이좋게 지내려면? [03:38]</div><p>인공지능은 아주 힘센 도구지만, 너무 인공지능 친구에게만 의지하면 안 돼!<br>• <strong>스스로 생각하기:</strong> 인공지능이 다 해주면 우리 몸과 마음이 게을러질 수 있어. [03:49]<br>• <strong>책임감 갖기:</strong> 인공지능을 나쁜 곳에 쓰지 않고, 사람들을 돕는 착한 일에만 써야 해. [04:32]</p></div>
+<div class="story-block"><div class="s-label">✨ 신기한 이야기 (트리비아 타임!) [04:45]</div><p>아주 옛날인 1997년에 '딥블루'라는 인공지능 컴퓨터가 세계에서 체스를 제일 잘 두는 챔피언 아저씨를 이긴 적도 있대! 정말 놀랍지? [05:06]</p></div>
+<p style="margin-top:1rem;text-align:center">더 궁금한 게 있다면 아래 영상을 같이 봐볼까?<br>📺 <a href="https://www.youtube.com/watch?v=ttIOdAdQaUE" target="_blank" style="color:#a78bfa;font-weight:bold">영상 보기: What is Artificial Intelligence? - Peekaboo Kidz</a></p>`,
+      tip:'💡 <strong>아이에게 이렇게 말해주세요:</strong><br>"인공지능은 네가 더 멋진 세상을 만들 수 있게 도와주는 아주 똑똑한 조수 같은 친구야. 네가 이 친구를 어떻게 잘 다룰지 공부하다 보면, 나중에 더 멋진 미래를 만들 수 있을 거야!" 🚀'}],
+    storyHtml:`<h4>📖 🤖 내 친구 인공지능! AI는 어떻게 생각할까요?</h4>
+<p class="s-intro">엄마 휴대폰에게 '오늘 날씨 어때?'라고 물어본 적 있니? 내가 좋아할 만한 만화를 척척 찾아주는 TV를 본 적 있어? 이렇게 사람처럼 생각하고 배우는 똑똑한 기계를 바로 '인공지능(AI)'이라고 불러!</p>
+<div class="story-block"><div class="s-label">📚 공부하는 기계</div><p>인공지능은 태어날 때부터 모든 걸 알지는 못해. 하지만 아주아주 많은 사진과 글을 보면서 공부한단다. 수천 장의 강아지 사진을 보고 나면, 나중에는 어떤 강아지 사진을 봐도 '이건 강아지야!'라고 맞힐 수 있게 되지.</p></div>
+<div class="story-block"><div class="s-label">🔍 우리 주위에 숨어있어</div><p>인공지능은 로봇 영화에만 나오는 게 아니야. 우리가 하는 게임 속에도, 엄마가 길을 찾을 때 쓰는 내비게이션 속에도, 우리가 좋아하는 노래를 골라주는 앱 속에도 쏙쏙 숨어있단다.</p></div>
+<div class="story-block"><div class="s-label">🤝 사람을 도와주는 착한 마음</div><p>인공지능은 사람이 하기 힘들거나 위험한 일을 대신 해주기도 해. 하지만 가장 중요한 건, 인공지능을 만드는 것도 사용하는 것도 바로 우리 사람들이라는 거야!</p></div>
+`,
+    qs:[
+      {scene:'🤖',sceneText:'인공지능 친구가 인사를 해요! "안녕, 나는 AI야. 나는 어떻게 똑똑해졌는지 알아?"',
+       q:'인공지능(AI)은 어떻게 똑똑해지는 걸까요?',
+       choices:['잠을 푹 자고 나면 저절로 똑똑해져요','엄청나게 많은 데이터(사진, 글 등)를 보고 스스로 공부해요','마법사가 주문을 걸어주면 똑똑해져요','만들 때부터 모든 것을 다 알고 있어요'],ans:1,
+       fact:'인공지능이 공부하는 과정을 <strong>머신러닝(Machine Learning)</strong>이라고 부르기도 해요! 수천, 수백만 개의 데이터를 보면서 패턴을 익히고 스스로 실력을 키워나간답니다.'},
+      {scene:'🏠',sceneText:'집 안을 둘러봐요! 인공지능이 쓰이는 곳과 아닌 곳을 찾아봐요.',
+       q:'우리 생활 속에서 인공지능이 쓰이는 곳이 아닌 것은?',
+       choices:['내가 좋아할 만한 영상을 추천해 주는 유튜브','말을 하면 척척 알아듣는 인공지능 스피커','전기가 필요 없는 나무 빗자루','길을 알려주는 내비게이션'],ans:2,
+       fact:'나무 빗자루는 스스로 생각하거나 배우는 기능이 없어서 인공지능이 아니에요! 하지만 유튜브 추천, AI 스피커, 내비게이션은 모두 <strong>인공지능 기술</strong>을 사용하고 있답니다.'},
+      {scene:'🤝',sceneText:'인공지능 로봇 친구가 나타났어요! "나는 너를 어떻게 도와줄 수 있을까?" 하고 물어봐요.',
+       q:'인공지능 로봇이 도와준다면 어떤 도움을 받고 싶나요?',
+       choices:['내 방 청소를 대신 해주면 좋겠어요','어려운 수학 문제를 같이 고민해주면 좋겠어요','내가 심심할 때 재미있는 이야기를 들려주면 좋겠어요','위험한 일을 대신 해주면 좋겠어요'],ans:0,
+       fact:'<strong>모두 멋진 생각이에요!</strong> 실제로 인공지능은 집 청소 로봇(룸바), 수학 과외 앱, 이야기를 들려주는 AI 스피커로 이미 우리 곁에 있답니다. 내가 원하는 AI를 직접 만들어볼 수도 있어요!'},
+      {scene:'📸',sceneText:'인공지능이 강아지 사진을 수천 장 보고 있어요! 이제 어떤 강아지도 알아볼 수 있대요.',
+       q:'인공지능이 강아지 사진을 많이 보는 이유는 무엇일까요?',
+       choices:['강아지를 좋아하기 때문에','강아지 사진을 보면서 스스로 강아지를 알아보는 법을 익히기 때문에','강아지 사진이 예쁘기 때문에','시간이 남아서'],ans:1,
+       fact:'인공지능은 수많은 데이터를 보면서 패턴을 익혀요. 이것을 <strong>학습(Training)</strong>이라고 해요! 충분히 학습하고 나면, 처음 보는 강아지 사진도 "강아지야!"라고 정확하게 맞힐 수 있게 된답니다.'},
+      {scene:'🚗',sceneText:'스스로 달리는 자율주행 자동차를 보고 있어요! 운전사 없이도 잘 달리네요.',
+       q:'인공지능이 사람 대신 할 수 있는 일로 적절한 것은?',
+       choices:['친구와 진심으로 웃고 즐기기','위험한 곳에서의 구조 활동이나 반복적인 작업','엄마 아빠를 사랑하기','새로운 꿈을 꾸는 것'],ans:1,
+       fact:'인공지능은 <strong>위험한 환경에서의 구조, 반복적인 작업, 방대한 데이터 분석</strong> 등 사람이 하기 힘든 일을 도와줄 수 있어요! 하지만 사랑하고 꿈꾸는 것은 사람만이 할 수 있는 특별한 능력이에요.'},
+      {scene:'🌟',sceneText:'인공지능 탐험을 마쳤어요! 미래에는 더 멋진 AI 친구들이 생길 거예요.',
+       q:'인공지능에서 가장 중요한 것은 무엇일까요?',
+       choices:['인공지능이 사람보다 모든 것을 더 잘해야 한다','인공지능을 만들고 올바르게 사용하는 것은 사람의 역할이다','인공지능은 혼자서 모든 것을 결정해야 한다','인공지능은 학교에서 배울 필요가 없다'],ans:1,
+       fact:'인공지능을 <strong>만드는 것도, 올바르게 사용하는 것도 바로 사람</strong>이에요! 우리가 인공지능을 어떻게 잘 활용하느냐에 따라 미래는 더 멋지게 변할 수 있어요. 그래서 수학과 과학 공부가 정말 중요하답니다!'},
+    ]
+  },
+];
+
+// ── 상태 ──
+let currentTopic = null;
+let currentQ = 0;
+let score = 0;
+let answered = false;
+const done = {};
+
+// ── 홈 렌더 ──
+function renderHome(){
+  const grid=document.getElementById('topic-grid');
+  grid.innerHTML=TOPICS.map(t=>`
+    <div class="topic-card${done[t.id]?' done':''}" style="--tc:${t.color}" onclick="startTopic('${t.id}')">
+      <span class="topic-badge">${done[t.id]?'✓ 완료':'5문제'}</span>
+      <span class="topic-icon">${t.icon}</span>
+      <h3>${t.name}</h3>
+      <p>${t.desc}</p>
+      ${t.vid?'<span style="font-size:.7rem;color:#a78bfa;margin-top:.5rem;display:block">▶ 영상 포함</span>':''}
+    </div>
+  `).join('');
+}
+
+// ── 주제 선택 → 소개 화면 ──
+function startTopic(id){
+  currentTopic=TOPICS.find(t=>t.id===id);
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('quiz').classList.add('hidden');
+  // 소개 화면 세팅
+  document.getElementById('intro-icon').textContent=currentTopic.icon;
+  document.getElementById('intro-name').textContent=currentTopic.name;
+  document.getElementById('intro-desc').textContent=currentTopic.desc;
+  const va=document.getElementById('video-area');
+  const sa=document.getElementById('story-area');
+  const vids=currentTopic.vids||[];
+  function buildTip(tip){
+    if(!tip) return '';
+    return `<div class="story-block tip"><div class="s-label">💡 아이들에게 읽어주실 때 팁</div><p>${tip}</p></div>`;
+  }
+  function updateStory(vidObj){
+    const story=(vidObj&&vidObj.storyHtml)||currentTopic.storyHtml||'';
+    const tip=buildTip((vidObj&&vidObj.tip)||currentTopic.tip||'');
+    sa.innerHTML='<div class="story-section">'+(story||'')+tip+'</div>';
+  }
+  if(vids.length){
+    let vi=0;
+    function renderVid(){
+      const v=typeof vids[vi]==='object'?vids[vi].id:vids[vi];
+      const vdesc=typeof vids[vi]==='object'?vids[vi].desc:'';
+      va.innerHTML=`
+        ${v?`<a href="https://www.youtube.com/watch?v=${v}" target="_blank"
+           style="display:block;position:relative;border-radius:var(--r);overflow:hidden;margin-bottom:.5rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4)">
+          <img src="https://img.youtube.com/vi/${v}/hqdefault.jpg"
+               style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r)" alt="영상 썸네일">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);border-radius:var(--r);transition:.2s">
+            <div style="width:68px;height:68px;background:rgba(255,0,0,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 2px 12px rgba(0,0,0,.5)">▶</div>
+          </div>
+          <div style="position:absolute;bottom:.6rem;right:.7rem;background:rgba(0,0,0,.6);color:#fff;font-size:.7rem;padding:.2rem .55rem;border-radius:20px">📺 유튜브에서 보기</div>
+        </a>`:''}
+        ${vdesc?`<p style="font-size:.78rem;color:var(--text2);margin:.3rem 0 .6rem;text-align:center">${vdesc}</p>`:''}
+        <div class="vid-nav">
+          <button class="vid-nav-btn" onclick="vidPrev()" ${vi===0?'disabled':''}>‹</button>
+          <span class="vid-counter">📹 ${vi+1} / ${vids.length}</span>
+          <button class="vid-nav-btn" onclick="vidNext()" ${vi===vids.length-1?'disabled':''}>›</button>
+        </div>
+      `;
+      updateStory(vids[vi]);
+    }
+    window.vidPrev=()=>{if(vi>0){vi--;window.currentVidIdx=vi;renderVid();}};
+    window.vidNext=()=>{if(vi<vids.length-1){vi++;window.currentVidIdx=vi;renderVid();}};
+    window.currentVidIdx=0;
+    renderVid();
+  } else {
+    va.innerHTML='<div class="no-vid">📹 이 주제는 곧 영상이 추가될 예정이에요!</div>';
+    updateStory(null);
+  }
+  document.getElementById('intro').classList.remove('hidden');
+}
+
+// ── 퀴즈 실제 시작 ──
+let activeQs=[];
+function beginQuiz(){
+  currentQ=0; score=0; answered=false;
+  // 현재 동영상의 qs 우선, 없으면 주제 qs
+  const vi=window.currentVidIdx||0;
+  const vids=currentTopic.vids||[];
+  const vidObj=typeof vids[vi]==='object'?vids[vi]:null;
+  activeQs=(vidObj&&vidObj.qs)||currentTopic.qs||[];
+  const va=document.getElementById('video-area');
+  va.innerHTML='';
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('quiz-topic-name').textContent=currentTopic.icon+' '+currentTopic.name;
+  renderQ();
+}
+
+// ── 문제 렌더 ──
+function renderQ(){
+  answered=false;
+  const q=activeQs[currentQ];
+  const total=activeQs.length;
+  document.getElementById('progress-fill').style.width=((currentQ/total)*100)+'%';
+  document.getElementById('q-num').textContent=(currentQ+1)+' / '+total;
+  document.getElementById('scene-icon').textContent=q.scene;
+  document.getElementById('scene-text').innerHTML=q.sceneText;
+  document.getElementById('question-text').textContent=q.q;
+  document.getElementById('fact-box').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+  const letters=['A','B','C','D'];
+  document.getElementById('choices').innerHTML=q.choices.map((c,i)=>`
+    <button class="choice" onclick="choose(${i})" id="choice-${i}">
+      <span class="choice-letter">${letters[i]}</span>${c}
+    </button>
+  `).join('');
+}
+
+// ── 답 선택 ──
+function choose(idx){
+  if(answered) return;
+  answered=true;
+  const q=activeQs[currentQ];
+  const btns=document.querySelectorAll('.choice');
+  btns.forEach(b=>b.classList.add('disabled'));
+  btns[idx].classList.add(idx===q.ans?'correct':'wrong');
+  if(idx===q.ans){
+    score++;
+    if(typeof toroSay==='function') toroSay('science','correct');
+    btns[idx].innerHTML='<span class="choice-letter">✓</span>'+q.choices[idx];
+  } else {
+    if(typeof toroSay==='function') toroSay('science','wrong');
+    btns[q.ans].classList.add('correct');
+  }
+  const fb=document.getElementById('fact-box');
+  fb.innerHTML='💡 <strong>재미있는 사실!</strong><br>'+q.fact;
+  fb.classList.remove('hidden');
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('next-btn').textContent=currentQ<activeQs.length-1?'다음 문제 →':'결과 보기 🎉';
+}
+
+// ── 다음 문제 ──
+function nextQ(){
+  currentQ++;
+  if(currentQ>=activeQs.length){ showResult(); return; }
+  renderQ();
+}
+
+// ── 결과 ──
+function showResult(){
+  if(typeof toroSay==='function') toroSay('science','complete',{score,total:activeQs.length});
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  done[currentTopic.id]=true;
+  const total=activeQs.length;
+  const pct=score/total;
+  let icon,title,stars;
+  if(pct===1){icon='🏆';title='완벽해요! 천재 탐험가!';stars='⭐⭐⭐⭐⭐'}
+  else if(pct>=0.8){icon='🎉';title='훌륭해요! 대단한 탐험가!';stars='⭐⭐⭐⭐'}
+  else if(pct>=0.6){icon='👍';title='잘했어요! 과학자 꿈나무!';stars='⭐⭐⭐'}
+  else if(pct>=0.4){icon='💪';title='다시 도전해봐요!';stars='⭐⭐'}
+  else{icon='🚌';title='버스를 타고 다시 탐험!';stars='⭐'}
+  document.getElementById('result-icon').textContent=currentTopic.icon;
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-stars').textContent=stars;
+  document.getElementById('result-score').textContent=`${currentTopic.name} — ${score}/${total}문제 정답!`;
+  renderHome();
+  checkAllDone();
+}
+
+function retryTopic(){ startTopic(currentTopic.id); }
+
+// ── 수료증 ──
+function checkAllDone(){
+  if(TOPICS.every(t=>done[t.id])){
+    document.getElementById('cert-topics').innerHTML=
+      TOPICS.map(t=>`<span class="cert-topic-chip">${t.icon} ${t.name}</span>`).join('');
+    document.getElementById('cert-modal').classList.remove('hidden');
+  }
+}
+function closeCert(){
+  document.getElementById('cert-modal').classList.add('hidden');
+}
+function goHome(){
+  // iframe 정지
+  document.getElementById('video-area').innerHTML='';
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('home').classList.remove('hidden');
+}
+
+renderHome();
+// 설명 페이지에서 넘어올 때 해당 주제 자동 시작
+const hash = location.hash.slice(1);
+if(hash && TOPICS.find(t => t.id === hash)) startTopic(hash);
+</script>
+</body>
+</html>

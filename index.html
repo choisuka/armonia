@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="우리아이행복프로젝트">
+<meta name="description" content="우리아이행복프로젝트 — 부모와 아이가 함께 행복해지는 무료 앱 모음">
+<meta name="theme-color" content="#0a0a1a">
+<title>우리아이행복프로젝트</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --purple:#a855f7;--green:#10b981;--orange:#f59e0b;
+  --blue:#3b82f6;--pink:#ec4899;--teal:#4ade80;--red:#ef4444;
+  --bg:#0a0a1a;
+}
+body{font-family:'Nanum Gothic',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+
+/* 별 */
+#stars-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* 파티클 */
+.float-particle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.5)}10%{opacity:.6}90%{opacity:.3}100%{opacity:0;transform:translateY(-100vh) scale(1.2)}}
+
+/* ── 헤더 ── */
+header{position:relative;z-index:1;text-align:center;padding:80px 24px 60px}
+.logo-wrap{margin:0 auto 28px;width:130px;height:130px;position:relative}
+.logo-wrap svg{width:130px;height:130px}
+.logo-orbit{animation:orbitSpin 8s linear infinite;transform-origin:65px 65px}
+.logo-orbit2{animation:orbitSpin 13s linear infinite reverse;transform-origin:65px 65px}
+@keyframes orbitSpin{to{transform:rotate(360deg)}}
+.logo-pulse{animation:logoPulse 3s ease-in-out infinite;transform-origin:65px 65px}
+@keyframes logoPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 12px rgba(168,85,247,.7))}
+  50%{transform:scale(1.06);filter:drop-shadow(0 0 28px rgba(168,85,247,1))}
+}
+header h1{
+  font-family:'Jua',sans-serif;font-size:2.8rem;
+  background:linear-gradient(90deg,#a855f7,#3b82f6,#10b981,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradientShift 4s ease infinite;background-size:300%;
+}
+@keyframes gradientShift{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+header p{margin-top:14px;font-size:1rem;color:rgba(255,255,255,.6);line-height:1.8}
+#install-fab{
+  display:inline-flex;align-items:center;gap:.5rem;
+  margin-top:1.6rem;padding:.75rem 1.8rem;
+  background:linear-gradient(135deg,#a855f7,#3b82f6);color:#fff;
+  font-family:'Jua',sans-serif;font-weight:800;font-size:.95rem;
+  border:none;border-radius:100px;cursor:pointer;
+  box-shadow:0 4px 24px rgba(168,85,247,.4);transition:transform .2s,box-shadow .2s;
+}
+#install-fab:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(168,85,247,.55)}
+#install-fab.hidden{display:none}
+
+/* 마퀴 */
+.marquee-wrap{overflow:hidden;background:rgba(168,85,247,.08);border-top:1px solid rgba(168,85,247,.2);border-bottom:1px solid rgba(168,85,247,.2);padding:9px 0;position:relative;z-index:1}
+.marquee-inner{display:flex;gap:40px;animation:marqueeRoll 24s linear infinite;white-space:nowrap;font-size:.84rem;color:var(--purple);font-family:'Jua',sans-serif}
+@keyframes marqueeRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── 통계 바 ── */
+.stats-bar{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  padding:32px 40px;max-width:960px;margin:0 auto;
+  display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px;
+}
+.stat-item{text-align:center}
+.stat-num{
+  font-family:'Jua',sans-serif;font-size:2.2rem;
+  background:linear-gradient(135deg,#a855f7,#3b82f6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:.82rem;color:rgba(255,255,255,.5);margin-top:5px}
+
+/* ── 섹션 공통 ── */
+.section{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:52px 24px}
+.section-title{
+  font-family:'Jua',sans-serif;font-size:1.5rem;text-align:center;
+  margin-bottom:36px;display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.section-title::before,.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent)}
+
+/* ── 앱 카드 ── */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.app-card{
+  position:relative;border-radius:20px;padding:24px 20px;
+  text-decoration:none;color:#fff;overflow:hidden;cursor:pointer;
+  transition:transform .3s,box-shadow .3s;border:1px solid rgba(255,255,255,.08);
+}
+.app-card:hover{transform:translateY(-8px) scale(1.02)}
+.app-card>*{position:relative;z-index:1}
+
+.card-purple{background:linear-gradient(135deg,#1e0a3c,#3b0d6e);box-shadow:0 4px 30px rgba(168,85,247,.3)}
+.card-purple:hover{box-shadow:0 12px 50px rgba(168,85,247,.6)}
+.card-green{background:linear-gradient(135deg,#052e16,#064e3b);box-shadow:0 4px 30px rgba(16,185,129,.3)}
+.card-green:hover{box-shadow:0 12px 50px rgba(16,185,129,.6)}
+.card-orange{background:linear-gradient(135deg,#1c1000,#451a03);box-shadow:0 4px 30px rgba(245,158,11,.3)}
+.card-orange:hover{box-shadow:0 12px 50px rgba(245,158,11,.6)}
+.card-blue{background:linear-gradient(135deg,#0c1a3a,#1e3a6e);box-shadow:0 4px 30px rgba(59,130,246,.3)}
+.card-blue:hover{box-shadow:0 12px 50px rgba(59,130,246,.6)}
+.card-teal{background:linear-gradient(135deg,#052e16,#14532d);box-shadow:0 4px 30px rgba(74,222,128,.3)}
+.card-teal:hover{box-shadow:0 12px 50px rgba(74,222,128,.6)}
+.card-pink{background:linear-gradient(135deg,#2d0a1e,#5c1a3a);box-shadow:0 4px 30px rgba(236,72,153,.3)}
+.card-pink:hover{box-shadow:0 12px 50px rgba(236,72,153,.6)}
+.card-red{background:linear-gradient(135deg,#1c0000,#4c0000);box-shadow:0 4px 30px rgba(239,68,68,.3)}
+.card-red:hover{box-shadow:0 12px 50px rgba(239,68,68,.6)}
+
+.card-glow{position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;filter:blur(35px);opacity:.4;z-index:0}
+.glow-purple{background:#a855f7}.glow-green{background:#10b981}.glow-orange{background:#f59e0b}
+.glow-blue{background:#3b82f6}.glow-teal{background:#4ade80}.glow-pink{background:#ec4899}.glow-red{background:#ef4444}
+
+.card-badge{display:inline-block;font-size:.72rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:18px;letter-spacing:1px}
+.badge-purple{background:rgba(168,85,247,.25);color:#c084fc;border:1px solid rgba(168,85,247,.4)}
+.badge-green{background:rgba(16,185,129,.25);color:#6ee7b7;border:1px solid rgba(16,185,129,.4)}
+.badge-orange{background:rgba(245,158,11,.25);color:#fcd34d;border:1px solid rgba(245,158,11,.4)}
+.badge-blue{background:rgba(59,130,246,.25);color:#93c5fd;border:1px solid rgba(59,130,246,.4)}
+.badge-teal{background:rgba(74,222,128,.25);color:#86efac;border:1px solid rgba(74,222,128,.4)}
+.badge-pink{background:rgba(236,72,153,.25);color:#f9a8d4;border:1px solid rgba(236,72,153,.4)}
+.badge-red{background:rgba(239,68,68,.25);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+
+.app-card .icon{font-size:2.8rem;margin-bottom:12px;display:block}
+.app-card h3{font-family:'Jua',sans-serif;font-size:1.3rem;margin-bottom:8px}
+.app-card p{font-size:.86rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.tag{font-size:.73rem;padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12)}
+.play-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 20px;border-radius:50px;
+  font-family:'Jua',sans-serif;font-size:.92rem;font-weight:700;
+  transition:opacity .2s;width:100%;text-decoration:none;color:#fff;
+}
+.play-btn:hover{opacity:.85}
+.btn-purple{background:linear-gradient(135deg,#7c3aed,#a855f7);box-shadow:0 4px 20px rgba(168,85,247,.4)}
+.btn-green{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 20px rgba(16,185,129,.4)}
+.btn-orange{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 4px 20px rgba(245,158,11,.4)}
+.btn-blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 4px 20px rgba(59,130,246,.4)}
+.btn-teal{background:linear-gradient(135deg,#15803d,#4ade80);box-shadow:0 4px 20px rgba(74,222,128,.4)}
+.btn-pink{background:linear-gradient(135deg,#9d174d,#ec4899);box-shadow:0 4px 20px rgba(236,72,153,.4)}
+.btn-red{background:linear-gradient(135deg,#991b1b,#ef4444);box-shadow:0 4px 20px rgba(239,68,68,.4)}
+
+/* ── 날씨 + 포인트 + 추천 ── */
+.weather-section{max-width:960px;margin:0 auto;padding:0 24px 40px;position:relative;z-index:1}
+.top-row{display:flex;gap:14px;margin-bottom:20px}
+.weather-pill{
+  flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;padding:18px 22px;cursor:pointer;
+  display:flex;align-items:center;gap:16px;transition:.2s;
+}
+.weather-pill:hover{border-color:var(--purple);background:rgba(168,85,247,.1)}
+.w-info .temp{font-family:'Jua',sans-serif;font-size:1.4rem;color:var(--orange)}
+.w-info .desc{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:3px}
+.pts-pill{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;padding:18px 22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:110px;
+}
+.pts-val{font-family:'Jua',sans-serif;font-size:1.6rem;color:var(--orange)}
+.pts-lbl{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:3px}
+.api-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:18px;margin-bottom:20px;font-size:.85rem}
+.api-box input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;padding:9px 12px;width:100%;margin-top:8px;font-size:.85rem;outline:none}
+.api-box input:focus{border-color:var(--purple)}
+.api-box button{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none;border-radius:10px;padding:9px 22px;font-family:'Jua',sans-serif;cursor:pointer;margin-top:10px;font-size:.9rem}
+.rec-card{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(59,130,246,.07));border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:22px}
+.rec-label{font-size:.75rem;color:var(--purple);font-weight:700;letter-spacing:.06em;margin-bottom:16px}
+.rec-row{display:flex;gap:12px}
+.rec-item{flex:1;background:rgba(255,255,255,.05);border-radius:14px;padding:16px 10px;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:.2s;text-align:center}
+.rec-item:hover{border-color:var(--purple);transform:translateY(-3px)}
+.rec-ico{font-size:2rem;margin-bottom:7px}
+.rec-lbl{font-size:.7rem;color:rgba(255,255,255,.5)}
+.rec-name{font-family:'Jua',sans-serif;font-size:.88rem;color:#fff;margin-top:5px;line-height:1.35}
+
+/* ── 토로 말풍선 ── */
+.toro-banner{
+  max-width:960px;margin:0 auto 0;padding:0 24px 32px;
+  position:relative;z-index:1;
+}
+.toro-row{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px 24px}
+.toro-face{font-size:2.4rem;flex-shrink:0}
+.toro-txt{font-size:.95rem;line-height:1.75;color:#c8d8e8}
+
+/* ── 상품 스트립 ── */
+.products-wrap{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:52px 0;position:relative;z-index:1}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:32px}
+.product-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;overflow:hidden;transition:transform .2s,border-color .2s}
+.product-card:hover{transform:translateY(-5px);border-color:rgba(245,158,11,.4)}
+.product-img{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.product-info{padding:14px}
+.product-info h4{font-size:.88rem;font-weight:700;margin-bottom:7px;line-height:1.5}
+.product-info .price{font-size:.88rem;color:#fbbf24;font-weight:800;margin-bottom:12px}
+.amazon-btn{display:block;text-align:center;background:linear-gradient(135deg,#d97706,#f59e0b);color:#000;text-decoration:none;border-radius:10px;padding:9px;font-size:.82rem;font-weight:800;transition:opacity .2s}
+.amazon-btn:hover{opacity:.85}
+.amazon-badge{font-size:.68rem;color:rgba(255,255,255,.3);text-align:center;margin-top:7px}
+
+/* ── 블로그/가이드 ── */
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:32px}
+.blog-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;transition:border-color .2s,transform .2s;cursor:pointer;text-decoration:none;display:block;color:#fff}
+.blog-card:hover{border-color:rgba(168,85,247,.4);transform:translateY(-4px)}
+.blog-tag{display:inline-block;font-size:.72rem;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.blog-card h4{font-size:.97rem;font-weight:700;line-height:1.6;margin-bottom:10px}
+.blog-card p{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.75}
+
+/* ── 일기 ── */
+.diary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:32px}
+.diary-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;transition:transform .2s}
+.diary-card:hover{transform:translateY(-4px)}
+.diary-date{font-size:.73rem;color:rgba(255,255,255,.3);margin-bottom:9px}
+.diary-card h4{font-size:.97rem;font-weight:700;line-height:1.6;margin-bottom:10px}
+.diary-card p{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.8}
+.diary-emoji{font-size:2rem;margin-bottom:10px;display:block}
+
+/* ── 기부 ── */
+.donate-wrap{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:52px 0;position:relative;z-index:1}
+.donate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:900px;margin:0 auto}
+.donate-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:18px}
+.donate-icon{font-size:2.4rem;margin-bottom:14px;display:block}
+.donate-card h4{font-family:'Jua',sans-serif;font-size:1.1rem;margin-bottom:10px}
+.donate-card p{font-size:.84rem;color:rgba(255,255,255,.55);line-height:1.8}
+.donate-link{display:inline-block;margin-top:16px;padding:8px 20px;border-radius:22px;font-size:.8rem;font-weight:700;text-decoration:none}
+
+/* iOS 모달 */
+#ios-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:flex-end;justify-content:center}
+#ios-modal.show{display:flex}
+.ios-sheet{background:#1e1040;border-radius:22px 22px 0 0;padding:2rem 1.5rem 3rem;max-width:500px;width:100%;text-align:center}
+.ios-sheet h3{font-family:'Jua',sans-serif;font-size:1.15rem;margin-bottom:1.2rem}
+.ios-sheet p{color:rgba(255,255,255,.6);font-size:.92rem;line-height:2}
+.ios-close{margin-top:1.5rem;padding:.65rem 2.2rem;background:rgba(255,255,255,.1);border:none;border-radius:100px;color:#fff;font-size:.92rem;cursor:pointer}
+
+/* 푸터 */
+footer{position:relative;z-index:1;text-align:center;padding:52px 24px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.footer-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:.9rem;transition:color .2s}
+.footer-links a:hover{color:var(--purple)}
+footer .copy{font-size:.8rem;color:rgba(255,255,255,.25)}
+footer .notice{font-size:.73rem;color:rgba(255,255,255,.2);max-width:580px;margin:12px auto 0;line-height:1.7}
+
+@media(max-width:600px){
+  header{padding:60px 20px 44px}
+  header h1{font-size:2rem}
+  .stats-bar{padding:22px 16px}
+  .stat-num{font-size:1.7rem}
+  .app-grid{grid-template-columns:1fr 1fr}
+  .app-card{padding:22px 16px}
+  .app-card .icon{font-size:2.4rem}
+  .app-card h3{font-size:1.1rem}
+  .rec-row{gap:7px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- 헤더 -->
+<header>
+  <div class="logo-wrap">
+    <svg viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 바깥 원형 테두리 -->
+      <circle cx="55" cy="55" r="52" stroke="url(#grad1)" stroke-width="2" opacity="0.4"/>
+      <!-- 회전하는 점 4개 -->
+      <g class="logo-orbit">
+        <circle cx="55" cy="3"  r="4" fill="#a855f7"/>
+        <circle cx="107" cy="55" r="4" fill="#3b82f6"/>
+        <circle cx="55" cy="107" r="4" fill="#10b981"/>
+        <circle cx="3"  cy="55" r="4" fill="#f59e0b"/>
+      </g>
+      <!-- 중앙 하트+집 합성 아이콘 -->
+      <g class="logo-pulse">
+        <!-- 집 모양 -->
+        <path d="M55 22 L78 42 L78 72 L32 72 L32 42 Z" fill="url(#grad2)" opacity="0.9"/>
+        <polygon points="55,18 82,43 28,43" fill="url(#grad1)"/>
+        <!-- 문 -->
+        <rect x="48" y="54" width="14" height="18" rx="7" fill="rgba(0,0,0,0.35)"/>
+        <!-- 하트 (작게, 집 위) -->
+        <path d="M55 35 C55 35 47 29 47 24 C47 21 49.5 19 52 20 C53.5 20.5 55 22 55 22 C55 22 56.5 20.5 58 20 C60.5 19 63 21 63 24 C63 29 55 35 55 35Z" fill="#ec4899"/>
+      </g>
+      <defs>
+        <linearGradient id="grad1" x1="0" y1="0" x2="110" y2="110" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#a855f7"/>
+          <stop offset="50%" stop-color="#3b82f6"/>
+          <stop offset="100%" stop-color="#10b981"/>
+        </linearGradient>
+        <linearGradient id="grad2" x1="32" y1="22" x2="78" y2="72" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6d28d9"/>
+          <stop offset="100%" stop-color="#1d4ed8"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <h1>우리 아이 행복 프로젝트</h1>
+  <p>수학 · 과학 · 감정 · 행복</p>
+  <p>부모와 아이가 함께 행복해지는 무료 앱 모음<br>토로와 함께하는 모든 탐험의 시작점 🦕</p>
+  <button id="install-fab">📲 앱으로 설치하기</button>
+</header>
+
+<!-- iOS/Android 설치 모달 -->
+<div id="ios-modal">
+  <div class="ios-sheet">
+    <h3>📲 앱 설치 방법</h3>
+    <div id="modal-android" style="display:none">
+      <p>1️⃣ 크롬 오른쪽 상단 <strong>⋮ 메뉴</strong> 탭<br>
+         2️⃣ <strong>"홈 화면에 추가"</strong> 선택<br>
+         3️⃣ <strong>"설치"</strong> 누르면 완료! 🎉</p>
+    </div>
+    <div id="modal-desktop" style="display:none">
+      <p>1️⃣ 주소창 오른쪽 <strong>⊕ 설치 아이콘</strong> 클릭<br>
+         2️⃣ 없으면 <strong>⋮ 메뉴 → "우리아이행복앱 설치"</strong><br>
+         3️⃣ <strong>"설치"</strong> 누르면 바탕화면에 앱 추가! 🎉</p>
+    </div>
+    <div id="modal-ios" style="display:none">
+      <p>1️⃣ Safari 하단 <strong>공유 버튼 □↑</strong> 탭<br>
+         2️⃣ <strong>"홈 화면에 추가"</strong> 선택<br>
+         3️⃣ <strong>"추가"</strong> 누르면 완료! 🎉</p>
+    </div>
+    <button class="ios-close" onclick="document.getElementById('ios-modal').classList.remove('show')">닫기</button>
+  </div>
+</div>
+
+<!-- 마퀴 -->
+<div class="marquee-wrap">
+  <div class="marquee-inner" id="marquee-inner"></div>
+</div>
+
+<!-- 통계 바 -->
+<div class="stats-bar" style="margin:32px auto">
+  <div class="stat-item">
+    <div class="stat-num">5</div>
+    <div class="stat-label">무료 앱</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="cnt-users">0</div>
+    <div class="stat-label">누적 방문</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">무료 · 광고 없음</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">언제나 이용 가능</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="hub-pts" style="font-size:1.6rem">0P</div>
+    <div class="stat-label">🏅 통합 포인트</div>
+  </div>
+</div>
+
+<!-- 토로 말풍선 -->
+<div class="toro-banner">
+  <div class="toro-row">
+    <span class="toro-face">🦕</span>
+    <div class="toro-txt" id="toro-daily">오늘도 토로와 함께 멋진 탐험을 시작해볼까요? 🌟</div>
+  </div>
+</div>
+
+<!-- 날씨 + 포인트 + 추천 -->
+<div class="weather-section">
+  <div class="top-row">
+    <div class="weather-pill" onclick="refreshWeather()">
+      <div style="font-size:2.6rem" id="w-icon">🌤️</div>
+      <div class="w-info">
+        <div class="temp" id="w-temp">--°C</div>
+        <div class="desc" id="w-desc">날씨 불러오는 중</div>
+      </div>
+    </div>
+    <div class="pts-pill">
+      <div class="pts-val" id="pts-big">0</div>
+      <div class="pts-lbl">🏅 통합 포인트</div>
+    </div>
+  </div>
+  <div class="api-box" id="api-box" style="display:none">
+    <b style="color:var(--orange)">⚙️ 날씨 연동 (선택)</b><br>
+    <span style="color:rgba(255,255,255,.5)">openweathermap.org 무료 API 키 입력</span>
+    <input id="api-key" placeholder="API Key..."/>
+    <input id="api-city" placeholder="도시명 (예: Seoul)" value="Seoul"/>
+    <button onclick="saveApi()">저장하기</button>
+  </div>
+  <div class="rec-card">
+    <div class="rec-label">📡 오늘 날씨에 맞는 토로 추천</div>
+    <div class="rec-row">
+      <div class="rec-item" onclick="location.href='https://choisuka.github.io/Happy-day/'">
+        <div class="rec-ico">📜</div>
+        <div class="rec-lbl">오늘의 시</div>
+        <div class="rec-name" id="rec-poem">불러오는 중</div>
+      </div>
+      <div class="rec-item" onclick="location.href='https://choisuka.github.io/Happy-day/'">
+        <div class="rec-ico">🎵</div>
+        <div class="rec-lbl">어울리는 음악</div>
+        <div class="rec-name" id="rec-music">불러오는 중</div>
+      </div>
+      <div class="rec-item" onclick="location.href='https://choisuka.github.io/Happy-day/'">
+        <div class="rec-ico">🖼️</div>
+        <div class="rec-lbl">오늘의 명화</div>
+        <div class="rec-name" id="rec-art">불러오는 중</div>
+      </div>
+      <div class="rec-item" onclick="location.href='science_game/index.html'">
+        <div class="rec-ico">🎯</div>
+        <div class="rec-lbl">오늘의 미션</div>
+        <div class="rec-name" id="rec-mission">불러오는 중</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 앱 선택 -->
+<section class="section">
+  <h2 class="section-title">🎮 앱 선택</h2>
+  <div class="app-grid">
+
+    <a class="app-card card-red" href="https://choisuka.github.io/naesarang/">
+      <div class="card-glow glow-red"></div>
+      <span class="card-badge badge-red">💗 부모용</span>
+      <span class="icon">❤️</span>
+      <h3>내사랑</h3>
+      <p>화가 나려는 순간, 마이크가 먼저 알아챕니다. 아이 사진이 나타나 감정을 부드럽게 케어해주는 부모 감정 관리 앱.</p>
+      <div class="tags"><span class="tag">🎙️ 마이크 감지</span><span class="tag">💗 감정 관리</span><span class="tag">📷 아이 사진</span></div>
+      <div class="play-btn btn-red">▶ 앱 시작하기</div>
+    </a>
+
+    <a class="app-card card-pink" href="https://choisuka.github.io/Happy-day/">
+      <div class="card-glow glow-pink"></div>
+      <span class="card-badge badge-pink">☀️ 가족용</span>
+      <span class="icon">🌤️</span>
+      <h3>행복한 하루</h3>
+      <p>오늘 날씨에 딱 맞는 음악·시·명화·나들이 장소 추천. 매일 새로운 문화 큐레이션으로 가족과 함께!</p>
+      <div class="tags"><span class="tag">🌦️ 날씨 연동</span><span class="tag">🎵 음악 추천</span><span class="tag">🖼️ 명화 감상</span></div>
+      <div class="play-btn btn-pink">▶ 하루 시작하기</div>
+    </a>
+
+    <a class="app-card card-teal" href="https://choisuka.github.io/toro/">
+      <div class="card-glow glow-teal"></div>
+      <span class="card-badge badge-teal">🦕 감정 교육</span>
+      <span class="icon">🌳</span>
+      <h3>마음숲 30일</h3>
+      <p>매일 5분, 공룡 토로와 함께 30일 감정 모험! 동화·활동·부모 가이드로 아이의 마음 근육을 키워요.</p>
+      <div class="tags"><span class="tag">🦕 30일 동화</span><span class="tag">💚 감정 교육</span><span class="tag">👨‍👩‍👧 부모 가이드</span></div>
+      <div class="play-btn btn-teal">▶ 모험 시작하기</div>
+    </a>
+
+    <a class="app-card card-blue" href="https://choisuka.github.io/science_game/">
+      <div class="card-glow glow-blue"></div>
+      <span class="card-badge badge-blue">🔬 과학 탐험</span>
+      <span class="icon">🚀</span>
+      <h3>과학 탐험대</h3>
+      <p>공룡·우주·식물·전기·원소까지! 영상과 이야기로 배우고 퀴즈로 확인하는 신나는 STEM.</p>
+      <div class="tags"><span class="tag">🦕 공룡</span><span class="tag">🌌 우주</span><span class="tag">⚡ 전기</span><span class="tag">🌿 식물</span></div>
+      <div class="play-btn btn-blue">▶ 탐험 시작하기</div>
+    </a>
+
+    <a class="app-card card-orange" href="https://choisuka.github.io/world_history/">
+      <div class="card-glow glow-orange"></div>
+      <span class="card-badge badge-orange">🌍 역사 탐험</span>
+      <span class="icon">🌍</span>
+      <h3>토로의 세계사 탐험</h3>
+      <p>고대 이집트부터 현대 AI까지! 공룡 토로와 함께하는 시간여행. 4개 시대를 펼쳐서 읽어요.</p>
+      <div class="tags"><span class="tag">🏛️ 고대</span><span class="tag">⚔️ 중세</span><span class="tag">🔭 근세</span><span class="tag">🚀 현대</span></div>
+      <div class="play-btn btn-orange">▶ 시간여행 시작하기</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- 추천 육아용품 -->
+<div class="products-wrap">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <h2 class="section-title">🛒 추천 육아용품</h2>
+    <p style="text-align:center;color:rgba(255,255,255,.4);font-size:.88rem">아이 발달에 도움이 되는 엄선 제품들</p>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-img">🧩</div>
+        <div class="product-info">
+          <h4>어린이 수학 학습 블록 세트</h4>
+          <div class="price">₩35,000~</div>
+          <a class="amazon-btn" href="https://www.amazon.co.jp/s?k=kids+math+learning+blocks" target="_blank" rel="nofollow noopener">🛒 아마존에서 보기</a>
+          <p class="amazon-badge">Amazon 파트너 링크</p>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">📚</div>
+        <div class="product-info">
+          <h4>유아 감정 그림책 세트 (5권)</h4>
+          <div class="price">₩28,000~</div>
+          <a class="amazon-btn" href="https://www.amazon.co.jp/s?k=kids+emotion+picture+book" target="_blank" rel="nofollow noopener">🛒 아마존에서 보기</a>
+          <p class="amazon-badge">Amazon 파트너 링크</p>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">🎮</div>
+        <div class="product-info">
+          <h4>어린이 학습용 태블릿</h4>
+          <div class="price">₩89,000~</div>
+          <a class="amazon-btn" href="https://www.amazon.co.jp/s?k=kids+learning+tablet" target="_blank" rel="nofollow noopener">🛒 아마존에서 보기</a>
+          <p class="amazon-badge">Amazon 파트너 링크</p>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img">🎨</div>
+        <div class="product-info">
+          <h4>어린이 미술 창의력 키트</h4>
+          <div class="price">₩22,000~</div>
+          <a class="amazon-btn" href="https://www.amazon.co.jp/s?k=kids+art+creative+kit" target="_blank" rel="nofollow noopener">🛒 아마존에서 보기</a>
+          <p class="amazon-badge">Amazon 파트너 링크</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 육아 완전 가이드 -->
+<section class="section">
+  <h2 class="section-title">📖 육아 완전 가이드</h2>
+  <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.92rem;margin-bottom:8px">필수용품 · 추천도서 · 음악 · 미술 · 운동 · 여행</p>
+  <div class="blog-grid">
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/Happy-day/'" style="border-color:rgba(168,85,247,.2)">
+      <span class="blog-tag" style="background:rgba(168,85,247,.2);color:#c084fc">🛍️ 필수용품</span>
+      <h4>연령별 꼭 필요한 육아용품</h4>
+      <p>0~7세까지 낭비 없이 꼭 필요한 것만 골라 단계별로 정리. 카시트·모빌·블록·자전거까지.</p>
+    </div>
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/guide_books.html'" style="border-color:rgba(16,185,129,.2)">
+      <span class="blog-tag" style="background:rgba(16,185,129,.2);color:#6ee7b7">📚 추천도서</span>
+      <h4>아이 마음을 여는 그림책 100선</h4>
+      <p>달님 안녕·강아지똥·괴물들이 사는 나라 등 연령별 엄선 도서. 감각 자극부터 감정 이해까지.</p>
+    </div>
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/Happy-day/'" style="border-color:rgba(59,130,246,.2)">
+      <span class="blog-tag" style="background:rgba(59,130,246,.2);color:#93c5fd">🎵 음악</span>
+      <h4>유튜브로 바로 듣는 아이 발달 음악</h4>
+      <p>호두까기 인형·동물의 사육제·브람스 자장가. 뇌 발달·수면 유도·언어 발달에 도움 되는 목록.</p>
+    </div>
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/art_guide.html'" style="border-color:rgba(236,72,153,.2)">
+      <span class="blog-tag" style="background:rgba(236,72,153,.2);color:#f9a8d4">🎨 미술</span>
+      <h4>창의력을 키우는 연령별 미술 활동</h4>
+      <p>핑거페인팅·스탬프·마블링·점토까지. 결과보다 과정이 중요한 미술 육아법과 준비물 안내.</p>
+    </div>
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/toro/'" style="border-color:rgba(245,158,11,.2)">
+      <span class="blog-tag" style="background:rgba(245,158,11,.2);color:#fcd34d">⚽ 운동</span>
+      <h4>하루 60분 신체 활동이 뇌를 키운다</h4>
+      <p>모래놀이·킥보드·줄넘기·수영·태권도까지. 연령별 권장 운동과 실내외 신체 활동 아이디어.</p>
+    </div>
+    <div class="blog-card" onclick="location.href='https://choisuka.github.io/science_game/'" style="border-color:rgba(6,182,212,.2)">
+      <span class="blog-tag" style="background:rgba(6,182,212,.2);color:#67e8f9">✈️ 여행</span>
+      <h4>아이와 떠나는 국내 여행 베스트</h4>
+      <p>레고랜드·에코랜드·산천어축제·어린이박물관까지. 연령별 추천 여행지와 15가지 실전 팁.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 육아 일기 -->
+<section class="section" style="padding-top:0">
+  <h2 class="section-title">📝 오늘의 토로 일기</h2>
+  <p style="text-align:center;color:rgba(255,255,255,.4);font-size:.88rem;margin-bottom:4px" id="diary-date-lbl"></p>
+  <div class="diary-grid" id="diary-grid"></div>
+</section>
+
+<!-- 기부 섹션 -->
+<div class="donate-wrap">
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <h2 class="section-title">💚 수익의 일부를 나눕니다</h2>
+    <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.92rem;margin-bottom:36px">이 사이트에서 발생하는 수익의 일부는 세상을 바꾸는 곳에 전달됩니다</p>
+    <div class="donate-grid">
+      <div class="donate-card">
+        <span class="donate-icon">🏥</span>
+        <h4 style="color:#f9a8d4">국경없는의사회 (MSF)</h4>
+        <p>전쟁·재난·질병으로 고통받는 지역에서 무료 의료 서비스를 제공합니다. 우리 아이가 건강하게 자라는 동안, 다른 나라의 아이들도 치료받을 수 있도록.</p>
+        <a class="donate-link" href="https://msf.or.kr" target="_blank" rel="noopener" style="background:rgba(249,168,212,.15);color:#f9a8d4;border:1px solid rgba(249,168,212,.3)">🔗 msf.or.kr</a>
+      </div>
+      <div class="donate-card">
+        <span class="donate-icon">🌱</span>
+        <h4 style="color:#6ee7b7">그린피스 (Greenpeace)</h4>
+        <p>우리 아이들이 살아갈 지구를 지킵니다. 기후 위기·해양 오염·산림 파괴에 맞서 싸우는 환경 단체. 지금의 작은 기부가 아이의 미래를 바꿉니다.</p>
+        <a class="donate-link" href="https://www.greenpeace.org/korea" target="_blank" rel="noopener" style="background:rgba(110,231,183,.15);color:#6ee7b7;border:1px solid rgba(110,231,183,.3)">🔗 greenpeace.org/korea</a>
+      </div>
+      <div class="donate-card">
+        <span class="donate-icon">👧</span>
+        <h4 style="color:#93c5fd">유니세프 (UNICEF)</h4>
+        <p>우리 아이가 수학 게임을 즐기는 그 시간, 학교도 못 가는 아이들이 있습니다. 수익의 일부로 교육 기회를 지원합니다.</p>
+        <a class="donate-link" href="https://www.unicef.or.kr" target="_blank" rel="noopener" style="background:rgba(147,197,253,.15);color:#93c5fd;border:1px solid rgba(147,197,253,.3)">🔗 unicef.or.kr</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:26px;font-size:.78rem;color:rgba(255,255,255,.25)">* 아마존 제휴 수익 발생 시 일정 비율을 분기별로 기부합니다.</p>
+  </div>
+</div>
+
+<!-- 푸터 -->
+<footer>
+  <div class="footer-links">
+    <a href="https://choisuka.github.io/science_game/">🚀 과학탐험대</a>
+    <a href="https://choisuka.github.io/toro/">🌳 마음숲 30일</a>
+    <a href="https://choisuka.github.io/Happy-day/">🌤️ 행복한하루</a>
+    <a href="https://choisuka.github.io/naesarang/">❤️ 내사랑</a>
+    <a href="https://choisuka.github.io/world_history/">🌍 세계사탐험</a>
+  </div>
+  <p class="copy">© 2026 우리아이행복앱 🦕</p>
+  <p class="notice">이 사이트는 Amazon Associates 프로그램에 참여하고 있습니다. 상품 링크를 통해 구매 시 소정의 수수료를 받을 수 있습니다.</p>
+</footer>
+
+<script>
+// ── 별 배경 ──
+const canvas=document.getElementById('stars-canvas');
+const ctx=canvas.getContext('2d');
+let stars=[];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+function initStars(){
+  stars=[];
+  for(let i=0;i<160;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.6+.3,o:Math.random(),speed:Math.random()*.3+.1,twinkle:Math.random()*Math.PI*2});
+}
+initStars();
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    s.twinkle+=.018;
+    const op=(Math.sin(s.twinkle)*.3+.7)*s.o;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${op.toFixed(2)})`;ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// ── 파티클 ──
+function spawnParticle(){
+  const el=document.createElement('div');
+  el.className='float-particle';
+  const sz=Math.random()*7+2;
+  const cls=['#a855f7','#3b82f6','#10b981','#f59e0b','#ec4899'];
+  el.style.cssText=`width:${sz}px;height:${sz}px;background:${cls[Math.floor(Math.random()*cls.length)]};left:${Math.random()*100}vw;bottom:-10px;animation-duration:${Math.random()*9+6}s;animation-delay:${Math.random()*4}s`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),16000);
+}
+setInterval(spawnParticle,900);
+
+// ── 마퀴 ──
+const MT='🚀 과학 탐험대 &nbsp;|&nbsp; 🌳 마음숲 30일 &nbsp;|&nbsp; 🌤️ 행복한 하루 &nbsp;|&nbsp; ❤️ 내사랑 &nbsp;|&nbsp; 🌍 세계사 탐험 &nbsp;|&nbsp; ';
+document.getElementById('marquee-inner').innerHTML=MT.repeat(4);
+
+// ── 방문자 카운터 ──
+function animCount(el,target){
+  let c=0;const step=Math.max(1,Math.ceil(target/50));
+  const t=setInterval(()=>{c=Math.min(c+step,target);el.textContent=c.toLocaleString();if(c>=target)clearInterval(t);},40);
+}
+const visits=parseInt(localStorage.getItem('armoonia_visits')||'0')+1;
+localStorage.setItem('armoonia_visits',visits);
+animCount(document.getElementById('cnt-users'),visits);
+
+// ── 날씨 테마 ──
+const THEMES={
+  Clear:       {icon:'☀️',poems:['봄날','햇살의 노래','빛의 오후'],           music:['비발디 봄','Here Comes the Sun','Happy'],           arts:['그랑드 자트의 일요일','비너스의 탄생','인상 — 해돋이'],        mission:'과학 탐험 도전!'},
+  Clouds:      {icon:'☁️',poems:['구름 위에서','몽상가','하늘 이야기'],        music:['Clair de Lune','구름빵 OST','라흐마니노프'],          arts:['건초 수레','파리 거리 빗속'],                               mission:'행복한 하루 시작!'},
+  Rain:        {icon:'🌧️',poems:['달봄 강가','봄비','비 오는 날의 편지'],     music:['쇼팽 빗방울','November Rain','Rain Song'],           arts:['우산들 — 르누아르','빗속의 파리 거리'],                       mission:'마음숲 30일 도전!'},
+  Drizzle:     {icon:'🌦️',poems:['이슬비','촉촉한 오후','부슬비'],            music:['쇼팽 빗방울','La Vie en Rose','Rainy Day'],          arts:['수련 — 모네','이슬 맺힌 풀밭'],                             mission:'오늘 일기 쓰기!'},
+  Snow:        {icon:'❄️',poems:['첫눈','하얀 세상','눈꽃'],                  music:['차이코프스키 호두까기','Let It Go','White Christmas'],arts:['까치 — 모네','겨울 풍경 — 프리드리히','눈 속의 사냥꾼'],        mission:'세계사 탐험 도전!'},
+  Thunderstorm:{icon:'⛈️',poems:['천둥소리','폭풍 속에서'],                   music:['베토벤 운명','Thunderstruck'],                       arts:['폭풍 — 터너','별이 빛나는 밤'],                             mission:'과학 탐험 도전!'},
+  night:       {icon:'🌙',poems:['별빛 아래','달의 노래','고요한 밤'],         music:['드뷔시 달빛','Moonlight Sonata','Starry Night'],     arts:['별이 빛나는 밤 — 반 고흐','달빛 아래 — 드뷔시'],               mission:'오늘 일기 쓰기!'},
+  default:     {icon:'🌤️',poems:['오늘의 시','바람과 나','계절의 끝'],        music:['드뷔시 달빛','사계','봄날'],                         arts:['진주 귀걸이를 한 소녀','이삭 줍는 여인들'],                  mission:'탐험 시작하기!'},
+};
+const TORO_MSGS=[
+  "오늘 날씨에 어울리는 탐험을 추천해줄게! 🗺️",
+  "어제보다 한 걸음 더! 토로가 응원해! 💚",
+  "공부도 놀이야 — 같이 즐겨보자! 🎮",
+  "오늘도 뭔가 새로운 걸 배울 수 있어! ✨",
+  "탄천 친구들이 기다리고 있어! 🐟",
+  "작은 노력이 쌓여서 큰 실력이 돼! 🌱",
+  "오늘의 탐험을 시작해볼까? 함께 가자! 🦕",
+  "모르는 게 나오면 토로한테 물어봐! 뭐든 같이 생각해볼게 🤔",
+  "틀려도 괜찮아 — 틀림이 실력의 씨앗이거든! 🌰",
+  "오늘 한 가지만 더 배워보자! 그게 진짜 힘이야 💪",
+  "탐험가는 길을 잃어도 포기하지 않아! 🧭",
+  "어려운 문제일수록 풀었을 때 짜릿해! ⚡",
+  "매일 조금씩, 나중엔 엄청난 차이가 생겨! 📈",
+  "지금 이 순간이 미래의 나를 만들고 있어 🌟",
+  "호기심이 있는 한 토로는 항상 여기 있을게! 🦕",
+  "실수는 뇌가 자라는 소리야 — 들려? 🌿",
+  "오늘 배운 걸 내일 또 만나면 얼마나 반가울지! 😊",
+  "새로운 탐험의 길이 열렸어 — 같이 가볼까? 🗺️",
+  "집중 5분이면 충분해! 시작이 반이야 ⏱️",
+  "어제의 어려움이 오늘의 실력이 됐어! 👑",
+  "별도 처음엔 작은 빛이었어. 너도 빛날 수 있어! ⭐",
+  "생각하는 힘이 쌓이면 세상이 달라 보여! 🔭",
+  "풀리지 않는 문제는 없어 — 방법이 아직 안 보일 뿐이야 🗝️",
+  "오늘 탐험한 지식은 평생 네 것이야! 🎒",
+  "실력은 속이지 않아 — 꾸준히 하면 반드시 늘어! 🏆",
+  "모든 천재는 처음엔 초보였어. 지금 잘 하고 있어! 🌈",
+  "궁금한 게 많을수록 더 똑똑해지는 거야! 🧠",
+  "오늘도 토로와 함께라서 든든해! 🦕💚",
+  "세상에서 제일 멋진 탐험, 지금 시작해! 🚀",
+];
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function applyTheme(key){
+  const t=THEMES[key]||THEMES.default;
+  document.getElementById('w-icon').textContent=t.icon;
+  document.getElementById('rec-poem').textContent=pick(t.poems);
+  document.getElementById('rec-music').textContent=pick(t.music);
+  document.getElementById('rec-art').textContent=pick(t.arts);
+  document.getElementById('rec-mission').textContent=t.mission;
+}
+function fetchWeather(key,city){
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=metric&lang=kr`)
+    .then(r=>r.json()).then(d=>{
+      const h=new Date().getHours();
+      const wk=(h<6||h>=20)?'night':(d.weather[0].main||'default');
+      document.getElementById('w-temp').textContent=Math.round(d.main.temp)+'°C';
+      document.getElementById('w-desc').textContent=d.weather[0].description;
+      applyTheme(wk);
+    }).catch(()=>applyTheme('default'));
+}
+function refreshWeather(){
+  const k=localStorage.getItem('owm_key');
+  if(!k){document.getElementById('api-box').style.display='block';return;}
+  fetchWeather(k,localStorage.getItem('owm_city')||'Seoul');
+}
+function saveApi(){
+  const k=document.getElementById('api-key').value.trim();
+  const c=document.getElementById('api-city').value.trim()||'Seoul';
+  if(!k)return;
+  localStorage.setItem('owm_key',k);localStorage.setItem('owm_city',c);
+  document.getElementById('api-box').style.display='none';
+  fetchWeather(k,c);
+}
+
+// ── 일기 ──
+const DIARY=[
+  {emoji:'🌈',tag:'과학 탐험',title:'우주 여행을 했어요',body:'별이 얼마나 큰지 알게 됐고 언젠가 우주에 가보고 싶어요. 퀴즈도 4/5 맞혔어요!'},
+  {emoji:'🎵',tag:'행복한 하루',title:'음악과 함께한 공부',body:'오늘 날씨에 맞는 음악을 들으며 공부했어요. 비발디 봄을 들으니 집중이 훨씬 잘 됐어요!'},
+  {emoji:'🦕',tag:'마음숲 30일',title:'토로와 15일째',body:'오늘은 슬픈 감정에 대해 배웠어요. 슬퍼도 괜찮다는 걸 알았어요. 마음이 든든해졌어요.'},
+  {emoji:'❤️',tag:'내사랑',title:'오늘 화내지 않았어요',body:'마이크가 목소리를 감지하기 전에 아이 사진이 먼저 떠올랐어요. 덕분에 웃으며 넘겼어요.'},
+  {emoji:'🚀',tag:'과학 탐험',title:'전기 실험을 해봤어요',body:'전구에 불이 켜지는 원리를 배웠어요. 집에서 직접 실험해보고 싶어졌어요!'},
+  {emoji:'🌍',tag:'세계사 탐험',title:'이집트 피라미드의 비밀',body:'어떻게 저 큰 돌을 옮겼을까? 고대 이집트가 너무 신기하고 재미있었어요.'},
+];
+function renderDiary(){
+  const today=new Date();
+  const seed=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
+  const shuffled=[...DIARY].sort((a,b)=>Math.sin(seed*DIARY.indexOf(a)+1)%1-Math.sin(seed*DIARY.indexOf(b)+1)%1);
+  const colors=['rgba(236,72,153,.25)','rgba(168,85,247,.25)','rgba(16,185,129,.25)'];
+  const ds=today.toLocaleDateString('ko-KR',{month:'long',day:'numeric'});
+  document.getElementById('diary-date-lbl').textContent=ds+' — 오늘 토로와 함께한 이야기';
+  document.getElementById('diary-grid').innerHTML=shuffled.slice(0,3).map((d,i)=>`
+    <div class="diary-card" style="border-color:${colors[i]}">
+      <span class="diary-emoji">${d.emoji}</span>
+      <div class="diary-date">${d.tag}</div>
+      <h4>${d.title}</h4>
+      <p>${d.body}</p>
+    </div>`).join('');
+}
+
+// ── PWA 설치 ──
+const fab=document.getElementById('install-fab');
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+let deferredPrompt=null;
+if(isStandalone)fab.classList.add('hidden');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+fab.addEventListener('click',async()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const{outcome}=await deferredPrompt.userChoice;
+    if(outcome==='accepted')fab.classList.add('hidden');
+    deferredPrompt=null;return;
+  }
+  document.getElementById('modal-android').style.display='none';
+  document.getElementById('modal-desktop').style.display='none';
+  document.getElementById('modal-ios').style.display='none';
+  if(isIOS) document.getElementById('modal-ios').style.display='block';
+  else if(/android/i.test(navigator.userAgent)) document.getElementById('modal-android').style.display='block';
+  else document.getElementById('modal-desktop').style.display='block';
+  document.getElementById('ios-modal').classList.add('show');
+});
+window.addEventListener('appinstalled',()=>fab.classList.add('hidden'));
+
+// ── 초기화 ──
+window.onload=()=>{
+  const pts=parseInt(localStorage.getItem('toroMasterPoints')||'0');
+  document.getElementById('hub-pts').textContent=pts.toLocaleString()+'P';
+  document.getElementById('pts-big').textContent=pts.toLocaleString()+'P';
+  document.getElementById('toro-daily').textContent=TORO_MSGS[new Date().getDay()%TORO_MSGS.length];
+  const k=localStorage.getItem('owm_key');
+  if(k) fetchWeather(k,localStorage.getItem('owm_city')||'Seoul');
+  else{applyTheme('default');document.getElementById('api-box').style.display='block';}
+  renderDiary();
+};
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});
+}
+</script>
+</body>
+</html>

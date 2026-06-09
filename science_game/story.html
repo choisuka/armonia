@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>과학 탐험 이야기 🔭</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#001219;--bg2:#0a4a52;--bg3:#0e7490;--text:#f1f5f9;--text2:#94d2bd;--r:16px}
+html,body{background:linear-gradient(160deg,#001219 0%,#005f73 100%);color:var(--text);font-family:'Segoe UI','Apple SD Gothic Neo',sans-serif;min-height:100%;overflow-x:hidden}
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 1.2rem 4rem}
+.hidden{display:none!important}
+
+/* 홈 */
+#home{text-align:center;padding-top:3rem}
+#home h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;margin:.6rem 0 .3rem;
+  background:linear-gradient(135deg,#f97316,#eab308,#22c55e,#3b82f6,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#home .sub{color:var(--text2);font-size:.95rem;margin-bottom:.8rem}
+.back-home{display:inline-flex;align-items:center;gap:.4rem;color:#a78bfa;text-decoration:none;font-size:.85rem;margin-bottom:2rem}
+.story-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:1.2rem;text-align:left}
+.story-card{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);
+  padding:1.3rem 1.1rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;
+  position:relative;overflow:hidden}
+.story-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.5);border-color:var(--tc)}
+.sc-icon{font-size:2.4rem;display:block;margin-bottom:.5rem}
+.story-card h3{font-size:1rem;font-weight:800;margin-bottom:.25rem}
+.story-card p{font-size:.75rem;color:var(--text2);line-height:1.5}
+.sc-cnt{position:absolute;top:.7rem;right:.7rem;font-size:.62rem;font-weight:700;
+  padding:.15rem .45rem;border-radius:20px;background:rgba(255,255,255,.08);color:var(--text2)}
+
+/* 스토리 화면 */
+#story{padding-top:1.5rem}
+.s-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem}
+.s-back{background:rgba(255,255,255,.07);border:none;border-radius:50%;width:38px;height:38px;
+  font-size:1rem;cursor:pointer;color:var(--text);flex-shrink:0}
+.s-title{font-weight:800;font-size:1.05rem}
+.s-prog{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px}
+.s-prog-fill{height:100%;border-radius:3px;transition:width .5s}
+.s-cnt-txt{font-size:.78rem;color:var(--text2);white-space:nowrap}
+
+.scene{background:var(--bg2);border-radius:var(--r);overflow:hidden;margin-bottom:1.2rem;
+  border:1px solid rgba(255,255,255,.07);min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.6rem;text-align:center;position:relative}
+.scene-bg{position:absolute;inset:0;z-index:0;opacity:.13;font-size:10rem;display:flex;align-items:center;justify-content:center;pointer-events:none;filter:blur(2px)}
+.scene-content{position:relative;z-index:1}
+.s-big-icon{font-size:4.5rem;display:block;margin-bottom:1rem;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.s-scene-title{font-size:1.4rem;font-weight:900;margin-bottom:.8rem;line-height:1.4}
+.s-scene-text{font-size:.92rem;color:var(--text2);line-height:1.9;max-width:580px}
+.s-scene-text strong{color:var(--text)}
+.fact-chip{display:inline-block;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3);
+  border-radius:100px;padding:.3rem .9rem;font-size:.78rem;color:#fbbf24;margin-top:1rem}
+
+.s-nav{display:flex;gap:.8rem;justify-content:space-between;align-items:center}
+.s-nav-btn{padding:.85rem 1.8rem;border-radius:100px;border:none;font-size:.95rem;font-weight:700;cursor:pointer}
+.btn-prev{background:var(--bg3);color:var(--text)}
+.btn-next{background:linear-gradient(135deg,#f97316,#a855f7);color:#fff}
+.btn-next:disabled{opacity:.4;cursor:default}
+
+/* 완료 */
+.s-done{text-align:center;padding:2rem 1rem}
+.s-done .d-icon{font-size:4rem;display:block;margin-bottom:.8rem}
+.s-done h2{font-size:1.6rem;font-weight:900;margin-bottom:.5rem}
+.s-done p{color:var(--text2);margin-bottom:1.6rem;font-size:.9rem}
+.done-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.d-btn{padding:.8rem 1.8rem;border-radius:100px;border:none;font-size:.9rem;font-weight:700;cursor:pointer}
+.d-quiz{background:linear-gradient(135deg,#f97316,#a855f7);color:#fff}
+.d-home{background:var(--bg3);color:var(--text)}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<!-- 홈 -->
+<div class="wrap" id="home">
+  <div style="text-align:center;padding-top:3rem">
+    <span style="font-size:3.5rem">🔭</span>
+    <h1>과학 탐험 이야기</h1>
+    <p class="sub">각 주제를 슬라이드로 배워요! 읽고 나서 퀴즈도 도전해봐요.</p>
+    <a href="index.html" class="back-home">← 퀴즈 게임으로</a>
+  </div>
+  <div class="story-grid" id="story-grid"></div>
+</div>
+
+<!-- 스토리 -->
+<div class="wrap hidden" id="story">
+  <div class="s-header">
+    <button class="s-back" onclick="goHome()">←</button>
+    <span class="s-title" id="s-title"></span>
+    <div class="s-prog"><div class="s-prog-fill" id="s-prog-fill"></div></div>
+    <span class="s-cnt-txt" id="s-cnt-txt"></span>
+  </div>
+  <div class="scene" id="scene-box"></div>
+  <div class="s-nav">
+    <button class="s-nav-btn btn-prev" id="btn-prev" onclick="prevScene()">← 이전</button>
+    <button class="s-nav-btn btn-next" id="btn-next" onclick="nextScene()">다음 →</button>
+  </div>
+</div>
+
+<script>
+// 별 배경
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W,H,stars=[];
+function resizeCanvas(){W=cv.width=innerWidth;H=cv.height=innerHeight;stars=Array.from({length:100},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.3,a:Math.random()}))}
+function drawStars(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{ctx.globalAlpha=s.a*.7;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;requestAnimationFrame(drawStars)}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();drawStars();
+
+// 스토리 데이터
+const STORIES = [
+  {
+    id:'space',icon:'🚀',name:'우주 탐험',color:'#3b82f6',desc:'태양계 · 별 · 블랙홀',
+    scenes:[
+      {bg:'🌍',icon:'🚀',title:'우주로 출발!',
+       text:'지구를 벗어나 우주로 나가면 우리 태양계가 보여요.<br>태양계에는 <strong>8개의 행성</strong>이 있고, 모두 태양 주위를 돌고 있어요.<br>태양에서 가장 가까운 행성은 수성, 가장 먼 행성은 해왕성이에요.',
+       fact:'태양계는 지름이 약 9조 km!'},
+      {bg:'☀️',icon:'☀️',title:'태양은 얼마나 클까?',
+       text:'태양의 지름은 지구의 <strong>109배</strong>예요.<br>태양 안에 지구가 130만 개 들어갈 수 있어요!<br>태양 표면 온도는 약 <strong>6,000°C</strong>, 중심부는 무려 1,500만°C예요.',
+       fact:'태양 빛이 지구까지 오는 데 약 8분 걸려요'},
+      {bg:'🪐',icon:'🪐',title:'가장 큰 행성, 목성',
+       text:'목성은 태양계에서 <strong>가장 큰 행성</strong>이에요.<br>지구 11개를 옆에 나열해야 목성 지름이 될 정도로 거대해요.<br>목성의 대적점은 300년 넘게 계속되는 <strong>거대한 태풍</strong>이에요.',
+       fact:'목성에는 현재까지 발견된 위성이 95개!'},
+      {bg:'⭐',icon:'⭐',title:'별의 일생',
+       text:'별은 수소 기체가 모여 탄생해요. 수소 핵융합으로 빛을 내다가<br>수소가 다 소진되면 <strong>적색거성</strong>으로 부풀어 오른 뒤<br>폭발하거나 수축해서 백색왜성·중성자별·<strong>블랙홀</strong>이 돼요.',
+       fact:'우리 태양도 약 50억 년 후 적색거성이 될 거예요'},
+      {bg:'🌌',icon:'🌌',title:'우주의 크기',
+       text:'우리 은하(밀키웨이)에만 별이 <strong>2,000억~4,000억 개</strong> 있어요.<br>그리고 우주에는 이런 은하가 수천억 개!<br>빛이 우주 끝까지 가려면 <strong>138억 년</strong>이 걸린다고 해요.',
+       fact:'우주는 지금 이 순간도 계속 팽창하고 있어요'},
+    ]
+  },
+  {
+    id:'body',icon:'🫀',name:'인체의 비밀',color:'#ef4444',desc:'심장 · 뼈 · 뇌',
+    scenes:[
+      {bg:'❤️',icon:'🫀',title:'쉬지 않는 심장',
+       text:'심장은 하루에 약 <strong>10만 번</strong> 뛰어요.<br>1년이면 3,600만 번, 평생 약 30억 번 이상 뛰는 셈이에요.<br>잠을 자도, 쉬어도 멈추지 않는 가장 부지런한 근육이에요.',
+       fact:'심장이 1분에 펌프질하는 혈액 양은 약 5리터'},
+      {bg:'🦴',icon:'🦴',title:'206개의 뼈',
+       text:'어른 몸에는 <strong>206개</strong>의 뼈가 있어요.<br>신기하게도 아기 때는 약 270~300개인데, 자라면서 여러 뼈가 합쳐져요.<br>가장 작은 뼈는 귀 안의 <strong>등골뼈</strong>로 크기가 3mm예요.',
+       fact:'손에만 뼈가 27개 들어있어요'},
+      {bg:'🧠',icon:'🧠',title:'우주보다 복잡한 뇌',
+       text:'뇌는 체중의 겨우 <strong>2%</strong>지만, 몸이 쓰는 산소의 <strong>20%</strong>를 소비해요.<br>뇌의 신경세포(뉴런)는 약 860억 개이고<br>신호 전달 속도는 시속 <strong>430km</strong>에 달해요.',
+       fact:'우리가 새로운 걸 배울 때마다 뇌 속 연결이 새로 생겨요'},
+      {bg:'🩸',icon:'🩸',title:'빨간 혈액의 비밀',
+       text:'혈액이 빨간 이유는 <strong>헤모글로빈</strong> 속 철(Fe)이 산소와 결합하면 빨간색이 되기 때문이에요.<br>혈관을 모두 이어 붙이면 약 <strong>96,000km</strong>, 지구를 두 바퀴 반 돌 수 있는 길이예요.',
+       fact:'문어·오징어의 피는 구리를 포함해 파란색이에요'},
+      {bg:'🫁',icon:'🫁',title:'하루 2만 번 숨쉬기',
+       text:'우리는 하루에 약 <strong>2만 번</strong> 숨을 쉬어요.<br>양쪽 폐를 펼치면 면적이 테니스 코트만큼 커요.<br>코털과 점막이 먼지·세균을 걸러주는 천연 공기 청정기예요.',
+       fact:'하루에 약 11,000리터의 공기를 들이마셔요'},
+    ]
+  },
+  {
+    id:'ocean',icon:'🌊',name:'바다 세계',color:'#0ea5e9',desc:'심해 · 해양생물 · 물의 순환',
+    scenes:[
+      {bg:'🌊',icon:'🌊',title:'지구의 71%는 바다',
+       text:'지구 표면의 <strong>71%</strong>가 바다예요.<br>평균 수심은 약 3,800m이고, 가장 깊은 곳인 <strong>마리아나 해구</strong>는 무려 11,034m예요.<br>에베레스트산을 거꾸로 넣어도 1.6km가 더 남아요.',
+       fact:'바다의 95%는 아직 인간이 탐험하지 못했어요'},
+      {bg:'🐙',icon:'🐙',title:'문어의 놀라운 능력',
+       text:'문어는 <strong>심장이 3개</strong>이고 피가 파란색이에요.<br>색맹인데도 피부 색을 자유자재로 바꾸고, 먹물로 천적을 혼란시켜요.<br>뇌가 9개(중앙 1개 + 다리마다 1개)나 있어요.',
+       fact:'문어는 병뚜껑을 열고, 퍼즐도 풀 수 있어요'},
+      {bg:'💧',icon:'💧',title:'물은 어떻게 여행할까?',
+       text:'물은 <strong>증발 → 응결(구름) → 강수(비·눈) → 유출(강→바다)</strong>을 반복해요.<br>지구의 물은 새로 만들어지거나 없어지지 않고<br>수십억 년째 이 사이클을 계속하고 있어요.',
+       fact:'우리가 마시는 물은 공룡도 마셨던 바로 그 물일 수 있어요'},
+      {bg:'🐠',icon:'🐠',title:'바다의 열대우림, 산호초',
+       text:'산호는 식물처럼 보이지만 사실 <strong>동물</strong>이에요!<br>아주 작은 폴립이라는 동물들이 모여 형성해요.<br>지구 바다 면적의 0.1%인 산호초에 <strong>전체 해양생물의 25%</strong>가 살아요.',
+       fact:'산호초는 기후 변화로 빠르게 사라지고 있어요'},
+      {bg:'🌡️',icon:'🌡️',title:'바다가 지구를 지킨다',
+       text:'바다는 인간이 배출한 CO₂의 <strong>약 30%</strong>를 흡수해왔어요.<br>온난화 열의 무려 <strong>90% 이상</strong>도 바다가 품고 있어요.<br>바다가 없었다면 지구는 이미 훨씬 더 뜨거웠을 거예요.',
+       fact:'바다가 흡수한 CO₂로 인해 해양 산성화가 진행 중이에요'},
+    ]
+  },
+  {
+    id:'electricity',icon:'⚡',name:'전기 마법',color:'#eab308',desc:'전류 · 회로 · 번개',
+    scenes:[
+      {bg:'⚡',icon:'🔋',title:'전기란 무엇인가?',
+       text:'전기는 <strong>전자(electron)</strong>의 흐름이에요.<br>원자 속 전자가 이동하면 전류가 발생해요.<br>관습상 전류는 (+)극 → (-)극으로 흐른다고 하지만,<br>실제 전자는 반대 방향으로 움직여요.',
+       fact:'1초에 수십억 개의 전자가 이동해요'},
+      {bg:'💡',icon:'💡',title:'LED vs 일반 전구',
+       text:'일반 백열전구는 전기 에너지의 <strong>5~10%만</strong> 빛으로 바꾸고 나머지는 열로 낭비해요.<br>반면 <strong>LED</strong>는 80~90%를 빛으로 변환!<br>그래서 전기도 적게 쓰고 훨씬 오래 사용할 수 있어요.',
+       fact:'LED는 일반 전구보다 25배 이상 오래 써요'},
+      {bg:'⛈️',icon:'⛈️',title:'번개의 과학',
+       text:'구름 속 얼음 알갱이들이 충돌하면서 <strong>정전기</strong>가 쌓여요.<br>전압이 수억 볼트에 달하면 한순간에 방전!<br>번개의 온도는 <strong>약 30,000°C</strong>로 태양 표면의 4배예요.',
+       fact:'1초에 전 세계에서 약 100개의 번개가 쳐요'},
+      {bg:'🧲',icon:'🧲',title:'전기와 자기는 쌍둥이',
+       text:'전류가 흐르면 주변에 <strong>자기장</strong>이 생겨요.<br>반대로 자기장이 변하면 전류가 생기는 <strong>전자기 유도</strong>!<br>발전기·모터·스피커·이어폰 모두 이 원리를 이용해요.',
+       fact:'지구도 거대한 자석이에요 — 외핵의 전류 때문이에요'},
+      {bg:'☀️',icon:'☀️',title:'태양광 발전의 원리',
+       text:'태양광 패널은 <strong>광전효과</strong>를 이용해요.<br>빛(광자)이 실리콘 반도체를 때리면 전자가 튀어나와 전류가 흐르는 거예요.<br>이 원리를 설명한 아인슈타인이 노벨 물리학상을 받았어요.',
+       fact:'전 세계 태양광 발전량은 매년 빠르게 늘고 있어요'},
+    ]
+  },
+  {
+    id:'dino',icon:'🦕',name:'공룡 시대',color:'#22c55e',desc:'쥐라기 · 백악기 · 멸종',
+    scenes:[
+      {bg:'🌿',icon:'🦕',title:'공룡의 시대',
+       text:'공룡은 <strong>약 2억 3천만 년 전</strong>에 나타나 6,600만 년 전에 멸종했어요.<br>인류의 역사 약 300만 년에 비해 <strong>1억 6,000만 년</strong> 이상 지구를 지배했어요.<br>이 시기를 중생대(트라이아이스기·쥐라기·백악기)라 해요.',
+       fact:'공룡이 살던 시간은 인류 역사의 50배 이상이에요'},
+      {bg:'🦴',icon:'🦖',title:'최강 포식자 T-rex',
+       text:'티라노사우루스 렉스는 당시 <strong>최강 포식자</strong>였어요.<br>무는 힘이 최대 6톤에 달했지만, 앞다리는 유난히 작고 짧았어요.<br>최근 연구에 따르면 T-rex에게 <strong>깃털</strong>이 있었을 가능성이 높아요.',
+       fact:'T-rex의 뇌는 상대적으로 작아서 지능은 높지 않았어요'},
+      {bg:'🌠',icon:'☄️',title:'대멸종의 원인',
+       text:'약 6,600만 년 전 지름 약 <strong>10km의 소행성</strong>이 멕시코 유카탄 반도에 충돌했어요.<br>거대한 먼지구름이 태양을 가리고, 화산 폭발까지 겹쳤어요.<br>그 결과 공룡을 포함한 생물의 <strong>약 75%</strong>가 멸종했어요.',
+       fact:'이 충돌 흔적인 칙술루브 분화구는 지름이 180km예요'},
+      {bg:'🐓',icon:'🐦',title:'공룡은 지금도 살아있다?',
+       text:'놀랍게도 <strong>새(조류)</strong>가 공룡의 직계 후손이에요!<br>수각류 공룡에서 진화했으며, 과학적으로 새는 조류형 공룡으로 분류돼요.<br>치킨을 먹는 건 사실 공룡을 먹는 거나 마찬가지예요.',
+       fact:'전 세계에 약 10,000종의 조류가 있어요'},
+      {bg:'🥚',icon:'🦴',title:'역대 최대 공룡',
+       text:'<strong>아르헨티노사우루스</strong>는 약 30~40m로 역대 최장 공룡으로 추정돼요.<br>무게는 70~80톤, 지구 역사상 가장 무거운 육상 동물이에요.<br>이 공룡의 발자국 하나에 사람이 편하게 누울 수 있어요.',
+       fact:'목이 가장 긴 공룡 마멘키사우루스의 목은 15m!'},
+    ]
+  },
+  {
+    id:'weather',icon:'🌈',name:'날씨 마법사',color:'#a855f7',desc:'구름 · 비 · 태풍',
+    scenes:[
+      {bg:'☁️',icon:'☁️',title:'구름의 무게',
+       text:'구름은 아주 작은 <strong>물방울과 얼음 결정</strong>이 수십억 개 모인 거예요.<br>평범한 적운 구름 하나의 무게가 약 <strong>500톤</strong>에 달해요.<br>하지만 물방울이 너무 작아 공기 중에 떠 있을 수 있어요.',
+       fact:'권운(새털구름)은 높이 6~12km에 떠 있어요'},
+      {bg:'🌧️',icon:'🌧️',title:'빗방울의 진짜 모양',
+       text:'영화에서 눈물처럼 그리는 빗방울 모양은 <strong>사실과 달라요</strong>.<br>빗방울이 떨어질 때는 공기 저항으로 위는 평평하고<br>아래가 볼록한 <strong>햄버거 빵 모양</strong>이 돼요.',
+       fact:'빗방울이 너무 커지면 공기 저항으로 쪼개져요'},
+      {bg:'🌀',icon:'🌀',title:'태풍의 비밀',
+       text:'태풍은 따뜻한 바다에서 에너지를 얻어 발달해요.<br><strong>북반구에서는 반시계 방향</strong>, 남반구에서는 시계 방향으로 돌아요.<br>태풍 중심의 눈(eye)은 놀랍게도 바람이 없고 조용해요.',
+       fact:'태풍 하나가 방출하는 에너지는 원자폭탄 1만 개 수준'},
+      {bg:'❄️',icon:'❄️',title:'눈 결정이 6각형인 이유',
+       text:'물 분자(H₂O)가 얼 때 <strong>수소 결합</strong>으로 연결되는 각도가 약 120°예요.<br>그래서 자연스럽게 6각형 격자 구조가 돼요.<br>모든 눈 결정은 6각 구조를 갖지만, 형태는 <strong>하나도 같은 게 없어요</strong>.',
+       fact:'눈 결정의 크기는 보통 0.1~1mm예요'},
+      {bg:'🌡️',icon:'🌡️',title:'일기 예보는 어떻게?',
+       text:'현재 슈퍼컴퓨터로 대기 방정식을 계산해 일기 예보를 해요.<br>강수 확률 60%는 <strong>"이런 조건에서 100번 중 60번 비가 왔다"</strong>는 통계예요.<br>7일 이상 예보는 정확도가 크게 낮아져요.',
+       fact:'나비효과 — 초기 조건 작은 차이가 날씨를 크게 바꿔요'},
+    ]
+  },
+  {
+    id:'plant',icon:'🌿',name:'식물의 비밀',color:'#16a34a',desc:'광합성 · 씨앗 · 식충식물',
+    scenes:[
+      {bg:'🌱',icon:'🌱',title:'광합성의 마법',
+       text:'식물은 <strong>빛 + 물(H₂O) + 이산화탄소(CO₂)</strong>로 포도당과 산소를 만들어요.<br>우리가 숨 쉬는 산소는 모두 식물의 광합성 덕분이에요.<br>잎이 초록색인 이유는 엽록소가 초록빛을 반사하기 때문이에요.',
+       fact:'지구 산소의 70%는 바다의 식물성 플랑크톤이 만들어요'},
+      {bg:'🌻',icon:'🌻',title:'해바라기가 태양을 따르는 이유',
+       text:'식물이 빛을 향해 움직이는 것을 <strong>굴광성</strong>이라 해요.<br>빛이 적은 쪽에 성장 호르몬(옥신)이 더 많이 모여<br>그쪽이 더 빨리 자라 빛 쪽으로 굽어요.',
+       fact:'뿌리는 반대로 빛을 피해 땅속으로 자라요'},
+      {bg:'🪲',icon:'🪲',title:'식물이 곤충을 잡아먹는다?',
+       text:'파리지옥은 <strong>질소가 부족한 습지</strong>에 살아서 곤충을 잡아 질소를 보충해요.<br>덫이 닫히면 소화액을 분비해 10일에 걸쳐 소화해요.<br>짝이 아닌 물체에 반응하지 않는 영리함도 있어요.',
+       fact:'끈끈이주걱, 통발, 네펜데스도 식충식물이에요'},
+      {bg:'🌳',icon:'🌳',title:'나이테로 역사를 읽는다',
+       text:'나이테로 나무 나이뿐 아니라 <strong>그 해의 기후</strong>도 알 수 있어요.<br>나이테가 넓으면 비가 많고 따뜻한 해, 좁으면 건조·추운 해예요.<br>나이테 방향으로 <strong>남북 방향</strong>도 알 수 있어요.',
+       fact:'가장 오래된 나무는 미국의 브리슬콘 소나무로 5,000살'},
+      {bg:'🌸',icon:'🌸',title:'꽃의 진짜 목적',
+       text:'꽃의 아름다운 색깔과 향기는 <strong>벌·나비·새</strong>를 유인해 꽃가루를 옮기는 전략이에요.<br>수분이 이루어져야 열매와 씨앗이 만들어져요.<br>식물이 수억 년에 걸쳐 개발한 <strong>생존 전략</strong>이에요.',
+       fact:'세상에서 가장 큰 꽃은 라플레시아로 지름 1m'},
+    ]
+  },
+  {
+    id:'micro',icon:'🔬',name:'작은 세계',color:'#f97316',desc:'세포 · 바이러스 · 박테리아',
+    scenes:[
+      {bg:'🧫',icon:'🔬',title:'세포, 생명의 기본 단위',
+       text:'인체는 약 <strong>37조 개</strong>의 세포로 이루어져 있어요.<br>세포 안에는 핵, 미토콘드리아, 리보솜 등 다양한 소기관이 있어요.<br><strong>미토콘드리아</strong>는 세포의 에너지 공장으로, 원래 독립 생명체였어요.',
+       fact:'세포 하나의 크기는 약 10~100마이크로미터(머리카락 굵기의 1/10)'},
+      {bg:'🦠',icon:'🦠',title:'바이러스 vs 세균',
+       text:'<strong>세균(박테리아)</strong>은 자체적으로 분열·번식할 수 있는 단세포 생물이에요.<br><strong>바이러스</strong>는 스스로 복제 못 하고 반드시 세포 안에 들어가야 해요.<br>세균은 항생제로 치료하지만, 바이러스에는 항생제가 듣지 않아요.',
+       fact:'우리 몸 속 세균 수는 인체 세포 수와 비슷해요'},
+      {bg:'🧬',icon:'🧬',title:'DNA — 생명의 설계도',
+       text:'세포 하나의 핵 속 DNA를 펼치면 약 <strong>2m</strong>예요.<br>몸 전체 세포의 DNA를 이으면 지구~명왕성 거리의 약 8배!<br>이 정보가 0.005mm 핵에 압축되어 있어요.',
+       fact:'인간과 침팬지의 DNA는 약 98.7% 같아요'},
+      {bg:'💉',icon:'💉',title:'백신은 어떻게 작동할까?',
+       text:'백신은 <strong>죽이거나 약화된 병원체</strong>를 투여해 면역계를 미리 훈련시켜요.<br>실제 감염 시 이미 훈련된 면역계가 빠르게 제거해요.<br>이 덕분에 천연두, 소아마비 등 수많은 질병이 사라졌어요.',
+       fact:'최초의 백신은 1796년 천연두 백신이에요'},
+      {bg:'🫧',icon:'🫧',title:'비누가 바이러스를 죽이는 법',
+       text:'비누 분자는 한쪽은 기름, 다른 쪽은 물과 결합해요.<br>세균과 바이러스의 <strong>지질 세포막을 파괴</strong>해서 무력화시켜요.<br>그래서 20초 이상 손씻기가 매우 효과적이에요.',
+       fact:'코로나19 바이러스도 비누로 파괴돼요'},
+    ]
+  },
+  {
+    id:'earth',icon:'🌍',name:'지구 속으로',color:'#dc2626',desc:'지층 · 화산 · 판구조론',
+    scenes:[
+      {bg:'🌋',icon:'🌋',title:'마그마와 용암의 차이',
+       text:'<strong>마그마</strong>는 지구 내부의 녹은 암석이에요.<br>화산 폭발로 지표에 나오면 <strong>용암(Lava)</strong>이라 불러요.<br>용암 온도는 700~1,200°C이고, 흐르는 속도는 걷는 속도~시속 60km까지 다양해요.',
+       fact:'현재 지구에 활동 중인 화산은 약 1,500개'},
+      {bg:'🪨',icon:'🪨',title:'지층은 시간의 기록',
+       text:'지층은 퇴적물이 차곡차곡 쌓여 형성되며 <strong>아래쪽이 더 오래된 층</strong>이에요.<br>이를 지층 누중의 법칙이라 해요.<br>지층에서 화석이 발견되면 그 지층이 형성된 시대를 알 수 있어요.',
+       fact:'가장 오래된 암석은 약 40억 년 전에 만들어졌어요'},
+      {bg:'🌏',icon:'🌏',title:'지구의 내부 구조',
+       text:'지구는 <strong>지각 → 맨틀 → 외핵 → 내핵</strong> 구조예요.<br>내핵은 고체 철/니켈이고, 외핵은 액체 상태예요.<br>외핵의 액체 철 움직임이 <strong>지구 자기장</strong>을 만들어요.',
+       fact:'지구 중심부 온도는 약 6,000°C로 태양 표면과 비슷해요'},
+      {bg:'📍',icon:'📍',title:'대륙이 움직인다',
+       text:'대륙판은 <strong>1년에 약 2~10cm</strong>씩 움직여요 — 손톱이 자라는 속도와 비슷해요.<br>약 2억 5천만 년 전엔 모든 대륙이 <strong>판게아</strong>라는 하나의 대륙이었어요.<br>지금도 계속 움직이고 있어요.',
+       fact:'히말라야는 지금도 매년 조금씩 높아지고 있어요'},
+      {bg:'💎',icon:'💎',title:'다이아몬드는 탄소다',
+       text:'다이아몬드는 순수한 <strong>탄소(C)</strong>로만 이루어져 있어요.<br>연필 심(흑연)도 탄소인데, 원자 배열 구조 차이로 성질이 완전히 달라요.<br>땅속 약 <strong>150km 깊이</strong>에서 고온·고압으로 만들어져요.',
+       fact:'다이아몬드를 만들 수 있는 압력은 지구 표면의 45,000배'},
+    ]
+  },
+  {
+    id:'element',icon:'⚗️',name:'원소 여행',color:'#8b5cf6',desc:'원자 · 주기율표 · 물질',
+    scenes:[
+      {bg:'⚛️',icon:'⚛️',title:'원자란 무엇인가?',
+       text:'원자는 <strong>양성자+중성자</strong>로 이루어진 핵과, 핵 주위를 도는 <strong>전자</strong>로 구성돼요.<br>원자의 대부분은 텅 빈 공간!<br>핵의 크기는 원자 전체 크기의 <strong>10만 분의 1</strong>이에요.',
+       fact:'우리 몸을 이루는 원자 수는 약 7×10²⁷개'},
+      {bg:'💧',icon:'💧',title:'물의 신비한 성질',
+       text:'물(H₂O)은 얼면 부피가 약 <strong>9% 늘어나</strong>서 얼음이 물에 떠요.<br>이 덕분에 물고기가 겨울에 얼음 아래서 살 수 있어요.<br>4°C에서 물의 밀도가 최대예요.',
+       fact:'순수한 물은 전기가 잘 통하지 않아요'},
+      {bg:'🧪',icon:'🧪',title:'주기율표를 만든 사람',
+       text:'러시아 과학자 <strong>드미트리 멘델레예프</strong>는 1869년 주기율표를 만들었어요.<br>당시 아직 발견 안 된 원소의 <strong>빈칸</strong>도 남겨뒀는데,<br>이후 실제로 발견되어 그의 예측이 정확히 맞았어요.',
+       fact:'현재 주기율표에는 118개의 원소가 있어요'},
+      {bg:'☢️',icon:'☢️',title:'방사능이란?',
+       text:'방사능은 불안정한 원자핵이 안정 상태로 변하며 <strong>에너지(방사선)를 내뿜는 현상</strong>이에요.<br>우리 몸 속에도 칼륨-40 같은 방사성 원소가 있어요.<br>의료용 X선, 암 치료 방사선 요법 등 유익하게 쓰이기도 해요.',
+       fact:'마리 퀴리는 방사능을 연구한 최초의 여성 과학자'},
+      {bg:'🌡️',icon:'🌡️',title:'태양의 에너지 비밀',
+       text:'태양은 <strong>수소 핵융합</strong>으로 에너지를 만들어요.<br>4개의 수소 원자핵이 합쳐져 헬륨 1개가 될 때 줄어든 질량이 에너지로 변환돼요 (<strong>E=mc²</strong>).<br>매 초 약 6억 톤의 수소가 헬륨으로 변환되고 있어요.',
+       fact:'아인슈타인의 E=mc²으로 핵에너지를 설명할 수 있어요'},
+    ]
+  },
+];
+
+let curStory = null;
+let curScene = 0;
+
+function renderGrid(){
+  const grid = document.getElementById('story-grid');
+  grid.innerHTML = STORIES.map(s => `
+    <div class="story-card" style="--tc:${s.color}" onclick="openStory('${s.id}')">
+      <span class="sc-cnt">${s.scenes.length}장면</span>
+      <span class="sc-icon">${s.icon}</span>
+      <h3>${s.name}</h3>
+      <p>${s.desc}</p>
+    </div>
+  `).join('');
+}
+
+function openStory(id){
+  curStory = STORIES.find(s => s.id === id);
+  curScene = 0;
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('story').classList.remove('hidden');
+  document.getElementById('s-title').textContent = curStory.icon + ' ' + curStory.name;
+  renderScene();
+}
+
+function renderScene(){
+  const sc = curStory.scenes[curScene];
+  const total = curStory.scenes.length;
+  document.getElementById('s-prog-fill').style.cssText = `width:${((curScene+1)/total*100)}%;background:${curStory.color}`;
+  document.getElementById('s-cnt-txt').textContent = (curScene+1) + ' / ' + total;
+  document.getElementById('btn-prev').style.visibility = curScene === 0 ? 'hidden' : 'visible';
+
+  const isLast = curScene === total - 1;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = isLast ? '완료 🎉' : '다음 →';
+
+  document.getElementById('scene-box').innerHTML = `
+    <div class="scene-bg">${sc.bg}</div>
+    <div class="scene-content">
+      <span class="s-big-icon">${sc.icon}</span>
+      <div class="s-scene-title">${sc.title}</div>
+      <p class="s-scene-text">${sc.text}</p>
+      <span class="fact-chip">💡 ${sc.fact}</span>
+    </div>
+  `;
+}
+
+function nextScene(){
+  const total = curStory.scenes.length;
+  if(curScene < total - 1){
+    curScene++;
+    renderScene();
+  } else {
+    // 완료
+    document.getElementById('story').classList.add('hidden');
+    document.getElementById('scene-box').innerHTML = '';
+    showDone();
+  }
+}
+
+function prevScene(){
+  if(curScene > 0){ curScene--; renderScene(); }
+}
+
+function showDone(){
+  const el = document.getElementById('story');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="s-done">
+      <span class="d-icon">${curStory.icon}</span>
+      <h2>${curStory.name} 완료!</h2>
+      <p style="color:#94a3b8">이제 퀴즈로 실력을 확인해봐요!</p>
+      <div class="done-btns">
+        <button class="d-btn d-home" onclick="goHome()">← 목록으로</button>
+        <button class="d-btn d-quiz" onclick="goQuiz('${curStory.id}')">퀴즈 도전! 🚀</button>
+      </div>
+    </div>
+  `;
+}
+
+function goHome(){
+  document.getElementById('story').classList.add('hidden');
+  document.getElementById('story').innerHTML = `
+    <div class="s-header">
+      <button class="s-back" onclick="goHome()">←</button>
+      <span class="s-title" id="s-title"></span>
+      <div class="s-prog"><div class="s-prog-fill" id="s-prog-fill"></div></div>
+      <span class="s-cnt-txt" id="s-cnt-txt"></span>
+    </div>
+    <div class="scene" id="scene-box"></div>
+    <div class="s-nav">
+      <button class="s-nav-btn btn-prev" id="btn-prev" onclick="prevScene()">← 이전</button>
+      <button class="s-nav-btn btn-next" id="btn-next" onclick="nextScene()">다음 →</button>
+    </div>
+  `;
+  document.getElementById('home').classList.remove('hidden');
+}
+
+function goQuiz(id){
+  location.href = 'index.html#' + id;
+}
+
+renderGrid();
+</script>
+</body>
+</html>

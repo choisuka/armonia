@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="내사랑">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%EB%82%B4%EC%82%AC%EB%9E%91%22%2C%22short_name%22%3A%22%EB%82%B4%EC%82%AC%EB%9E%91%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231a1a2e%22%2C%22theme_color%22%3A%22%231a1a2e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2720%27%20fill%3D%27%231a1a2e%27%2F%3E%3Ctext%20y%3D%27.9em%27%20font-size%3D%2780%27%20x%3D%2710%27%3E%E2%9D%A4%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&family=Nanum+Pen+Script&family=Gaegu&family=Jua&family=Poor+Story&display=swap" rel="stylesheet">
+<title>내사랑</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ── 공통 ── */
+  h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 8px; }
+  h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 16px; }
+  p  { font-size: 1rem; color: #aaa; line-height: 1.7; margin-bottom: 24px; }
+  .btn {
+    background: linear-gradient(135deg, #a78bfa, #7c5cbf);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 4px 16px rgba(160,100,255,0.35);
+  }
+  .btn:active { opacity: 0.85; }
+  .btn.ghost {
+    background: transparent;
+    border: 2px solid rgba(167,139,250,0.4);
+    color: rgba(167,139,250,0.8);
+    margin-top: 12px;
+    box-shadow: none;
+  }
+
+  /* ── 1. 온보딩 ── */
+  #screen-onboard {
+    background: linear-gradient(170deg, #3b1f6b 0%, #1e1040 45%, #12243a 100%);
+    position: relative;
+    overflow: hidden;
+    justify-content: space-between;
+    padding: 0 24px 36px;
+  }
+  .onboard-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 100% 50% at 50% 0%, rgba(180,120,255,0.25) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 10% 80%, rgba(255,150,180,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 60%, rgba(80,160,255,0.1) 0%, transparent 60%);
+    animation: bgPulse 6s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    0%   { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+  /* 떠다니는 빛 입자 */
+  .onboard-particles {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+  }
+  .onboard-particles::before {
+    content: '';
+    position: absolute;
+    width: 3px; height: 3px; border-radius: 50%; background: rgba(200,168,255,0.8);
+    box-shadow:
+      60px 100px rgba(200,168,255,0.9), 180px 50px rgba(255,200,220,0.7),
+      300px 180px rgba(200,168,255,0.6), 40px 280px rgba(255,220,200,0.5),
+      380px 90px rgba(180,220,255,0.8), 130px 380px rgba(200,168,255,0.7),
+      260px 300px rgba(255,200,220,0.5), 340px 260px rgba(200,168,255,0.9),
+      100px 480px rgba(180,220,255,0.5), 430px 420px rgba(200,168,255,0.7),
+      20px 160px rgba(255,220,200,0.6), 480px 180px rgba(200,168,255,0.8),
+      220px 110px rgba(255,200,220,0.4), 400px 340px rgba(180,220,255,0.7);
+    animation: particleFloat 5s ease-in-out infinite alternate;
+  }
+  .onboard-particles::after {
+    content: '';
+    position: absolute;
+    width: 2px; height: 2px; border-radius: 50%; background: rgba(255,200,220,0.7);
+    box-shadow:
+      90px 70px rgba(255,200,220,0.6), 330px 130px rgba(200,168,255,0.9),
+      50px 370px rgba(255,220,200,0.7), 460px 300px rgba(200,168,255,0.8),
+      200px 230px rgba(180,220,255,0.5), 290px 460px rgba(255,200,220,0.9),
+      160px 40px rgba(200,168,255,0.8), 420px 40px rgba(255,220,200,0.6);
+    animation: particleFloat 7s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes particleFloat {
+    0%   { transform: translateY(0) translateX(0); opacity: 0.5; }
+    100% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+  }
+
+  /* 상단 타이틀 영역 */
+  .onboard-top {
+    position: relative; z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .onboard-title-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  /* 글로우 배경 레이어 */
+  .onboard-title-glow {
+    position: absolute;
+    inset: -20px -30px;
+    background: radial-gradient(ellipse, rgba(180,120,255,0.35) 0%, transparent 70%);
+    animation: glowPulse 2.8s ease-in-out infinite;
+    border-radius: 50%;
+  }
+  @keyframes glowPulse {
+    0%, 100% { transform: scale(1);   opacity: 0.7; }
+    50%       { transform: scale(1.2); opacity: 1;   }
+  }
+  .onboard-title {
+    position: relative;
+    font-family: 'Nanum Brush Script', cursive;
+    font-size: 5.5rem;
+    font-weight: 400;
+    letter-spacing: 8px;
+    background: linear-gradient(120deg, #ffe8ff 0%, #d4aaff 25%, #ffffff 50%, #ffaacc 75%, #d4aaff 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleFloat 3.5s ease-in-out infinite, shimmer 3s linear infinite;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
+  }
+  @keyframes titleFloat {
+    0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+    50%       { transform: translateY(-10px) rotate(0.5deg); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+  .onboard-sub {
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.55);
+    animation: titleFloat 3.5s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+
+  /* 하단 카드+버튼 영역 */
+  .onboard-bottom {
+    position: relative; z-index: 2;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .onboard-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 14px 18px;
+    width: 100%;
+    max-width: 340px;
+    backdrop-filter: blur(16px);
+  }
+  .onboard-card .line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .onboard-card .line:last-child { border-bottom: none; }
+  .onboard-card .icon { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
+  .onboard-card .text { text-align: left; }
+  .onboard-card .text strong { display: block; font-size: 0.85rem; color: #fff; font-weight: 600; }
+  .onboard-card .text span   { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+  .onboard-btn {
+    width: 100%; max-width: 340px;
+    padding: 16px;
+    border: none; border-radius: 50px;
+    font-size: 1.05rem; font-weight: 700; letter-spacing: 2px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #b47fff, #7c4cbf, #5b2d9e);
+    color: #fff;
+    box-shadow: 0 6px 28px rgba(160,100,255,0.5), 0 2px 8px rgba(0,0,0,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .onboard-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 14px rgba(160,100,255,0.3);
+  }
+
+  /* ── 2. 설정 ── */
+  #screen-setup {
+    background: linear-gradient(160deg, #2a1f4e 0%, #1a1535 50%, #141030 100%);
+    overflow-y: auto;
+    justify-content: flex-start;
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+  #screen-setup h2 {
+    font-family: 'Nanum Brush Script', cursive;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #d4b8ff;
+  }
+  #screen-setup p {
+    color: rgba(255,255,255,0.5);
+    font-family: 'Nanum Pen Script', cursive;
+    font-size: 1.05rem;
+  }
+  .photo-upload-box {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 2px dashed rgba(180,140,255,0.4);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    margin: 0 auto 16px;
+    overflow: hidden;
+    background: rgba(180,140,255,0.1);
+    flex-shrink: 0;
+  }
+  .photo-upload-box img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-upload-box span { font-size: 2rem; }
+  .photo-upload-box small { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+  #photo-input { display: none; }
+
+  .sensitivity-wrap { width: 100%; max-width: 320px; margin-bottom: 8px; }
+  .sensitivity-wrap label { font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px; text-align: left; }
+  input[type=range] {
+    width: 100%; accent-color: #a78bfa; height: 6px;
+  }
+  .sensitivity-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.75rem; color: #666; margin-top: 4px;
+  }
+
+  /* ── 3. 대기 (감지 중) ── */
+  #screen-listen { background: #0f3460; }
+  .pulse-ring {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(233,69,96,0.15);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+  .pulse-ring::before, .pulse-ring::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(233,69,96,0.3);
+    animation: pulse 2s ease-out infinite;
+  }
+  .pulse-ring::after { animation-delay: 1s; }
+  @keyframes pulse {
+    0%   { width: 160px; height: 160px; opacity: 0.8; }
+    100% { width: 240px; height: 240px; opacity: 0; }
+  }
+  .mic-icon { font-size: 3.5rem; }
+  .volume-bar-wrap {
+    width: 200px; height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto 32px;
+  }
+  .volume-bar {
+    height: 100%;
+    background: #e94560;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.1s;
+  }
+  #screen-listen h2 { color: #ccc; font-weight: 400; font-size: 1.1rem; }
+  .child-thumb {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+  .child-thumb-placeholder {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: #1a4a7a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 16px;
+  }
+
+  /* ── 4. 개입 ── */
+  #screen-alert {
+    background: #000;
+    padding: 0;
+  }
+  .alert-photo {
+    width: 100%; height: 55vh;
+    object-fit: cover;
+    opacity: 0.7;
+  }
+  .alert-photo-placeholder {
+    width: 100%; height: 55vh;
+    background: linear-gradient(180deg, #1a1a2e, #0f3460);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+  }
+  .alert-text-box {
+    padding: 32px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .alert-text-box h2 {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .alert-text-box p {
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 0;
+  }
+
+  /* ── 5. 호흡 ── */
+  #screen-breath { background: #0d1b2a; }
+  .breath-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a6b8a, #0d1b2a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: #7ec8e3;
+    margin: 0 auto 24px;
+    transition: transform 4s ease-in-out;
+    border: 2px solid #1a6b8a;
+  }
+  .breath-circle.inhale  { transform: scale(1.6); }
+  .breath-circle.hold    { transform: scale(1.6); }
+  .breath-circle.exhale  { transform: scale(1.0); }
+  #breath-label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #7ec8e3;
+    margin-bottom: 8px;
+    min-height: 2rem;
+  }
+  #breath-count {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 32px;
+  }
+
+  /* ── 6. 타이머 ── */
+  #screen-timer { background: #1a2a1a; }
+  .timer-ring {
+    position: relative;
+    width: 200px; height: 200px;
+    margin: 0 auto 24px;
+  }
+  .timer-ring svg {
+    transform: rotate(-90deg);
+  }
+  .timer-ring circle {
+    fill: none;
+    stroke-width: 6;
+  }
+  .timer-ring .bg { stroke: #2a3a2a; }
+  .timer-ring .fg {
+    stroke: #4caf50;
+    stroke-linecap: round;
+    stroke-dasharray: 565;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+  }
+  #timer-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #4caf50;
+  }
+  #screen-timer h2 { color: #ccc; font-weight: 400; }
+  #screen-timer p { color: #888; }
+
+  /* ── 7. 마무리 ── */
+  #screen-done { background: #1a1a2e; }
+  #screen-done h2 { font-size: 1.5rem; line-height: 1.8; color: #fff; margin-bottom: 32px; }
+  .done-btns { width: 100%; max-width: 320px; }
+  .btn.yes { background: #4caf50; }
+  .btn.no  { background: #e94560; }
+
+  /* ── 8. 기록 ── */
+  #screen-log { background: #1a1a2e; padding: 24px 20px; overflow-y: auto; justify-content: flex-start; }
+  #screen-log h2 { margin-bottom: 4px; }
+  .log-summary {
+    display: flex; gap: 12px; width: 100%; max-width: 360px;
+    margin-bottom: 24px;
+  }
+  .log-summary-card {
+    flex: 1; background: #16213e; border-radius: 12px;
+    padding: 16px 8px; text-align: center;
+  }
+  .log-summary-card .num { font-size: 2rem; font-weight: 700; color: #e94560; }
+  .log-summary-card .lbl { font-size: 0.75rem; color: #888; margin-top: 4px; }
+  .log-list { width: 100%; max-width: 360px; }
+  .log-day { font-size: 0.8rem; color: #555; margin: 16px 0 8px; text-align: left; }
+  .log-item {
+    background: #16213e; border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .log-item .log-time { font-size: 0.95rem; color: #ccc; }
+  .log-item .log-outcome { font-size: 0.85rem; color: #888; }
+  .log-empty { color: #555; font-size: 0.95rem; margin-top: 40px; }
+  .log-back-btn {
+    position: fixed; top: 16px; left: 16px;
+    background: rgba(255,255,255,0.1); border: none; color: #fff;
+    width: 40px; height: 40px; border-radius: 50%;
+    font-size: 1.1rem; cursor: pointer; display: none; z-index: 10;
+    align-items: center; justify-content: center;
+  }
+  .log-back-btn.visible { display: flex; }
+
+  /* ── 워치 연결 ── */
+  .watch-wrap { width: 100%; max-width: 320px; margin-bottom: 8px; }
+  .watch-status { font-size: 0.8rem; text-align: center; margin-top: 8px; min-height: 1.2em; }
+  .watch-status.connected { color: #4caf50; }
+  .watch-status.error     { color: #e94560; }
+
+  /* ── 심박수 표시 ── */
+  .hr-display {
+    margin-top: 16px; text-align: center;
+  }
+  .hr-display #hr-value { font-size: 2rem; font-weight: 700; color: #e94560; }
+  .hr-display .hr-unit  { font-size: 0.9rem; color: #888; }
+  #hr-bar-wrap {
+    width: 160px; height: 4px; background: rgba(255,255,255,0.1);
+    border-radius: 2px; margin: 8px auto 0; overflow: hidden;
+  }
+  #hr-bar { height: 100%; background: #e94560; border-radius: 2px; width: 0%; transition: width 0.5s; }
+
+  /* ── 설정 아이콘 ── */
+  .settings-btn {
+    position: fixed; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.1);
+    border: none; color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: none;
+    z-index: 10;
+  }
+  .settings-btn.visible { display: flex; align-items: center; justify-content: center; }
+
+  /* ── 기록 버튼 ── */
+  .log-btn {
+    position: fixed; bottom: 32px; left: 24px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid #555;
+    color: #888;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: none;
+    z-index: 10;
+  }
+  .log-btn.visible { display: block; }
+
+  /* ── 음악 선택 ── */
+  .sound-wrap { width: 100%; max-width: 320px; margin-bottom: 8px; }
+  .sound-wrap > label { font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px; text-align: left; }
+  .sound-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sound-opt {
+    flex: 1; min-width: 120px;
+    background: rgba(180,140,255,0.08);
+    border: 1.5px solid rgba(180,140,255,0.2);
+    color: rgba(255,255,255,0.55);
+    border-radius: 10px;
+    padding: 10px 8px; font-size: 0.95rem;
+    font-family: 'Poor Story', cursive;
+    cursor: pointer; text-align: center;
+  }
+  .sound-opt.selected {
+    border-color: #a78bfa;
+    background: rgba(167,139,250,0.22);
+    color: #fff;
+  }
+  .ext-url-wrap { width: 100%; max-width: 320px; margin-bottom: 8px; display: none; }
+  .ext-url-wrap input {
+    width: 100%; background: #0f3460; border: 1px solid #333;
+    color: #fff; border-radius: 8px; padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* ── 수동 버튼 ── */
+  .manual-btn {
+    position: fixed; bottom: 32px; right: 24px;
+    background: rgba(233,69,96,0.2);
+    border: 2px solid #e94560;
+    color: #e94560;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: none;
+    z-index: 10;
+  }
+  .manual-btn.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- 1. 온보딩 -->
+<div id="screen-onboard" class="screen active">
+  <div class="onboard-bg"></div>
+  <div class="onboard-particles"></div>
+  <a href="https://choisuka.github.io/" style="position:fixed;top:12px;left:12px;z-index:999;background:rgba(10,10,26,.88);border:1px solid rgba(168,85,247,.4);color:#c084fc;text-decoration:none;border-radius:20px;padding:6px 15px;font-size:.8rem;backdrop-filter:blur(8px)">← 메인 허브</a>
+  <div class="onboard-top">
+    <div class="onboard-title-wrap">
+      <div class="onboard-title-glow"></div>
+      <div class="onboard-title">내사랑</div>
+    </div>
+    <div class="onboard-sub">My Love &middot; 감정 케어</div>
+  </div>
+  <div class="onboard-bottom">
+    <div class="onboard-card">
+      <div class="line">
+        <div class="icon">🎤</div>
+        <div class="text">
+          <strong style="font-family:'Poor Story',cursive;font-size:1.05rem">목소리 감지</strong>
+          <span>화가 날 때 자동으로 개입해요</span>
+        </div>
+      </div>
+      <div class="line">
+        <div class="icon">🎵</div>
+        <div class="text">
+          <strong style="font-family:'Poor Story',cursive;font-size:1.05rem">진정 음악</strong>
+          <span>아름다운 소리로 감정을 가라앉혀요</span>
+        </div>
+      </div>
+      <div class="line">
+        <div class="icon">👶</div>
+        <div class="text">
+          <strong style="font-family:'Poor Story',cursive;font-size:1.05rem">아이 사진</strong>
+          <span>사랑하는 얼굴이 가장 좋은 진정제예요</span>
+        </div>
+      </div>
+    </div>
+    <button class="onboard-btn" onclick="showScreen('setup')">시작하기</button>
+  </div>
+</div>
+
+<!-- 2. 설정 -->
+<div id="screen-setup" class="screen">
+  <h2>처음 설정</h2>
+  <p>아이 사진과 마이크 감도를<br>설정해주세요.</p>
+
+  <div class="photo-upload-box" onclick="document.getElementById('photo-input').click()">
+    <img id="photo-preview" src="" alt="" style="display:none">
+    <span id="photo-icon">📷</span>
+    <small id="photo-label">아이 사진 등록</small>
+  </div>
+  <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(event)">
+
+  <div class="sensitivity-wrap">
+    <label>마이크 감도 &mdash; <span id="sensitivity-val"></span></label>
+    <input type="range" id="sensitivity" min="1" max="10" value="6" oninput="updateSensLabel()">
+    <div class="sensitivity-labels"><span>민감하게</span><span>크게 외쳐야</span></div>
+  </div>
+
+  <div class="sound-wrap">
+    <label>진정 음악 종류</label>
+    <div class="sound-options">
+      <div class="sound-opt" id="sopt-1" onclick="selectSound(1)">🎵 멜로디</div>
+      <div class="sound-opt" id="sopt-2" onclick="selectSound(2)">🌧️ 빗소리</div>
+      <div class="sound-opt" id="sopt-3" onclick="selectSound(3)">🎶 자장가</div>
+      <div class="sound-opt" id="sopt-4" onclick="selectSound(4)">🔗 외부링크</div>
+    </div>
+  </div>
+  <div class="ext-url-wrap" id="ext-url-wrap">
+    <input type="url" class="ext-url-input" placeholder="링크 1" oninput="saveExtUrls()">
+    <input type="url" class="ext-url-input" placeholder="링크 2" oninput="saveExtUrls()" style="margin-top:6px">
+    <input type="url" class="ext-url-input" placeholder="링크 3" oninput="saveExtUrls()" style="margin-top:6px">
+  </div>
+
+  <div class="watch-wrap">
+    <button class="btn ghost" id="watch-btn" onclick="connectWatch()">⌚ 갤럭시 워치 연결</button>
+    <div id="watch-status" class="watch-status"></div>
+  </div>
+
+  <button class="btn" onclick="startListening()">감지 시작</button>
+  <button class="btn ghost" onclick="showScreen('listen'); startListeningDemo()">사진 없이 시작</button>
+</div>
+
+<!-- 3. 감지 중 -->
+<div id="screen-listen" class="screen">
+  <div id="listen-thumb-wrap"></div>
+  <div class="pulse-ring">
+    <span class="mic-icon">🎤</span>
+  </div>
+  <div class="volume-bar-wrap">
+    <div class="volume-bar" id="volume-bar"></div>
+  </div>
+  <h2>조용히 듣고 있어요</h2>
+  <p style="font-size:0.8rem;color:#444;margin-top:12px">폰을 세게 흔들어도 작동해요</p>
+  <div id="hr-display" class="hr-display" style="display:none">
+    <span id="hr-value">--</span> <span class="hr-unit">BPM</span>
+    <div id="hr-bar-wrap"><div id="hr-bar"></div></div>
+  </div>
+</div>
+
+<!-- 4. 개입 -->
+<div id="screen-alert" class="screen">
+  <div id="alert-photo-wrap"></div>
+  <div class="alert-text-box">
+    <h2 id="alert-message"></h2>
+    <p id="alert-sub"></p>
+    <button class="btn" onclick="showScreen('breath'); startBreath()">잠깐 멈추기</button>
+    <button class="btn ghost" onclick="dismissAlert()">괜찮아요, 돌아가기</button>
+  </div>
+</div>
+
+<!-- 5. 호흡 -->
+<div id="screen-breath" class="screen">
+  <h2>잠깐 숨을 고르세요</h2>
+  <div class="breath-circle" id="breath-circle">숨</div>
+  <div id="breath-label">준비...</div>
+  <div id="breath-count"></div>
+  <p>4초 들이쉬고 · 4초 참고 · 4초 내쉬기<br>3번 반복합니다</p>
+</div>
+
+<!-- 6. 타이머 -->
+<div id="screen-timer" class="screen">
+  <h2>조금만 기다려요</h2>
+  <div class="timer-ring">
+    <svg width="200" height="200">
+      <circle class="bg" cx="100" cy="100" r="90"/>
+      <circle class="fg" id="timer-circle" cx="100" cy="100" r="90"/>
+    </svg>
+    <div id="timer-text">3:00</div>
+  </div>
+  <p>3분 후 다시 생각해봐요.<br>충동적인 말은 3분을 못 버딥니다.</p>
+</div>
+
+<!-- 7. 마무리 -->
+<div id="screen-done" class="screen">
+  <h2>지금도 같은 말을<br>하고 싶으신가요?</h2>
+  <div class="done-btns">
+    <button class="btn yes" onclick="goBack()">아니요, 괜찮아졌어요 ❤️</button>
+    <button class="btn no"  onclick="tryAgain()">아직 화가 나요</button>
+  </div>
+</div>
+
+<!-- 8. 기록 -->
+<div id="screen-log" class="screen">
+  <h2>나의 기록</h2>
+  <p style="margin-bottom:16px">감정을 다스린 순간들</p>
+  <div class="log-summary">
+    <div class="log-summary-card">
+      <div class="num" id="log-total">0</div>
+      <div class="lbl">전체 감지</div>
+    </div>
+    <div class="log-summary-card">
+      <div class="num" id="log-calmed">0</div>
+      <div class="lbl">진정 성공</div>
+    </div>
+    <div class="log-summary-card">
+      <div class="num" id="log-today">0</div>
+      <div class="lbl">오늘</div>
+    </div>
+  </div>
+  <div class="log-chart-wrap" id="log-chart-wrap" style="width:100%;max-width:360px;margin-bottom:8px;display:none">
+    <div style="font-size:0.8rem;color:#555;margin:16px 0 10px;text-align:left">시간대별 감지 패턴</div>
+    <div id="log-chart" style="display:flex;align-items:flex-end;gap:3px;height:60px"></div>
+    <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#444;margin-top:4px">
+      <span>0시</span><span>6시</span><span>12시</span><span>18시</span><span>23시</span>
+    </div>
+  </div>
+  <div class="log-list" id="log-list"></div>
+</div>
+
+<!-- 설정 / 수동 버튼 -->
+<button class="settings-btn" id="settings-btn" onclick="stopMic(); showScreen('setup')">⚙️</button>
+<button class="manual-btn"   id="manual-btn"   onclick="triggerAlert()">🚨 지금 화났어요</button>
+<button class="log-back-btn" id="log-back-btn" onclick="showScreen('listen')">←</button>
+<button class="log-btn" id="log-btn" onclick="openLog()">📊 기록</button>
+
+<script>
+let childPhotoURL = localStorage.getItem('childPhoto') || '';
+let sensitivity   = parseInt(localStorage.getItem('sensitivity') || '6');
+let soundType     = parseInt(localStorage.getItem('soundType') || '1');
+let audioCtx, analyser, micStream;
+let monitoringInterval;
+let breathInterval, timerInterval;
+let calmTimeout = null;
+
+// ── 화면 전환 ──
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+
+  const isListen = name === 'listen';
+  document.getElementById('settings-btn').classList.toggle('visible', isListen);
+  document.getElementById('manual-btn').classList.toggle('visible', isListen);
+  document.getElementById('log-btn').classList.toggle('visible', isListen);
+  document.getElementById('log-back-btn').classList.toggle('visible', name === 'log');
+}
+
+// ── 사진 로드 ──
+function loadPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    childPhotoURL = ev.target.result;
+    localStorage.setItem('childPhoto', childPhotoURL);
+    document.getElementById('photo-preview').src = childPhotoURL;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('photo-icon').style.display  = 'none';
+    document.getElementById('photo-label').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── 감지 시작 ──
+function startListening() {
+  sensitivity = parseInt(document.getElementById('sensitivity').value);
+  localStorage.setItem('sensitivity', sensitivity);
+  showScreen('listen');
+  renderListenThumb();
+  startMic();
+}
+
+function startListeningDemo() {
+  renderListenThumb();
+  startMic();
+}
+
+function renderListenThumb() {
+  const wrap = document.getElementById('listen-thumb-wrap');
+  if (childPhotoURL) {
+    wrap.innerHTML = `<img class="child-thumb" src="${childPhotoURL}">`;
+  } else {
+    wrap.innerHTML = `<div class="child-thumb-placeholder">👶</div>`;
+  }
+}
+
+// ── 마이크 ──
+function stopMic() {
+  clearInterval(monitoringInterval);
+  if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+  if (audioCtx)  { audioCtx.close(); audioCtx = null; }
+  analyser = null;
+}
+
+async function startMic() {
+  stopMic();
+  initShake();
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx  = new (window.AudioContext || window.webkitAudioContext)();
+    analyser  = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    audioCtx.createMediaStreamSource(micStream).connect(analyser);
+    monitorVolume();
+  } catch(e) {
+    alert('마이크 권한이 필요합니다.\n브라우저 설정에서 마이크를 허용해주세요.');
+  }
+}
+
+let alertLock = false;
+
+function monitorVolume() {
+  const buf = new Float32Array(analyser.fftSize);
+  const threshold = 0.015 + (10 - sensitivity) * 0.012;
+  let highCount = 0;
+
+  monitoringInterval = setInterval(() => {
+    analyser.getFloatTimeDomainData(buf);
+    const rms = Math.sqrt(buf.reduce((s,v) => s + v*v, 0) / buf.length);
+    const pct = Math.min(rms / 0.3 * 100, 100);
+    document.getElementById('volume-bar').style.width = pct + '%';
+
+    if (rms > threshold) {
+      highCount++;
+      if (highCount === 1 && !alertLock) {
+        playGong();                        // 즉시 징 소리 (3초 중복 방지)
+        alertLock = true;
+        setTimeout(() => { alertLock = false; }, 3000);
+      }
+      if (highCount === 3) {
+        startCalmSound();                  // 진정 음악
+      }
+      if (highCount >= 5) {
+        highCount = 0;
+        setTimeout(triggerAlert, 2000);
+      }
+    } else {
+      if (highCount > 0 && highCount < 5) {
+        stopCalmSound();
+      }
+      highCount = Math.max(0, highCount - 1);
+    }
+  }, 150);
+}
+
+// ── 개입 메시지 ──
+const ALERT_MESSAGES = [
+  { h: '사랑하는 내 아이에게\n왜 화날까?', p: '지금 아이는 당신을 보고 있습니다' },
+  { h: '10년 후, 이 순간을\n기억하게 됩니다', p: '아이의 마음속에 남는 건 말이 아닌 감정입니다' },
+  { h: '아이는 지금\n엄마·아빠의 세상 전부예요', p: '잠깐 멈추면 후회가 줄어듭니다' },
+  { h: '화는 잠깐이지만\n상처는 오래 남습니다', p: '숨 한 번만 고르고 이야기해요' },
+  { h: '아이가 당신에게\n배우고 있어요', p: '지금 이 순간이 아이의 감정 교과서입니다' },
+];
+
+function showRandomAlert() {
+  const msg = ALERT_MESSAGES[Math.floor(Math.random() * ALERT_MESSAGES.length)];
+  document.getElementById('alert-message').innerHTML = msg.h.replace('\n', '<br>');
+  document.getElementById('alert-sub').textContent = msg.p;
+}
+
+// ── 진정 음향 ──
+let calmNodes = [];
+
+function playGong() {
+  if (!audioCtx) return;
+  try {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // 징 소리: 낮은 기본음 + 배음 2개로 금속 질감
+    [[220, 0.7], [440, 0.35], [660, 0.2]].forEach(([freq, vol]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.5);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 2.6);
+    });
+  } catch(e) {}
+}
+
+function stopCalmSound() {
+  if (calmTimeout) { clearTimeout(calmTimeout); calmTimeout = null; }
+  calmNodes.forEach(({ osc, gain }) => {
+    try {
+      gain.gain.linearRampToValueAtTime(0, (audioCtx?.currentTime || 0) + 0.5);
+      osc.stop((audioCtx?.currentTime || 0) + 0.5);
+    } catch(e) {}
+  });
+  calmNodes = [];
+}
+
+function startCalmSound() {
+  stopCalmSound();
+  if (soundType === 4) { openExternalSound(); return; }
+  if (!audioCtx) return;
+  try { if (audioCtx.state === 'suspended') audioCtx.resume(); } catch(e) {}
+  if      (soundType === 1) startMelody();
+  else if (soundType === 2) startRain();
+  else if (soundType === 3) startLullaby();
+}
+
+function startMelody() {
+  // 펜타토닉 멜로디 + 에코 + 하모니
+  const melody = [523, 659, 784, 880, 784, 659, 587, 523, 587, 659, 784, 659];
+  const harmony= [392, 494, 587, 659, 587, 494, 440, 392, 440, 494, 587, 494];
+
+  // 딜레이(에코) 노드 공유
+  const delay = audioCtx.createDelay(0.6);
+  delay.delayTime.value = 0.32;
+  const fbGain = audioCtx.createGain();
+  fbGain.gain.value = 0.28;
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.45, audioCtx.currentTime + 1.5);
+  delay.connect(fbGain); fbGain.connect(delay);
+  delay.connect(masterGain); masterGain.connect(audioCtx.destination);
+  calmNodes.push({ osc: { stop: () => {} }, gain: masterGain });
+
+  let i = 0;
+  function playNext() {
+    if (!audioCtx) return;
+    [[melody[i % melody.length], 0.16], [harmony[i % harmony.length], 0.07]].forEach(([freq, vol]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.55);
+      osc.connect(gain); gain.connect(delay); gain.connect(masterGain);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+      calmNodes.push({ osc, gain });
+    });
+    i++;
+    calmTimeout = setTimeout(playNext, 620);
+  }
+  playNext();
+}
+
+function startRain() {
+  if (!audioCtx) return;
+  const bufSize = audioCtx.sampleRate * 3;
+  const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf; src.loop = true;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass'; filter.frequency.value = 600; filter.Q.value = 0.5;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 2);
+  src.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  src.start();
+  calmNodes.push({ osc: src, gain });
+}
+
+function startLullaby() {
+  // 브람스 자장가 - 멜로디 + 반주 화음 (느리고 부드럽게)
+  // G장조: G4=392 A4=440 B4=494 C5=523 D5=587 E5=659 G5=784
+  const melody  = [392, 392, 587, 587, 494, 392, 523, 494, 440, 440, 659, 659, 587];
+  const chords  = [196, 196, 294, 294, 247, 196, 262, 247, 220, 220, 330, 330, 294];
+  const durations=[900,900,900,600,900,1200,900,900,900,900,900,600,1200];
+
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 2);
+  masterGain.connect(audioCtx.destination);
+  calmNodes.push({ osc: { stop: () => {} }, gain: masterGain });
+
+  let i = 0;
+  function playNext() {
+    if (!audioCtx) return;
+    const dur = (durations[i % durations.length]) / 1000;
+    [[melody[i % melody.length], 'triangle', 0.14],
+     [chords[i % chords.length], 'sine',     0.07]].forEach(([freq, type, vol]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur * 0.9);
+      osc.connect(gain); gain.connect(masterGain);
+      osc.start(); osc.stop(audioCtx.currentTime + dur);
+      calmNodes.push({ osc, gain });
+    });
+    i++;
+    calmTimeout = setTimeout(playNext, durations[i % durations.length] || 900);
+  }
+  playNext();
+}
+
+function saveExtUrls() {
+  const urls = [...document.querySelectorAll('.ext-url-input')].map(el => el.value).filter(v => v);
+  localStorage.setItem('extSoundURLs', JSON.stringify(urls));
+}
+
+function openExternalSound() {
+  const urls = JSON.parse(localStorage.getItem('extSoundURLs') || '[]').filter(u => u);
+  if (urls.length === 0) return;
+  const url = urls[Math.floor(Math.random() * urls.length)];
+  window.open(url, '_blank');
+}
+
+// ── 음악 종류 선택 ──
+function selectSound(type) {
+  soundType = type;
+  localStorage.setItem('soundType', type);
+  document.querySelectorAll('.sound-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('sopt-' + type).classList.add('selected');
+  document.getElementById('ext-url-wrap').style.display = type === 4 ? 'block' : 'none';
+}
+
+// ── 알림 무시 (모니터링 재시작) ──
+function dismissAlert() {
+  stopCalmSound();
+  saveLog('dismissed');
+  showScreen('listen');
+  startMic();
+}
+
+// ── 개입 트리거 ──
+function triggerAlert() {
+  clearInterval(monitoringInterval);
+  const wrap = document.getElementById('alert-photo-wrap');
+  if (childPhotoURL) {
+    wrap.innerHTML = `<img class="alert-photo" src="${childPhotoURL}">`;
+  } else {
+    wrap.innerHTML = `<div class="alert-photo-placeholder">👶</div>`;
+  }
+  showRandomAlert();
+  showScreen('alert');
+  startCalmSound();
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+}
+
+// ── 호흡 ──
+function startBreath() {
+  const circle = document.getElementById('breath-circle');
+  const label  = document.getElementById('breath-label');
+  const count  = document.getElementById('breath-count');
+  const steps  = [
+    { text: '들이쉬어요', cls: 'inhale', dur: 4000 },
+    { text: '참아요',     cls: 'hold',   dur: 4000 },
+    { text: '내쉬어요',   cls: 'exhale', dur: 4000 },
+  ];
+  let round = 0, step = 0;
+  const total = 3;
+
+  function nextStep() {
+    if (round >= total) {
+      showScreen('timer');
+      startTimer();
+      return;
+    }
+    const s = steps[step];
+    circle.className = 'breath-circle ' + s.cls;
+    label.textContent = s.text;
+    count.textContent = `${round + 1} / ${total}`;
+    step++;
+    if (step >= steps.length) { step = 0; round++; }
+    breathInterval = setTimeout(nextStep, s.dur);
+  }
+  nextStep();
+}
+
+// ── 타이머 ──
+function startTimer() {
+  const TOTAL = 180;
+  const circ  = document.getElementById('timer-circle');
+  const txt   = document.getElementById('timer-text');
+  const cir   = 2 * Math.PI * 90;
+  circ.style.strokeDasharray  = cir;
+  circ.style.strokeDashoffset = 0;
+
+  let remaining = TOTAL;
+  timerInterval = setInterval(() => {
+    remaining--;
+    const m = String(Math.floor(remaining / 60)).padStart(1,'0');
+    const s = String(remaining % 60).padStart(2,'0');
+    txt.textContent = m + ':' + s;
+    circ.style.strokeDashoffset = cir * (1 - remaining / TOTAL);
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      showScreen('done');
+    }
+  }, 1000);
+}
+
+// ── 마무리 ──
+function goBack() {
+  stopCalmSound();
+  saveLog('calmed');
+  showScreen('listen');
+  startMic();
+}
+
+function tryAgain() {
+  saveLog('retry');
+  showScreen('breath');
+  startBreath();
+}
+
+// ── 기록 ──
+function getLogs() {
+  try { return JSON.parse(localStorage.getItem('logs') || '[]'); } catch { return []; }
+}
+
+function saveLog(outcome) {
+  const logs = getLogs();
+  logs.push({ time: Date.now(), outcome });
+  localStorage.setItem('logs', JSON.stringify(logs));
+}
+
+function openLog() {
+  const logs = getLogs();
+  const today = new Date().toDateString();
+  const todayLogs = logs.filter(l => new Date(l.time).toDateString() === today);
+  const calmedCount = logs.filter(l => l.outcome === 'calmed').length;
+
+  document.getElementById('log-total').textContent   = logs.length;
+  document.getElementById('log-calmed').textContent  = calmedCount;
+  document.getElementById('log-today').textContent   = todayLogs.length;
+
+  const list = document.getElementById('log-list');
+  if (logs.length === 0) {
+    list.innerHTML = '<div class="log-empty">아직 기록이 없어요.<br>앱이 조용히 지켜보고 있을게요.</div>';
+  } else {
+    const grouped = {};
+    [...logs].reverse().forEach(l => {
+      const d = new Date(l.time);
+      const key = d.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(l);
+    });
+    const OUTCOME = { calmed: '진정됨 ✅', dismissed: '무시함 👋', retry: '재시도 🔄' };
+    list.innerHTML = Object.entries(grouped).map(([day, items]) =>
+      `<div class="log-day">${day}</div>` +
+      items.map(l => {
+        const t = new Date(l.time).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        return `<div class="log-item"><span class="log-time">${t}</span><span class="log-outcome">${OUTCOME[l.outcome] || l.outcome}</span></div>`;
+      }).join('')
+    ).join('');
+  }
+  // 시간대별 패턴 차트
+  const hourCounts = new Array(24).fill(0);
+  logs.forEach(l => hourCounts[new Date(l.time).getHours()]++);
+  const maxCount = Math.max(...hourCounts, 1);
+  const chartEl = document.getElementById('log-chart');
+  const wrapEl  = document.getElementById('log-chart-wrap');
+  if (logs.length > 0) {
+    wrapEl.style.display = 'block';
+    chartEl.innerHTML = hourCounts.map((c, h) => {
+      const pct = Math.round((c / maxCount) * 100);
+      const color = c === 0 ? '#1e2a3a' : c === maxCount ? '#e94560' : '#0f3460';
+      return `<div title="${h}시 ${c}회" style="flex:1;height:${Math.max(pct,4)}%;background:${color};border-radius:2px 2px 0 0;min-height:4px"></div>`;
+    }).join('');
+  } else {
+    wrapEl.style.display = 'none';
+  }
+
+  showScreen('log');
+}
+
+// ── 폰 흔들기 트리거 ──
+let lastShakeTime = 0;
+
+async function initShake() {
+  // iOS 13+ 권한 요청
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    try { await DeviceMotionEvent.requestPermission(); } catch(e) { return; }
+  }
+  window.addEventListener('devicemotion', e => {
+    const a = e.accelerationIncludingGravity;
+    if (!a) return;
+    const total = Math.abs(a.x) + Math.abs(a.y) + Math.abs(a.z);
+    if (total > 40) {  // 강하게 흔들 때 (단위: m/s²)
+      const now = Date.now();
+      if (now - lastShakeTime > 3000) {  // 3초 내 중복 방지
+        lastShakeTime = now;
+        triggerAlert();
+      }
+    }
+  });
+}
+
+// ── 갤럭시 워치 BLE 심박 ──
+let watchDevice = null, watchChar = null;
+const HR_SERVICE  = 0x180D;
+const HR_CHAR     = 0x2A37;
+let hrHistory = [];   // 최근 심박수 기록 (베이스라인용)
+let hrBaseline = 0;
+
+async function connectWatch() {
+  const btn    = document.getElementById('watch-btn');
+  const status = document.getElementById('watch-status');
+
+  if (!navigator.bluetooth) {
+    status.textContent = 'Web Bluetooth 미지원 (안드로이드 Chrome 필요)';
+    status.className = 'watch-status error';
+    return;
+  }
+
+  try {
+    status.textContent = '스캔 중...';
+    status.className = 'watch-status';
+    watchDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ services: [HR_SERVICE] }],
+      optionalServices: [HR_SERVICE]
+    });
+    status.textContent = '연결 중...';
+    const server  = await watchDevice.gatt.connect();
+    const service = await server.getPrimaryService(HR_SERVICE);
+    watchChar     = await service.getCharacteristic(HR_CHAR);
+    await watchChar.startNotifications();
+    watchChar.addEventListener('characteristicvaluechanged', onHRData);
+
+    watchDevice.addEventListener('gattserverdisconnected', () => {
+      status.textContent = '워치 연결 끊김';
+      status.className = 'watch-status error';
+      btn.textContent = '⌚ 다시 연결';
+      document.getElementById('hr-display').style.display = 'none';
+    });
+
+    status.textContent = `${watchDevice.name || '워치'} 연결됨 ✓`;
+    status.className = 'watch-status connected';
+    btn.textContent = '⌚ 연결됨';
+    btn.disabled = true;
+  } catch(e) {
+    status.textContent = e.name === 'NotFoundError' ? '워치를 찾을 수 없어요' : '연결 실패: ' + e.message;
+    status.className = 'watch-status error';
+  }
+}
+
+function onHRData(e) {
+  const data  = e.target.value;
+  const flags = data.getUint8(0);
+  const bpm   = (flags & 0x01) ? data.getUint16(1, true) : data.getUint8(1);
+
+  // 베이스라인 계산 (최근 20개 평균)
+  hrHistory.push(bpm);
+  if (hrHistory.length > 20) hrHistory.shift();
+  hrBaseline = Math.round(hrHistory.reduce((a, b) => a + b, 0) / hrHistory.length);
+
+  // UI 업데이트
+  const hrDisplay = document.getElementById('hr-display');
+  hrDisplay.style.display = 'block';
+  document.getElementById('hr-value').textContent = bpm;
+  const pct = Math.min(Math.round((bpm / 200) * 100), 100);
+  document.getElementById('hr-bar').style.width = pct + '%';
+
+  // 급상승 감지: 베이스라인 수집 후(20회 이상), 30% 초과 상승
+  if (hrHistory.length >= 10 && hrBaseline > 0 && bpm > hrBaseline * 1.3) {
+    triggerAlert();
+  }
+}
+
+// ── 감도 레이블 ──
+function updateSensLabel() {
+  const v = parseInt(document.getElementById('sensitivity').value);
+  const labels = ['','매우 민감','민감','조금 민감','보통 이하','보통','보통 이상','약간 큰 소리','큰 소리','매우 큰 소리','아주 크게'];
+  document.getElementById('sensitivity-val').textContent = labels[v];
+}
+
+// ── 초기화 ──
+updateSensLabel();
+selectSound(soundType);
+const savedExtUrls = JSON.parse(localStorage.getItem('extSoundURLs') || '[]');
+document.querySelectorAll('.ext-url-input').forEach((el, i) => { if (savedExtUrls[i]) el.value = savedExtUrls[i]; });
+if (childPhotoURL) {
+  const prev = document.getElementById('photo-preview');
+  prev.src = childPhotoURL;
+  prev.style.display = 'block';
+  document.getElementById('photo-icon').style.display  = 'none';
+  document.getElementById('photo-label').style.display = 'none';
+}
+</script>
+</body>
+</html>

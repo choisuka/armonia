@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>창의력을 키우는 연령별 미술 활동 100</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#e2e8f0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#0a1a2e,#1a2d4e);padding:40px 20px;text-align:center;border-bottom:1px solid rgba(99,179,237,.3)}
+header h1{font-size:1.8rem;color:#90cdf4;margin-bottom:8px}
+header p{color:rgba(255,255,255,.55);font-size:.92rem}
+.back-btn{display:inline-block;margin-top:16px;padding:.45rem 1.2rem;background:rgba(99,179,237,.15);border:1px solid rgba(99,179,237,.4);border-radius:999px;color:#90cdf4;text-decoration:none;font-size:.82rem}
+.tab-wrap{position:sticky;top:0;z-index:100;background:#0a0a1a;border-bottom:1px solid rgba(255,255,255,.08);display:flex;overflow-x:auto;gap:0}
+.tab{flex:1;min-width:120px;text-align:center;padding:14px 8px;font-size:.82rem;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+.tab.active{color:#90cdf4;border-bottom-color:#90cdf4}
+.section{display:none;max-width:900px;margin:0 auto;padding:32px 20px}
+.section.active{display:block}
+input[type=text]{width:100%;padding:10px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#e2e8f0;font-size:.88rem;margin-bottom:20px}
+.activity{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:.2s}
+.activity:hover{background:rgba(99,179,237,.07);border-color:rgba(99,179,237,.25)}
+.activity-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.num{min-width:32px;color:#6b7280;font-size:.78rem;padding-top:3px}
+.activity-title{font-size:.98rem;color:#e2e8f0;font-weight:700;flex:1}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.68rem;font-weight:700}
+.badge-indoor{background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
+.badge-outdoor{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.badge-solo{background:rgba(251,191,36,.15);color:#fcd34d;border:1px solid rgba(251,191,36,.3)}
+.badge-together{background:rgba(236,72,153,.15);color:#f9a8d4;border:1px solid rgba(236,72,153,.3)}
+.badge-easy{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.badge-medium{background:rgba(251,191,36,.15);color:#fcd34d;border:1px solid rgba(251,191,36,.3)}
+.badge-hard{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.badge-season{background:rgba(125,211,252,.12);color:#7dd3fc;border:1px solid rgba(125,211,252,.3)}
+.desc-label{display:block;color:#90cdf4;font-weight:700;font-size:.76rem;margin-top:10px;margin-bottom:2px;letter-spacing:.02em}
+.activity p{margin:0;color:#64748b;font-size:.82rem;line-height:1.7}
+.btn-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.naver-btn{display:inline-block;padding:5px 14px;background:rgba(3,199,90,.12);border:1px solid rgba(3,199,90,.35);border-radius:999px;color:#6ee7b7;font-size:.75rem;font-weight:700;text-decoration:none}
+.naver-btn:hover{background:rgba(3,199,90,.25);color:#fff}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 창의력을 키우는 연령별 미술 활동 100</h1>
+  <p>0~2세 · 3~5세 · 6~8세 · 9세 이상 · 연령별 25가지 엄선</p>
+  <a class="back-btn" href="https://choisuka.github.io/">← 허브로 돌아가기</a>
+</header>
+
+<div class="tab-wrap">
+  <div class="tab active" onclick="showTab('age1')">👶 0~2세</div>
+  <div class="tab" onclick="showTab('age2')">🌱 3~5세</div>
+  <div class="tab" onclick="showTab('age3')">🎨 6~8세</div>
+  <div class="tab" onclick="showTab('age4')">✏️ 9세 이상</div>
+</div>
+
+<!-- 0~2세 -->
+<div class="section active" id="tab-age1">
+  <input type="text" placeholder="🔍 검색 (활동명, 준비물, 계절...)" oninput="filter(this,'age1')">
+
+  <div class="activity"><div class="activity-header"><span class="num">1</span><div class="activity-title">핑거페인팅
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>손가락에 물감을 묻혀 종이에 자유롭게 찍고 그립니다. 아기가 처음으로 색을 탐색하는 감각 미술의 출발점입니다. 결과보다 과정이 중요한 활동으로, 아기가 물감의 감촉을 온몸으로 경험합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>영유아용 무독성 핑거페인트, 전지 또는 큰 종이, 방수 앞치마, 비닐 매트</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분 (정리 포함 30분)</p>
+  <span class="desc-label">💡 팁</span>
+  <p>욕실에서 하면 정리가 훨씬 편합니다. 물감을 먹어도 안전한 영유아 전용 제품을 반드시 사용하세요. 처음엔 한 가지 색만 주고 점차 늘려가세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=영유아+핑거페인트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">2</span><div class="activity-title">물감 발도장
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>아기 발바닥에 물감을 바르고 종이에 찍어 발자국을 남깁니다. 나중에 액자로 만들면 성장 기록이 됩니다. 손도장과 함께 찍으면 나무, 꽃 등 다양한 모양을 만들 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>무독성 물감, 넓은 붓 또는 스펀지, 두꺼운 종이 또는 캔버스, 따뜻한 물수건</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>10~15분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>물감을 발에 바를 때 간지러워 발을 빼는 아기가 많습니다. 미리 발을 살짝 간질여 적응시켜 주세요. 도장을 찍은 후 날짜와 발 크기를 적어두면 소중한 성장 기록이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+손발+도장+물감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">3</span><div class="activity-title">크레용 긁기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>두꺼운 크레용을 쥐고 종이에 자유롭게 선을 긋습니다. 아기의 소근육 발달과 눈-손 협응력을 키워주는 가장 기초적인 미술 활동입니다. 색이 남는 것을 보며 인과관계를 처음 경험합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>영아용 두꺼운 크레용(삼각 또는 계란형), 스케치북</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>10~15분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>영아용 삼각 크레용이 손에 쥐기 좋고 굴러가지 않아 적합합니다. 아기가 크레용을 입에 넣을 수 있으니 무독성 제품을 사용하고 항상 옆에서 지켜봐 주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=영아용+삼각+크레용" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">4</span><div class="activity-title">스티커 붙이기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>스티커를 떼어 종이에 붙이는 단순한 활동이지만 소근육 발달에 탁월한 효과가 있습니다. 동그라미, 별, 하트 등 다양한 모양 스티커로 그림을 완성합니다. 색깔 인식과 공간 배치 감각도 함께 키울 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>대형 도형 스티커, 스케치북 또는 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>10~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음엔 스티커가 큰 것부터 시작하세요. "빨간 동그라미 어디 붙일까?" 하고 말을 걸어주면 언어 발달도 함께 됩니다. 스티커를 옷에 붙이기 시작하면 자연스럽게 종이로 유도해 주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+스티커+도형" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">5</span><div class="activity-title">티슈 구기기·찢기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>색깔 티슈나 한지를 구기고 찢어 풀로 종이에 붙입니다. 구기는 촉감과 찢기는 소리가 감각 자극에 좋습니다. 완성된 작품은 꽃이나 구름 모양이 되기도 합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>색깔 티슈 또는 한지, 딱풀, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>티슈를 구기는 소리를 "바스락~" 하고 함께 소리 내면 아기가 더 좋아합니다. 작게 찢은 조각들을 하늘에 뿌려보는 것도 신나는 감각 놀이가 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=색깔+한지+색티슈" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">6</span><div class="activity-title">모래 감각 놀이
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 봄·여름·가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>모래 위에 손가락이나 나뭇가지로 선을 긋고 모양을 만듭니다. 틀로 찍어내고 색모래로 그림을 완성하는 자연 미술 활동입니다. 모래의 질감이 두뇌 감각 발달에 매우 좋습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>모래놀이 도구 세트, 색모래(선택), 분무기(모래 적시기용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>색모래를 여러 색 준비해두면 모래 그림을 만들 수 있습니다. 실내에서 하려면 대형 트레이에 모래를 담아 사용하세요. 놀이 후 손을 꼼꼼히 씻겨주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=색모래+모래놀이+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">7</span><div class="activity-title">물놀이 색소 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>대야에 물을 담고 식용 색소 몇 방울을 떨어뜨립니다. 아기가 손을 넣어 색물을 휘젓고 종이를 담갔다 꺼내면 아름다운 그림이 완성됩니다. 물의 촉감과 색의 변화를 동시에 경험합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>식용 색소, 대야, 흰 종이 또는 커피 필터, 앞치마</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>반드시 식용 색소를 사용하세요. 욕실에서 하면 정리가 편하고 아기가 물을 먹어도 안전합니다. 여러 색을 섞으면 색이 변하는 것을 보며 색 혼합을 자연스럽게 배웁니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=식용+색소+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">8</span><div class="activity-title">아이스 물감 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>물감을 탄 물을 얼음 틀에 얼려 색깔 얼음을 만듭니다. 아기가 색깔 얼음을 쥐고 종이 위에 문지르면 그림이 그려집니다. 차가운 감촉과 얼음이 녹으며 색이 번지는 신기한 경험을 합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>얼음 틀, 무독성 물감, 아이스크림 막대, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>준비(전날 얼리기) + 활동 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>얼음 틀에 막대를 꽂아 손잡이처럼 만들면 아기가 쥐기 편합니다. 여름에 바깥에서 하면 더위도 식히고 미술도 즐길 수 있습니다. 여러 색 얼음을 같이 문지르면 색이 섞이는 것을 볼 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+아이스크림+얼음틀" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">9</span><div class="activity-title">솜뭉치 찍기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>솜뭉치나 화장 솜을 집게로 집어 물감에 찍은 뒤 종이에 콕콕 찍습니다. 집게를 쥐는 동작이 소근육 발달에 좋고, 솜의 부드러운 질감이 촉각 자극이 됩니다. 벚꽃, 눈송이 등 다양한 표현이 가능합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>화장 솜 또는 솜뭉치, 빨래집게, 물감, 팔레트, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>집게를 쥐는 것이 어려운 아기라면 손으로 잡아도 됩니다. 분홍 물감으로 찍으면 벚꽃, 흰 물감으로 찍으면 눈이 됩니다. 계절에 맞는 배경 그림 위에 찍어보세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=화장솜+미술+도구" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">10</span><div class="activity-title">스펀지 물감 찍기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>스펀지에 물감을 묻혀 종이에 찍으면 독특한 질감의 그림이 완성됩니다. 스펀지를 쥐어짜는 동작이 손 근육 발달에 좋고, 물감이 번지는 효과가 아이의 눈을 즐겁게 합니다. 별, 하트 등 모양으로 잘라 스탬프처럼 활용할 수도 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>다양한 크기의 스펀지, 물감, 팔레트, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>스펀지를 가위로 별, 하트, 동물 모양으로 잘라두면 더 재미있습니다. 스펀지에 물감을 너무 많이 묻히면 번지므로 팔레트에서 한 번 눌러 조절해 주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=미술용+스펀지+도장" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">11</span><div class="activity-title">휴지심 도장
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>다 쓴 휴지심을 납작하게 눌러 모양을 만들고 물감에 찍어 도장처럼 사용합니다. 원형 그대로 찍으면 원, 꽃 모양으로 잘라 찍으면 꽃이 됩니다. 재활용 재료로 할 수 있는 친환경 미술 활동입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>휴지심(화장지 심), 물감, 팔레트, 도화지, 가위</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>휴지심 끝을 꽃잎 모양으로 잘라 찍으면 예쁜 꽃다발 그림이 됩니다. 여러 크기의 휴지심을 모아두었다가 한꺼번에 활용하면 다양한 크기의 원을 찍을 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+물감+팔레트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">12</span><div class="activity-title">비닐백 물감 놀이
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>지퍼백 안에 물감을 여러 색 넣고 공기를 빼고 밀봉합니다. 아기가 손으로 누르고 문지르면 색이 섞이며 멋진 패턴이 생깁니다. 손에 물감이 묻지 않아 지저분함 없이 색 혼합을 경험할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>지퍼백(대형), 물감 2~3색, 테이프(바닥 고정용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>10~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>비닐백을 테이프로 바닥이나 창문에 고정하면 아기가 더 편하게 탐색할 수 있습니다. 빨강+파랑, 노랑+파랑 조합으로 색 혼합 원리를 자연스럽게 보여주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=지퍼백+대형" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">13</span><div class="activity-title">목욕 물감 놀이
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>욕실 타일이나 욕조 벽에 목욕 전용 물감으로 그림을 그립니다. 아기가 손, 발, 몸으로 자유롭게 그리고 목욕하면서 씻어내면 됩니다. 놀이와 목욕을 동시에 해결하는 실용적인 감각 미술입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>목욕용 물감(배스 페인트), 붓 또는 손</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>목욕 시간 포함 20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>반드시 목욕 전용 제품을 사용하세요. 일반 물감은 타일에 착색될 수 있습니다. 아기가 목욕을 싫어할 경우 이 놀이로 욕실 거부감을 없애는 데도 효과적입니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+목욕+배스페인트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">14</span><div class="activity-title">천연 음식 물감 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>시금치즙(초록), 당근즙(주황), 비트즙(빨강), 블루베리즙(보라) 등 천연 식재료로 물감을 만들어 그림을 그립니다. 아기가 입에 넣어도 안전하고 색이 나오는 원리에 대한 호기심도 자극합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>시금치·당근·비트·블루베리, 강판 또는 믹서기, 도화지, 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>재료 준비 10분 + 활동 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>천연 색소는 시간이 지나면 색이 바래지만 그 자체가 자연스러운 경험입니다. 즙을 짜는 과정도 아이가 함께 참여하면 요리+미술 통합 활동이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=천연+식용색소" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">15</span><div class="activity-title">콩·곡물 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>검정콩, 팥, 쌀, 보리 등 다양한 곡물을 풀로 붙여 그림을 완성합니다. 곡물마다 다른 크기와 색깔이 자연스러운 모자이크 효과를 만들어냅니다. 촉각 자극과 소근육 발달에 효과적입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>검정콩·팥·쌀·보리 등 곡물, 목공풀, 두꺼운 도화지, 연필(밑그림용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>먹지 않도록 옆에서 지켜봐 주세요. 트레이에 곡물을 담아주면 흘려도 모으기 쉽습니다. 간단한 밑그림(태양, 나무) 위에 붙이면 완성도 높은 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://www.naver-btn" href="https://search.shopping.naver.com/search/all?query=목공풀+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">16</span><div class="activity-title">밀가루 반죽 놀이
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>밀가루에 물과 식용 색소를 넣고 반죽해 천연 클레이를 만듭니다. 밀고, 찍고, 모양을 만드는 전 과정이 감각 자극이 됩니다. 입에 넣어도 안전하고 만드는 과정 자체가 요리 놀이와 미술의 결합입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>밀가루, 소금, 식용 색소, 물, 쿠킹 오일 약간, 밀대, 쿠키 틀</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>반죽 10분 + 놀이 30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>소금을 넣으면 보존 기간이 늘어납니다. 밀봉 용기에 넣으면 냉장 보관 1주일 가능. 쿠키 틀로 모양 찍기를 좋아하는 아이가 많습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+쿠키틀+밀대" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">17</span><div class="activity-title">쌀 감각 놀이
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>대형 트레이에 쌀을 담고 아기가 손가락으로 선을 긋거나 컵으로 퍼 담습니다. 식용 색소로 색깔 쌀을 만들면 시각 자극도 더해집니다. 모래 놀이보다 안전하고 실내에서 즐길 수 있는 감각 미술입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>쌀 1~2kg, 대형 트레이, 작은 컵과 숟가락, 식용 색소(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>색깔 쌀 만들기: 쌀에 식용 색소와 소량의 물을 넣고 비비면 됩니다. 말린 후 사용하세요. 트레이 아래에 비닐을 깔면 정리가 편합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=영아+감각놀이+트레이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">18</span><div class="activity-title">마카로니 붙이기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>마카로니, 펜네, 스파게티 등 다양한 파스타 면을 풀로 도화지에 붙여 그림을 만듭니다. 면의 구멍에 실을 끼우거나 물감으로 색칠해 목걸이를 만들 수도 있습니다. 형태 인식과 소근육 발달에 좋습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>마카로니·펜네 등 파스타, 목공풀, 도화지, 물감(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>마카로니를 물감으로 미리 색칠해 말려두면 더 화려한 작품이 됩니다. 목걸이 만들기는 24개월 이상 아이에게 적합합니다. 먹지 않도록 주의하세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=마카로니+파스타+공예" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">19</span><div class="activity-title">거품 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>물감과 주방세제를 섞은 물에 빨대로 바람을 불어 거품을 만듭니다. 거품 위에 종이를 살짝 눌렀다 떼면 독특한 원형 패턴의 그림이 완성됩니다. 부는 행위 자체가 구강 근육 발달에도 도움이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>물감, 주방세제, 물, 빨대, 컵, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>빨대로 빨지 않도록 빨대 중간에 핀으로 구멍을 뚫어두면 안전합니다. 여러 색 거품을 만들어 같은 종이에 찍으면 알록달록한 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+미술+물감세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">20</span><div class="activity-title">은박지 구기기·조각
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>알루미늄 호일을 구기고 펴고 모양을 만드는 활동입니다. 구길 때 나는 바스락 소리와 반짝이는 표면이 아기의 감각을 다양하게 자극합니다. 동그랗게 뭉쳐 공을 만들거나 납작하게 펴서 그림 위에 붙이는 입체 미술로도 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>알루미늄 호일, 도화지, 목공풀(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>10~15분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>호일 공을 여러 개 만들어 굴리는 놀이로 확장할 수 있습니다. 도화지에 풀로 붙여 별, 물고기 등 모양을 만들면 반짝이는 입체 작품이 완성됩니다. 날카로운 모서리에 주의하세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=알루미늄+호일" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+</div>
+
+  <div class="activity"><div class="activity-header"><span class="num">21</span><div class="activity-title">뽁뽁이 찍기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>버블랩(뽁뽁이)에 물감을 바르고 종이에 찍으면 동그란 패턴이 찍힙니다. 뽁뽁이를 터뜨리는 촉각 자극과 규칙적인 패턴의 시각 자극을 동시에 경험합니다. 포도, 물고기 비늘 등 다양한 표현에 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>버블랩(뽁뽁이), 물감, 롤러 또는 붓, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>뽁뽁이에 롤러로 물감을 고르게 바른 뒤 종이를 위에 올려 누르면 더 선명하게 찍힙니다. 보라색 물감으로 포도 모양을 만들고 초록 줄기를 그려 붙이면 멋진 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=버블랩+포장재" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">22</span><div class="activity-title">풀 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>투명 풀(목공풀 또는 물풀)을 도화지에 짜서 모양을 만들고 그 위에 글리터나 색모래를 뿌립니다. 풀이 마르면 반짝이는 그림이 완성됩니다. 풀을 짜는 손 힘 조절이 소근육 발달에 좋습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>목공풀 또는 물풀, 글리터 가루 또는 색모래, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분 + 건조 1시간</p>
+  <span class="desc-label">💡 팁</span>
+  <p>풀로 별, 달, 하트 등 단순한 모양을 만든 뒤 글리터를 뿌리면 야경처럼 반짝이는 작품이 됩니다. 여분의 글리터는 종이 위에서 털어내 재사용하세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=글리터+가루+미술" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">23</span><div class="activity-title">천 염색 (식용 색소)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흰 면 손수건이나 티셔츠를 식용 색소 물에 담가 염색합니다. 고무줄로 묶거나 집게로 집어 무늬를 만드는 간단한 홀치기 염색으로 아이만의 세상에서 하나뿐인 작품을 만들 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>흰 면 손수건, 식용 색소, 고무줄, 대야, 소금(색 고정용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분 + 건조</p>
+  <span class="desc-label">💡 팁</span>
+  <p>소금물에 미리 담갔다 짜면 색이 더 잘 스며듭니다. 염색 후 찬물로 헹구고 그늘에서 말리세요. 완성된 손수건은 아이만의 특별한 선물로 활용할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=흰색+면+손수건+아이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">24</span><div class="activity-title">물 그림 (젖은 붓으로 바닥에)
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 봄·여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>큰 붓에 물만 묻혀 마당, 베란다, 보도블록에 그림을 그립니다. 물이 마르면 사라지는 특성이 아이에게 신기한 경험이 되고, 반복해서 그릴 수 있습니다. 물감 없이도 붓 사용 연습이 가능한 친환경 미술입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>큰 붓(페인트 붓 가능), 물통</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>여름 더운 날 그늘진 베란다에서 하면 시원하게 즐길 수 있습니다. "어디가 먼저 마를까?" 하고 예측 게임을 하면 과학적 사고도 됩니다. 아이가 그린 그림을 사진으로 남겨두세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+페인트붓+큰붓" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">25</span><div class="activity-title">자연물 콜라주 (나뭇잎·돌)
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🍂 봄·가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>산책하며 주운 나뭇잎, 작은 돌, 꽃잎, 나뭇가지를 도화지에 풀로 붙여 그림을 완성합니다. 자연물의 색깔과 모양을 활용해 나무, 동물, 얼굴 등을 표현합니다. 자연 탐색과 창의적 표현을 동시에 경험합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>나뭇잎·돌·꽃잎(자연 수집), 목공풀, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>산책 20분 + 만들기 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>산책 전 "오늘은 노란 것만 모아보자"처럼 미션을 주면 더 재미있습니다. 나뭇잎 뒷면에 풀을 바르고 붙이면 잘 고정됩니다. 완성 후 코팅하거나 투명 테이프를 붙이면 오래 보존됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=목공풀+어린이미술" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+<!-- 3~5세 -->
+<div class="section" id="tab-age2">
+  <input type="text" placeholder="🔍 검색 (활동명, 준비물, 계절...)" oninput="filter(this,'age2')">
+
+  <div class="activity"><div class="activity-header"><span class="num">26</span><div class="activity-title">손바닥 나무
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🍂 가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>팔뚝과 손바닥에 갈색 물감을 바르고 종이에 찍으면 나무 기둥과 가지가 됩니다. 손가락 끝에 노랑·빨강·주황 물감을 묻혀 콕콕 찍으면 알록달록한 가을 나뭇잎이 완성됩니다. 나 자신의 몸이 붓이 되는 특별한 경험입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>물감(갈색·주황·노랑·빨강), 전지 또는 큰 도화지, 앞치마, 물수건</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>가을에 하면 더욱 의미 있습니다. 완성된 나무 그림에 날짜와 아이 이름을 써두면 성장 기록이 됩니다. 온 가족이 함께 찍어 큰 숲을 만들어도 좋습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+미술+물감세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">27</span><div class="activity-title">발바닥 동물
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>발바닥을 찍은 뒤 그 모양을 활용해 다양한 동물을 완성합니다. 발뒤꿈치는 몸통, 발가락은 다리나 깃털로 변신합니다. 공룡, 새, 문어 등 아이가 좋아하는 동물로 창의적으로 변환할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>물감, 전지, 사인펜(눈·입 그리기용), 앞치마, 물수건</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>발바닥을 찍은 후 마르기 전에 사인펜으로 눈과 입을 그려주면 금방 동물이 됩니다. "이 발바닥은 어떤 동물이 될 것 같아?" 하고 아이가 직접 결정하게 해주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+핑거페인트+물감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">28</span><div class="activity-title">마블링
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>물 위에 마블링 물감을 떨어뜨리고 이쑤시개로 살살 저으면 대리석 같은 패턴이 생깁니다. 종이를 수면에 살짝 얹었다 들어 올리면 세상에 하나뿐인 그림이 완성됩니다. 물감이 퍼지는 과정 자체가 아이에게 큰 감동을 줍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>마블링 물감, 넓고 얕은 대야, 이쑤시개, 흰 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>물감을 너무 많이 넣으면 탁해집니다. 2~3가지 색이 가장 예쁩니다. 완성된 마블링 종이로 책 표지, 선물 포장지로 활용할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=마블링물감+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">29</span><div class="activity-title">데칼코마니
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>도화지 한쪽에 물감을 듬뿍 짜고 반으로 접었다 펴면 좌우 대칭 무늬가 나타납니다. 나비, 나뭇잎, 얼굴 등 대칭 형태가 자연스럽게 완성됩니다. 접기 전 "무엇이 나올까?" 예측하는 재미가 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>물감, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>물감을 충분히 짜야 예쁜 패턴이 나옵니다. 접은 채로 손바닥으로 꼭꼭 눌러주세요. 완성된 그림에 눈, 코, 입을 그려 넣으면 재미있는 괴물이나 나비가 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+수채화물감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">30</span><div class="activity-title">빨대 불기 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>도화지 위에 묽은 물감을 한 방울 떨어뜨리고 빨대로 바람을 불어 퍼뜨립니다. 방향을 바꿔가며 불면 나뭇가지, 번개, 불꽃 같은 모양이 만들어집니다. 폐활량 조절과 구강 근육 발달에도 도움이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>묽게 탄 물감, 빨대, 도화지, 스포이트(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>물감을 스포이트로 떨어뜨리면 더 정확하게 조절할 수 있습니다. 완성된 나뭇가지 그림에 손가락으로 꽃이나 잎을 찍어 더하면 봄 나무가 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=스포이트+어린이미술" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">31</span><div class="activity-title">소금 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>도화지에 목공풀로 그림을 그린 뒤 소금을 뿌립니다. 소금이 붙은 위에 수채화 물감을 칠하면 소금이 물감을 흡수하며 반짝이는 눈꽃 결정 같은 효과가 납니다. 겨울 풍경이나 우주 그림에 특히 잘 어울립니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>목공풀, 굵은 소금, 수채화 물감, 도화지, 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분 + 건조</p>
+  <span class="desc-label">💡 팁</span>
+  <p>굵은 소금일수록 결정 효과가 뚜렷합니다. 물감을 붓으로 칠하는 대신 스포이트로 한 방울씩 떨어뜨리면 더 아름다운 번짐 효과가 납니다. 완전히 마른 후 여분의 소금을 털어내세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=수채화물감+어린이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">32</span><div class="activity-title">크레파스+수채화 (방염 기법)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흰 도화지에 크레파스로 그림을 그린 뒤 수채화 물감을 전체적으로 칠합니다. 크레파스 기름 성분이 물감을 밀어내 크레파스 선은 그대로 남고 배경만 물감으로 채워집니다. 마치 마법처럼 그림이 드러나는 효과에 아이들이 열광합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>크레파스, 수채화 물감, 도화지, 붓, 물통</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</span>
+  <span class="desc-label">💡 팁</span>
+  <p>크레파스를 세게 눌러 그려야 방염 효과가 잘 납니다. 흰 크레파스로 그리고 물감을 칠하면 "비밀 그림" 효과를 낼 수 있습니다. 배경을 어두운 색으로 칠하면 더욱 극적입니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+크레파스+수채화세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">33</span><div class="activity-title">신문지 찢기 콜라주
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>신문지나 잡지를 찢어 원하는 모양으로 도화지에 붙입니다. 찢기와 붙이기 동작이 소근육 발달에 좋고, 다양한 텍스처와 활자가 독특한 시각 효과를 만들어냅니다. 인물, 동물, 풍경 등 다양한 주제로 표현할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>신문지·잡지·전단지, 풀, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>색깔 잡지 광고지를 활용하면 더 화려합니다. 미리 밑그림을 그린 뒤 그 위에 붙이면 완성도가 높아집니다. 찢은 조각들을 색깔별로 분류하는 활동을 먼저 하면 색 인식 교육도 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=딱풀+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">34</span><div class="activity-title">자연물 탁본
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🍂 봄·가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>나뭇잎이나 나무껍질 위에 종이를 올리고 크레파스나 연필로 문지르면 표면 질감이 종이에 그대로 찍힙니다. 같은 나뭇잎도 앞면과 뒷면이 다른 패턴이 나오는 것을 발견하며 자연 탐구심이 자랍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>나뭇잎·나무껍질(자연 수집), 얇은 종이, 크레파스 또는 색연필</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>산책 포함 30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>잎맥이 뚜렷한 나뭇잎일수록 예쁜 탁본이 나옵니다. 여러 종류의 잎을 모아 탁본집을 만들면 식물 도감이 됩니다. 종이는 얇을수록 질감이 잘 나타납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+색연필+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">35</span><div class="activity-title">실 그림
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>실을 물감에 담갔다 도화지 위에 구불구불 올려놓고 반으로 접어 누른 뒤 실을 잡아당깁니다. 실이 지나간 자리에 독특한 무늬가 남습니다. 데칼코마니처럼 예측 불가능한 결과가 아이의 호기심을 자극합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>두꺼운 실(털실 가능), 물감, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>실을 당길 때 종이를 꾹 눌러야 선명한 무늬가 납니다. 여러 색 실을 동시에 사용하면 더 화려한 결과가 나옵니다. 완성된 그림이 어떤 모양처럼 보이는지 이야기해 보세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=털실+공예+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">36</span><div class="activity-title">얼음 물감
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>물감을 탄 물을 얼려 색깔 얼음을 만들고 도화지 위에서 녹이며 그림을 그립니다. 3~5세는 의도적으로 방향을 조절하며 그리기 시작할 수 있어 더욱 풍부한 표현이 가능합니다. 여름 더위도 식히고 미술도 즐기는 일석이조 활동입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>물감, 얼음 틀, 아이스크림 막대, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>전날 얼리기 + 활동 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>여러 색 얼음을 함께 문지르면 색이 섞이는 원리를 배울 수 있습니다. 캔버스 대신 검은 도화지를 쓰면 색이 더 선명하게 나타납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아이스크림+얼음틀+막대" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">37</span><div class="activity-title">스크래치 아트
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>크레파스로 종이를 여러 색으로 칠한 뒤 검은 물감이나 검은 크레파스로 덮습니다. 이쑤시개나 나무 막대로 긁으면 아래 색이 드러나며 반짝이는 그림이 완성됩니다. 어둠 속에서 빛이 나오는 것 같은 신비로운 효과에 아이들이 매우 좋아합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>크레파스, 검은 물감 또는 검은 크레파스, 도화지, 이쑤시개 또는 나무 막대</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>밑칠 20분 + 건조 + 긁기 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>시중에 판매하는 스크래치 아트 종이를 사용하면 더 쉽게 시작할 수 있습니다. 긁는 도구 끝이 날카롭지 않게 주의하세요. 별, 꽃, 글자 등 단순한 모양부터 시작하세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=스크래치+아트+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">38</span><div class="activity-title">점토 동물 만들기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>컬러 클레이나 지점토로 좋아하는 동물을 만듭니다. 동그랗게 빚기, 납작하게 누르기, 길게 늘리기 등 기본 동작을 익히며 입체적인 형태를 표현합니다. 완성 후 말리면 오래 보존할 수 있는 작품이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>컬러 클레이 또는 지점토, 클레이 도구 세트, 작업 매트</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>몸통부터 만들고 머리, 다리 순으로 붙이는 순서를 알려주세요. 이쑤시개를 연결 부위에 꽂으면 잘 떨어지지 않습니다. 완성 후 아크릴 물감으로 색칠하면 더 생동감 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+컬러클레이+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">39</span><div class="activity-title">달걀판 꾸미기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 봄</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>빈 달걀판을 물감으로 색칠하고 꽃, 애벌레, 악어 등 다양한 모양으로 변신시킵니다. 달걀판의 울퉁불퉁한 구조가 자연스럽게 입체감을 주어 특별한 작품이 됩니다. 재활용 미술의 즐거움을 배울 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>빈 달걀판, 물감, 붓, 사인펜, 스티커(눈 모양)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>달걀판을 잘라 꽃 모양을 만들거나, 한 줄로 이어 애벌레를 만드는 것이 인기 있습니다. 스티커 눈을 붙이면 어떤 모양도 금방 캐릭터가 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://www.naver-btn" href="https://search.shopping.naver.com/search/all?query=아크릴물감+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">40</span><div class="activity-title">돌 그림
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 봄·여름·가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>산책 중 주운 납작한 돌멩이를 물감이나 아크릴로 색칠해 꾸밉니다. 동물, 표정, 무늬 등 다양하게 표현하며 돌의 자연스러운 형태를 활용합니다. 완성된 돌은 화분 장식이나 문진으로 실제 사용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>납작한 돌멩이, 아크릴 물감, 붓, 투명 코팅제(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>산책 포함 40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>돌을 깨끗이 씻어 완전히 말린 후 칠해야 물감이 잘 붙습니다. 완성 후 투명 매니큐어나 바니시를 바르면 오래 보존됩니다. 가족끼리 서로의 얼굴을 돌에 그려 선물해도 좋습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아크릴물감+어린이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">41</span><div class="activity-title">야채 도장
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>연근(꽃 모양), 양파(나이테 무늬), 양배추(장미 모양), 옥수수(줄무늬) 등 야채를 잘라 물감에 찍어 도장으로 활용합니다. 요리와 미술을 연결하는 통합 활동이며 야채 단면의 아름다운 패턴을 발견하는 즐거움이 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>연근·양파·양배추·옥수수 등, 물감, 팔레트, 도화지, 칼(어른용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>15~25분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>자르는 것은 어른이 해주세요. "이 야채 단면은 무슨 모양이야?" 하고 물어보면 관찰력이 키워집니다. 찍은 후 그림 위에 사인펜으로 잎이나 줄기를 그려 완성도를 높여보세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+미술+물감팔레트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">42</span><div class="activity-title">풍선 물감 터뜨리기
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">☀️ 봄·여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>풍선 안에 물감을 넣고 바람을 불어 캔버스에 던지거나 핀으로 터뜨립니다. 물감이 사방으로 튀며 추상적인 패턴이 만들어집니다. 예측 불가능한 결과가 아이에게 큰 흥분과 성취감을 줍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>풍선, 물감, 큰 캔버스 또는 전지, 앞치마, 핀 또는 다트</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>반드시 야외나 넓은 공간에서 하세요. 캔버스를 벽에 세워두고 던지면 더 역동적입니다. 앞치마와 헌 옷을 입혀주세요. 완성 후 사진을 찍으면 멋진 작품 기록이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=풍선+미술놀이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">43</span><div class="activity-title">막대 인형 만들기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>종이에 좋아하는 캐릭터나 동물을 그리고 오린 뒤 아이스크림 막대에 붙여 인형을 만듭니다. 완성된 막대 인형으로 즉석 인형극을 합니다. 미술과 언어·극 표현을 연결하는 통합 활동입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>도화지, 색연필 또는 사인펜, 가위, 아이스크림 막대, 테이프</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>만들기 20분 + 인형극 자유롭게</p>
+  <span class="desc-label">💡 팁</span>
+  <p>책 속 주인공을 만들어 이야기를 재연하면 독서 연계 활동이 됩니다. 박스를 무대로 꾸며 인형극 공연을 하면 더욱 풍성한 경험이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아이스크림막대+나무막대" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">44</span><div class="activity-title">나뭇잎 그림
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🍂 봄·가을</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>나뭇잎 위에 직접 물감을 칠하고 도화지에 찍어 나뭇잎 모양을 남깁니다. 잎의 모양과 잎맥이 그대로 찍혀 자연스러운 패턴이 만들어집니다. 여러 종류의 잎으로 찍으면 식물 도감처럼 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>다양한 나뭇잎(자연 수집), 물감, 붓, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>산책 포함 40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>잎 뒷면(잎맥이 튀어나온 쪽)에 물감을 칠하고 찍어야 잎맥이 선명하게 나옵니다. 가을 낙엽으로 하면 색감이 더욱 풍부합니다. 찍은 후 잎 이름을 찾아보는 자연 탐구로 이어갈 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+수채화+물감붓세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">45</span><div class="activity-title">비즈 공예 (기초)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>굵은 실에 큰 비즈를 꿰어 팔찌나 목걸이를 만듭니다. 색깔과 모양을 골라 순서를 정하는 과정에서 패턴 인식과 수 개념이 자랍니다. 완성된 액세서리를 직접 착용하는 성취감이 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>굵은 비즈(대형), 탄성 실 또는 굵은 끈, 안전 바늘</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>5세 미만은 비즈를 삼킬 수 있으니 반드시 옆에서 지켜봐 주세요. 실 끝에 테이프를 감으면 바늘 없이도 꿰기 편합니다. "빨강 2개, 파랑 1개" 패턴을 미리 정하고 따라 만들면 수학 개념도 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+비즈공예+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">46</span><div class="activity-title">종이접기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>색종이를 접어 학, 개구리, 배, 꽃 등 다양한 모양을 만듭니다. 순서에 따라 접는 과정이 수학적 사고(대칭, 도형)와 소근육 발달에 매우 효과적입니다. 완성된 작품을 도화지에 붙여 그림을 완성하는 콜라주로 이어갈 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>색종이, 종이접기 책 또는 도안</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음엔 2~3번 접기로 완성되는 단순한 것부터 시작하세요. 접기 선을 손톱으로 꾹 눌러 선명하게 만드는 습관을 가르쳐주세요. 완성된 개구리를 튕겨보는 놀이로 확장할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+색종이+종이접기" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">47</span><div class="activity-title">페이퍼 컵 공작
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>종이컵을 색칠하고 오려 붙여 동물, 로봇, 탑 등을 만듭니다. 종이컵 여러 개를 쌓거나 연결해 입체 구조물을 만들 수 있습니다. 재활용 재료로 3D 작품을 만드는 성취감이 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>종이컵, 물감 또는 사인펜, 가위, 테이프, 색종이</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>종이컵 바닥을 얼굴로 활용하면 쉽게 캐릭터가 됩니다. 여러 개를 연결해 기차나 로봇을 만드는 것을 아이들이 매우 좋아합니다. 실을 연결해 전화기를 만들면 과학 놀이로도 이어집니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=종이컵+공예+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">48</span><div class="activity-title">압화 (꽃·잎 누르기)
+    <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 봄·여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>꽃잎과 나뭇잎을 책 사이에 끼워 말린 뒤 도화지에 붙여 작품을 만듭니다. 자연의 색깔과 형태가 그대로 보존되어 아름다운 작품이 됩니다. 엽서나 책갈피로 만들어 선물하면 특별한 의미가 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>꽃·잎(자연 수집), 두꺼운 책, 키친타월, 목공풀, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>채집 20분 + 누르기(1~2주) + 붙이기 20분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>키친타월 사이에 꽃을 끼우고 무거운 책으로 1~2주 누르면 됩니다. 코팅지로 덮으면 오래 보존됩니다. 봄에 벚꽃잎을 모아 만들면 특히 예쁜 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=압화+꽃누르기+키트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">49</span><div class="activity-title">사진 콜라주
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>가족 사진이나 잡지 사진을 오려 도화지에 붙이고 그림을 더해 나만의 이야기가 있는 콜라주를 만듭니다. 사진 속 인물을 다른 배경에 옮겨 붙이는 상상 콜라주가 특히 재미있습니다. 자신과 가족에 대한 긍정적 자아상을 형성하는 데도 도움이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>가족 사진 프린트 또는 잡지, 가위, 풀, 도화지, 색연필</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>아이 얼굴을 오려 슈퍼히어로 몸에 붙이거나 우주 배경에 붙이면 아이가 매우 좋아합니다. 완성 후 "이 사진 속 이야기를 들려줘"라고 하면 언어 발달 활동이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+가위+안전가위" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">50</span><div class="activity-title">나만의 그림책 만들기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>도화지를 반으로 접어 묶어 작은 책을 만들고 직접 이야기를 쓰고 그림을 그려 나만의 그림책을 완성합니다. 이야기 구성, 그림 표현, 제본까지 전 과정을 경험하며 창의력과 문해력이 동시에 자랍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>도화지 4~6장, 스테이플러 또는 실, 색연필·사인펜, 표지용 두꺼운 종이</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>먼저 "주인공은 누구야? 무슨 일이 생겼어? 어떻게 해결했어?"의 3단계로 이야기 뼈대를 잡아주세요. 완성된 책을 가족 앞에서 읽어주는 시간을 가지면 자신감이 쑥 자랍니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+스케치북+도화지" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+</div>
+
+<!-- 6~8세 -->
+<div class="section" id="tab-age3">
+  <input type="text" placeholder="🔍 검색 (활동명, 준비물, 계절...)" oninput="filter(this,'age3')">
+
+  <div class="activity"><div class="activity-header"><span class="num">51</span><div class="activity-title">수채화 번지기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>젖은 도화지 위에 수채화 물감을 올리면 물감이 번지며 몽환적인 효과가 납니다. 습식 기법(Wet-on-Wet)으로 하늘, 바다, 노을 등 자연 풍경을 표현하기에 최적입니다. 결과를 예측할 수 없는 자유로운 표현이 창의성을 자극합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>수채화 물감, 수채화 전용 종이, 넓은 붓, 물통, 스프레이</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>종이를 먼저 물로 충분히 적신 뒤 물감을 올리세요. 소금을 뿌리면 눈꽃 결정 효과가 납니다. 완전히 마른 후 위에 세밀한 그림을 추가하면 배경+전경의 풍부한 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=수채화물감+전용종이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">52</span><div class="activity-title">아크릴 레이어 페인팅
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>캔버스에 아크릴 물감을 층층이 덧칠해 깊이감 있는 그림을 만듭니다. 배경색을 먼저 칠하고 말린 뒤 그 위에 다음 레이어를 쌓아가는 방식입니다. 빠르게 마르는 아크릴의 특성 덕분에 아이들도 쉽게 레이어링을 경험할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>아크릴 물감, 캔버스 또는 두꺼운 도화지, 다양한 크기의 붓, 팔레트</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분 (레이어 건조 포함)</p>
+  <span class="desc-label">💡 팁</span>
+  <p>붓을 물로 씻지 않으면 굳어버리니 사용 후 바로 씻어주세요. 팔레트에 물을 조금 섞으면 더 부드럽게 발립니다. 나이프(팔레트 나이프)로 물감을 펴 바르면 독특한 질감이 나옵니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아크릴물감+캔버스+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">53</span><div class="activity-title">고무판 판화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>고무판에 조각도로 그림을 새긴 뒤 잉크를 발라 종이에 찍는 판화 기법입니다. 양각(남기는 부분)과 음각(파는 부분)의 개념을 이해하며 논리적 사고가 발달합니다. 같은 판으로 여러 장을 찍을 수 있어 성취감이 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>고무 조각판, 조각도 세트, 판화 잉크 또는 수성 물감, 롤러, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>조각도는 반드시 몸 바깥쪽으로 파는 방향으로 사용해야 안전합니다. 처음엔 단순한 도형(별, 하트)부터 시작하세요. 찍힌 결과가 반전된다는 것을 미리 설명해주세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=고무판화+어린이조각도" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">54</span><div class="activity-title">모자이크
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>색종이나 타일 조각을 잘게 잘라 밑그림 위에 빽빽이 붙여 모자이크 작품을 만듭니다. 색의 배치와 조합으로 그림을 완성하는 과정에서 색채 감각과 공간 인식 능력이 발달합니다. 작은 조각을 집는 동작이 소근육 발달에 탁월합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>색종이 또는 색 타일 스티커, 가위, 목공풀, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>색종이를 미리 여러 색으로 잘게 잘라 색깔별로 트레이에 담아두면 작업이 편합니다. 간단한 동물이나 과일 밑그림부터 시작하세요. 조각 사이를 약간씩 띄워 붙이면 더 모자이크 느낌이 납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=모자이크+타일스티커+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">55</span><div class="activity-title">점묘법
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>붓이나 면봉으로 점을 찍어 그림을 완성하는 점묘화 기법입니다. 쇠라의 점묘법에서 영감을 받은 활동으로, 가까이서 보면 점이지만 멀리서 보면 그림이 되는 신기한 경험을 합니다. 집중력과 인내심 발달에 효과적입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>면봉 또는 끝이 뭉툭한 붓, 물감, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~50분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>면봉을 사용하면 일정한 크기의 점을 찍기 쉽습니다. 쇠라의 그림을 보여주며 "이게 다 점으로 만들어졌어!"라고 설명해주세요. 점의 간격과 색을 달리하면 명암 표현도 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=면봉+미술놀이+물감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">56</span><div class="activity-title">명암 연필화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>연필로 물체를 관찰하며 명암(밝은 곳과 어두운 곳)을 표현하는 소묘 기법을 배웁니다. 사과, 컵 같은 단순한 사물을 빛의 방향을 의식하며 그립니다. 관찰력과 입체적 사고력이 크게 향상됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>HB~4B 연필 세트, 스케치북, 지우개, 블렌딩 스텀프(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>손전등이나 스탠드로 빛 방향을 한쪽으로 고정하면 명암이 뚜렷해집니다. 처음엔 구 모양(공)부터 시작하는 것이 가장 쉽습니다. 손가락으로 문지르면 자연스러운 그라데이션이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=소묘연필세트+스케치북" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">57</span><div class="activity-title">석고 손 본뜨기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>알지네이트(치과 인상재)나 석고로 아이 손의 본을 떠서 입체 조각을 만듭니다. 자신의 손이 그대로 재현되는 신기한 경험이 큰 감동을 줍니다. 완성 후 아크릴 물감으로 색칠하면 멋진 기념품이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>손 본뜨기 키트(알지네이트+석고), 대형 컵, 물, 아크릴 물감</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>1~2시간 (굳히기 포함)</p>
+  <span class="desc-label">💡 팁</span>
+  <p>시중에 판매하는 손 본뜨기 키트를 사용하면 쉽습니다. 알지네이트가 굳기 전(약 2~3분) 손을 넣고 움직이지 않아야 합니다. 부모와 아이 손을 함께 본떠 비교하는 활동도 의미 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=손본뜨기+석고키트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">58</span><div class="activity-title">스텐실
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>모양이 뚫린 스텐실 판을 종이 위에 올리고 스펀지나 붓으로 물감을 두드려 찍습니다. 깔끔한 모양이 반복해서 찍히며 규칙적인 패턴을 만들 수 있습니다. 선물 포장지, 카드, 가방 꾸미기에 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>스텐실 판(구매 또는 직접 제작), 스펀지 또는 스텐실 붓, 아크릴 물감</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>스텐실 판을 테이프로 고정하면 움직이지 않아 선명하게 찍힙니다. 물감을 붓에 조금만 묻히고 두드리듯 찍어야 번지지 않습니다. 두꺼운 비닐이나 투명 파일 겉면을 잘라 직접 스텐실 판을 만들 수도 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=스텐실+판+어린이미술" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">59</span><div class="activity-title">패브릭 페인팅
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흰 면 티셔츠나 에코백에 패브릭 물감으로 그림을 그려 나만의 옷이나 가방을 만듭니다. 직접 만든 것을 실제 사용할 수 있다는 성취감이 매우 큽니다. 선물용으로도 특별한 의미가 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>흰 면 티셔츠 또는 에코백, 패브릭 물감, 붓, 내부 받침(신문지)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분 + 건조</p>
+  <span class="desc-label">💡 팁</span>
+  <p>티셔츠 안에 신문지를 넣어야 물감이 뒤쪽으로 배지 않습니다. 완성 후 다리미로 눌러주면 색이 고정됩니다. 아이 이름이나 생년월일을 넣으면 특별한 기념품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=패브릭물감+에코백+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">60</span><div class="activity-title">유리컵 페인팅
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>유리컵이나 유리병에 유리 전용 물감으로 그림을 그려 화분, 연필꽂이, 컵으로 활용합니다. 투명한 유리에 색이 입혀지는 과정이 신비롭고, 빛이 통과하면 스테인드글라스 효과가 납니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>유리컵 또는 유리병, 유리 전용 물감(글라스 페인트), 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분 + 건조</p>
+  <span class="desc-label">💡 팁</span>
+  <p>유리 표면을 알코올로 닦아 기름기를 제거해야 물감이 잘 붙습니다. 아웃라이너 펜으로 먼저 윤곽을 그리고 안을 채우면 깔끔합니다. 창가에 두면 빛이 투과해 아름다운 장식이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=글라스페인트+유리물감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">61</span><div class="activity-title">북아트
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>다양한 방식으로 종이를 접고 묶어 아코디언북, 팝업북, 미니북 등 개성 있는 책을 만듭니다. 책의 구조를 이해하고 직접 만드는 과정에서 공간 감각과 창의력이 발달합니다. 완성 후 이야기를 채워 나만의 작품집으로 만들 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>두꺼운 종이, 일반 종이, 가위, 칼, 스테이플러, 실, 목공풀</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>아코디언북(병풍 접기)이 가장 쉬운 시작점입니다. 각 페이지에 계절 그림을 그려 사계절 북을 만들거나, 가족 사진을 넣어 앨범으로 만들어도 좋습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=북아트+어린이+재료" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">62</span><div class="activity-title">와이어 조각
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>부드러운 알루미늄 와이어를 구부려 동물, 사람, 글자 등 입체 조각을 만듭니다. 선만으로 형태를 표현하는 선 조각(Line Sculpture)은 3D 드로잉 같은 독특한 경험을 줍니다. 공간 속에서 형태를 구성하는 입체 사고력이 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>알루미늄 공예 와이어(1~2mm), 니퍼 또는 와이어 커터, 펜치</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>와이어 끝이 날카로우니 마무리할 때 끝을 안쪽으로 구부려주세요. 먼저 종이에 원하는 모양을 그리고 그 위에 와이어를 올려 따라 구부리면 쉽습니다. 완성된 조각을 나무 받침대에 꽂으면 전시 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=알루미늄+공예와이어+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">63</span><div class="activity-title">클레이 타일
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>오븐 클레이나 에어클레이를 납작하게 밀어 타일 모양으로 만들고 문양을 새기거나 그림을 그립니다. 굳힌 후 아크릴로 색칠하면 세상에 하나뿐인 타일 장식품이 됩니다. 집 꾸미기 소품이나 선물로 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>에어클레이 또는 오븐클레이, 밀대, 쿠키 커터, 이쑤시개, 아크릴 물감</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30분 + 건조 하루</p>
+  <span class="desc-label">💡 팁</span>
+  <p>쿠키 커터로 모양을 찍으면 깔끔합니다. 건조 전 구멍을 뚫어두면 목걸이나 열쇠고리로 활용할 수 있습니다. 도장, 나뭇잎, 레이스를 눌러 찍으면 자연스러운 문양이 나옵니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=에어클레이+어린이공예" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">64</span><div class="activity-title">드로잉 만화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>칸을 나눠 스토리가 있는 만화를 그립니다. 캐릭터 설정, 이야기 구성, 말풍선 쓰기, 배경 그리기 등 만화의 기본 요소를 익힙니다. 시각적 스토리텔링 능력과 창의적 표현력이 크게 자랍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>만화 원고지(또는 직접 칸 나누기), 연필, 사인펜, 지우개</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음엔 4칸 만화부터 시작하세요. "기승전결"로 이야기 뼈대를 잡아주면 쉽습니다. 좋아하는 만화 캐릭터를 따라 그리다가 자기만의 캐릭터를 만들어가는 과정이 자연스럽습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=만화원고지+어린이드로잉" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">65</span><div class="activity-title">양초 + 수채화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흰 양초나 흰 크레파스로 종이에 그림을 그리면 보이지 않습니다. 그 위에 수채화 물감을 칠하면 양초로 그린 그림이 마법처럼 나타납니다. "비밀 그림 찾기" 놀이로 활용하면 아이들이 매우 좋아합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>흰 양초 또는 흰 크레파스, 수채화 물감, 붓, 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>부모가 미리 양초로 그림이나 메시지를 써두고 아이에게 물감을 칠하게 하면 깜짝 선물이 됩니다. 어두운 색 물감을 칠할수록 그림이 더 선명하게 드러납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=수채화물감+어린이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">66</span><div class="activity-title">종이 부조
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>색종이나 두꺼운 종이를 오리고 층층이 쌓아 붙여 입체감 있는 부조 작품을 만듭니다. 같은 모양을 여러 장 겹쳐 붙일수록 더 깊은 입체감이 생깁니다. 꽃, 도시 스카이라인, 산 등 풍경 표현에 탁월합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>색종이 또는 색깔 폼지, 가위, 목공풀 또는 양면테이프, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>앞쪽 요소일수록 더 많이 겹쳐 입체감을 살려주세요. 폼 양면테이프를 사용하면 종이를 들뜨게 붙일 수 있어 더 입체적입니다. 액자에 넣으면 훌륭한 인테리어 소품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=폼지+색종이+공예" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">67</span><div class="activity-title">자수 기초
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>수틀에 천을 고정하고 바늘과 자수실로 간단한 그림을 수놓습니다. 직선 수, 새틴 스티치 등 기초 기법부터 배웁니다. 실을 다루는 섬세한 작업이 집중력과 소근육 발달에 탁월하며 완성의 성취감이 매우 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>자수 수틀, 면 천, 자수실, 자수 바늘(끝이 둥근 안전 바늘), 도안</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>천에 연필로 간단한 도안을 그리고 그 위를 수놓으면 쉽습니다. 처음엔 직선만으로 완성할 수 있는 도안(별, 집)을 선택하세요. 바늘 끝이 날카롭지 않은 아동용 자수 바늘을 사용하세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+자수+수틀세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">68</span><div class="activity-title">색종이 퀼팅
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>색종이를 같은 크기로 자르고 규칙적인 패턴으로 붙여 퀼트 효과를 냅니다. 삼각형, 사각형, 육각형 등 도형의 조합으로 아름다운 기하학 패턴을 만들 수 있습니다. 수학적 패턴 인식과 색채 조합 감각이 함께 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>다양한 색종이, 자, 가위, 풀, 두꺼운 도화지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>미리 같은 크기의 도형을 여러 장 잘라두면 작업이 빠릅니다. "같은 색이 서로 붙지 않게" 규칙을 정하면 색 배치 사고력이 발달합니다. 완성 후 코팅하면 오래 보존됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=색종이+대용량+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">69</span><div class="activity-title">손뜨개 기초
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🍂 가을·겨울</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>손가락이나 굵은 바늘을 이용해 기초 코 잡기와 단순 뜨기를 배웁니다. 굵은 실로 시작하면 빠르게 결과물이 나와 성취감을 느낄 수 있습니다. 목도리, 컵받침 등 실용적인 작품을 만들 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>굵은 털실, 굵은 대바늘(10mm 이상) 또는 손가락</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>여러 날에 걸쳐 30분씩</p>
+  <span class="desc-label">💡 팁</span>
+  <p>손가락 뜨기(핑거 니팅)는 바늘 없이 손가락만으로 하는 가장 쉬운 방법입니다. 유튜브 동영상을 함께 보며 따라 하면 쉽게 배울 수 있습니다. 완성된 목도리는 인형에 둘러주거나 직접 착용해보세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+뜨개질+굵은털실" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">70</span><div class="activity-title">캐리커처 그리기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>가족이나 친구의 특징적인 부분을 과장하여 재미있게 그리는 캐리커처를 그립니다. 관찰력을 기르고 인물의 특징을 포착하는 연습이 됩니다. 그려준 사람과 함께 웃으며 감상하는 시간이 정서적 유대를 강화합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>스케치북, 연필, 사인펜, 색연필</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>"이 사람의 가장 특징적인 부분이 뭐야?"라고 물어 아이가 스스로 특징을 찾게 해주세요. 눈, 코, 입, 귀 등 얼굴 부분을 크게 과장하는 것이 핵심입니다. 유명인의 캐리커처를 보며 특징 잡는 방법을 배우는 것도 좋습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=스케치북+색연필세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">71</span><div class="activity-title">추상화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>형태가 없는 자유로운 색과 선으로 감정이나 음악을 표현하는 추상화를 그립니다. 칸딘스키의 음악적 추상화처럼 음악을 들으며 느끼는 감정을 색과 형태로 표현합니다. "맞고 틀림"이 없는 자유로운 표현이 창의성을 극대화합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>아크릴 또는 수채화 물감, 캔버스 또는 도화지, 다양한 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>20~30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>음악을 틀어두고 "이 음악이 무슨 색깔 같아?"라고 물어보세요. 빠른 음악과 느린 음악에서 다른 그림이 나오는 것을 비교해보면 좋습니다. 칸딘스키, 몬드리안 작품을 먼저 보여주면 영감이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아크릴물감+캔버스세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">72</span><div class="activity-title">파스텔 초상화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>오일 파스텔로 인물 초상화를 그립니다. 파스텔의 부드러운 발색과 손가락으로 블렌딩하는 특성이 초상화의 부드러운 피부 표현에 잘 맞습니다. 가족의 얼굴을 그리며 인물 비례와 얼굴 구조를 익힙니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>오일 파스텔 세트, 파스텔 전용 종이 또는 검은 도화지, 고정 스프레이(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>검은 도화지에 파스텔로 그리면 색이 더 선명하고 고급스럽습니다. 손가락으로 문질러 색을 섞으면 자연스러운 그라데이션이 됩니다. 완성 후 헤어스프레이를 살짝 뿌리면 번지지 않게 고정됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=오일파스텔+어린이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">73</span><div class="activity-title">종이 건축 모형
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>두꺼운 종이나 골판지를 오리고 접어 건물, 도시, 성 등의 미니어처 모형을 만듭니다. 2D 도면을 3D 구조물로 변환하는 과정에서 공간 지각력과 수학적 사고가 발달합니다. 완성 후 불을 비추면 미니어처 도시가 살아납니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>두꺼운 종이 또는 골판지, 칼, 자, 목공풀, 아크릴 물감</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>1~2시간</p>
+  <span class="desc-label">💡 팁</span>
+  <p>칼 사용은 어른이 도와주세요. 먼저 전개도를 그리고 자른 뒤 접어 붙이는 순서로 진행합니다. 시중에 판매하는 종이 건축 키트를 활용하면 더 쉽게 시작할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=종이건축모형+어린이키트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">74</span><div class="activity-title">마크라메 기초
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>굵은 면 끈을 매듭 지어 월행잉, 컵받침, 작은 가방 등을 만드는 마크라메 공예를 배웁니다. 기본 매듭(사각 매듭, 반 매듭)부터 시작해 패턴을 완성합니다. 집중력과 손 기술이 함께 발달하는 고급 공예 입문 활동입니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>마크라메용 면 끈(3~5mm), 나무 막대 또는 링, 가위</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>유튜브에서 "어린이 마크라메"를 검색하면 쉬운 튜토리얼이 많습니다. 처음엔 4줄로 시작하는 작은 월행잉을 추천합니다. 끈 색깔을 섞으면 더 화려한 작품이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=마크라메+면끈+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">75</span><div class="activity-title">애니메이션 플립북
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>작은 메모지 여러 장에 조금씩 다른 그림을 그리고 빠르게 넘기면 그림이 움직이는 것처럼 보이는 플립북을 만듭니다. 애니메이션의 원리를 직접 경험하는 활동으로 창의력과 순차적 사고력이 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>작은 메모지 또는 포스트잇 20~30장, 연필 또는 사인펜, 스테이플러</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~40분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>공이 튀어 오르거나 사람이 걷는 단순한 동작부터 시작하세요. 각 페이지의 그림이 조금씩만 달라야 자연스러운 움직임이 나옵니다. 빛에 비춰 앞 장이 비쳐 보이게 하면 그리기 쉽습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=플립북+메모지+두꺼운" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+</div>
+
+<!-- 9세 이상 -->
+<div class="section" id="tab-age4">
+  <input type="text" placeholder="🔍 검색 (활동명, 준비물, 계절...)" oninput="filter(this,'age4')">
+
+  <div class="activity"><div class="activity-header"><span class="num">76</span><div class="activity-title">건축 모형 만들기 (종이·폼보드)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>좋아하는 건물(집, 학교, 탑, 다리 등)을 직접 설계하고 폼보드와 두꺼운 종이로 입체 모형을 만듭니다. 설계도를 먼저 그린 다음 각 면을 재단·접착하는 과정에서 공간 감각, 비례 감각, 논리적 계획 능력이 함께 길러집니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>폼보드 또는 두꺼운 도화지, 커터칼(안전칼), 자, 목공용 풀 또는 양면 테이프, 아크릴 물감, 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~120분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음에는 단순한 직육면체 집부터 시작하고, 익숙해지면 지붕 경사와 창문을 추가하세요. 설계도를 1:10 축척으로 그리면 수학적 사고력도 자연스럽게 키울 수 있습니다. 완성 후 미니어처 나무와 사람을 배치하면 더욱 생생합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=폼보드+건축모형+만들기" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">77</span><div class="activity-title">흑백 명암 드로잉 (연필 뎃생)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>정물(과일, 컵, 공 등)을 앞에 두고 연필로 명암을 표현하는 기초 뎃생을 연습합니다. 빛이 오는 방향을 파악하고 밝은 면·중간 면·어두운 면·반사광으로 단계를 나누어 입체감을 표현하는 과정에서 관찰력과 집중력이 크게 향상됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>뎃생용 연필 세트(2H~6B), 스케치북(A4 이상), 지우개(떡지우개·일반), 블렌딩 스텀프(손가락 대체 가능)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음엔 구(球)나 원통처럼 기본 도형부터 연습하는 것이 효과적입니다. 선 방향(해칭)을 곡면에 맞게 그으면 입체감이 살아납니다. 빛을 왼쪽 위 45° 방향으로 고정하는 습관을 들이면 일관된 명암 표현이 가능합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=뎃생연필세트+스케치북" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">78</span><div class="activity-title">수채화 풍경화 (원근법 활용)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌳 봄·여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>수평선과 소실점 개념을 배운 후 자연 풍경(산, 들판, 강 등)이나 거리 풍경을 수채화로 그립니다. 멀리 있는 것은 흐릿하고 가까운 것은 진하게 표현하는 공기원근법을 실습하면서 색채 감각과 구도 설정 능력이 함께 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>수채화 물감 세트, 수채화 전용지(200g 이상), 다양한 크기의 붓(넓은 붓 필수), 물통, 팔레트</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>50~70분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>하늘부터 젖은 상태에서 칠하는 '웨트 온 웨트' 기법으로 시작하면 자연스러운 그라데이션이 만들어집니다. 소실점을 연필로 가볍게 표시한 뒤 그림을 완성하고 지우면 구도가 훨씬 안정적입니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=수채화물감+수채화전용지" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">79</span><div class="activity-title">목판화 찍기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>고무판(또는 소프트 리놀륨판)에 조각칼로 도안을 파낸 뒤 잉크를 롤러로 고르게 바르고 종이에 찍어 판화를 완성합니다. 양각·음각의 개념을 이해하고 좌우 반전을 고려해 설계하는 과정에서 논리적 사고와 집중력이 길러집니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>고무 조각판, 조각칼 세트(안전 조각칼), 수성 판화 잉크, 롤러, 바렌 또는 숟가락, 판화용 종이</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>조각칼은 항상 손 방향 바깥쪽으로 파야 안전합니다. 처음에는 굵은 선과 큰 면으로 구성된 단순한 동물 실루엣을 추천합니다. 같은 판으로 색을 바꿔 여러 장 찍으면 풍부한 작품 시리즈가 완성됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=고무판화+조각칼+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">80</span><div class="activity-title">캐릭터 디자인 & 스토리보드
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>나만의 오리지널 캐릭터를 설계(정면·측면·뒷면 3면도 포함)하고, 그 캐릭터가 등장하는 짧은 이야기를 6~8컷 스토리보드로 그립니다. 캐릭터의 외모·성격·특기·약점을 설정하는 과정이 창의적 서사 능력과 시각 커뮤니케이션 능력을 동시에 키워 줍니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>스케치북, 펜 또는 사인펜, 컬러 마커 또는 색연필, 캐릭터 설정 시트(직접 제작 가능)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>캐릭터 이름, 나이, 특기, 버릇까지 설정지에 기록하면 나중에 이야기를 확장하기 쉽습니다. 스토리보드에는 대사도 짧게 써 넣으면 웹툰 형식으로 발전시킬 수 있습니다. 여러 캐릭터를 만들어 친구끼리 교환해 보세요.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=스케치북+컬러마커+캐릭터디자인" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">81</span><div class="activity-title">퀼링 아트 (종이 말기)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>폭 3~5mm로 자른 긴 종이 띠를 도구로 돌돌 말아 원형·눈물방울·화살표 등 다양한 모양을 만들고 이를 조합해 꽃, 나비, 문자 등의 작품을 완성합니다. 섬세한 손가락 조작이 반복되어 집중력과 소근육 발달에 탁월합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>퀼링 종이 세트(또는 색종이를 잘라 사용), 퀼링 도구(슬롯 도구), 목공용 풀, 핀셋, 두꺼운 도화지(배경용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>기본형인 루스 코일과 타이트 코일을 충분히 연습한 뒤 꽃잎(눈물방울형)으로 넘어가세요. 풀은 이쑤시개로 소량만 바르는 것이 깔끔합니다. 핀셋으로 모양을 집어 배치하면 훨씬 정확합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=퀼링종이+퀼링도구+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">82</span><div class="activity-title">대형 콜라주 포스터 (잡지·신문 활용)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👫 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>오래된 잡지나 신문에서 사진, 글자, 패턴을 오려내고 전지(또는 B2 크기) 종이에 테마별로 배치해 대형 콜라주 포스터를 만듭니다. '나의 꿈', '환경 보호', '좋아하는 것들' 등 테마를 정하면 자기표현과 주제 구성 능력이 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>오래된 잡지·신문·브로슈어, 가위, 딱풀 또는 풀, 전지 또는 큰 도화지, 색연필 또는 마커(보조 장식용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>먼저 이미지를 충분히 모아 두었다가 전체 레이아웃을 풀로 붙이기 전에 배치 실험을 해 보세요. 배경을 먼저 붙이고 그 위에 주제 이미지를 겹치면 자연스러운 레이어 효과가 납니다. 글자를 오려 제목을 넣으면 완성도가 높아집니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=전지도화지+콜라주재료" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">83</span><div class="activity-title">점묘화 (점으로 그리는 그림)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>인상파 화가 쇠라의 점묘법에서 영감을 받아, 색연필이나 마커로 촘촘한 점을 찍어 그림을 완성합니다. 점의 밀도에 따라 밝고 어두움이 조절되고, 인접한 색점이 혼색되어 보이는 원리를 직접 체험하면서 색채 이론을 자연스럽게 익힙니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>마이크로펜 또는 가는 사인펜(검정·컬러), 도화지, 연필(밑그림용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>가운데가 밝고 가장자리가 어두운 단순한 구 하나부터 시작하면 명암 원리를 쉽게 파악할 수 있습니다. 점 간격이 넓을수록 밝고, 빽빽할수록 어둡습니다. 완성 후 멀리서 보면 전혀 다른 느낌의 그림이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=마이크로펜+점묘화+사인펜세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">84</span><div class="activity-title">알루미늄 포일 조각 (입체 부조)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>두꺼운 알루미늄 포일 여러 장을 겹쳐 도마 위에 놓고 볼펜이나 나무 스틱으로 눌러 그림을 새기면 금속 느낌의 부조 작품이 완성됩니다. 볼록하게 솟아오른 표면에 아크릴 물감으로 채색하고 닦아내면 고대 유물 같은 질감이 만들어집니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>두꺼운 알루미늄 포일(두꺼운 것 권장) 또는 금속 공예용 시트, 볼펜(다 쓴 것 활용), 아크릴 물감(검정·갈색), 천 또는 키친타월</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>포일을 3~4장 겹쳐야 찢어지지 않고 입체감이 잘 살아납니다. 그림을 새긴 뒤 뒤집어서 볼록한 면을 앞으로 하면 더 입체적으로 보입니다. 검정 아크릴을 발랐다가 마르기 전에 닦아내면 홈에만 색이 남아 멋진 효과가 나옵니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=금속공예시트+알루미늄포일두꺼운" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">85</span><div class="activity-title">손바느질 패치워크 (천 조각 이어 붙이기)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>다양한 무늬와 색의 천 조각을 기하학적 패턴(정사각형, 삼각형 등)으로 배치하고 손바느질로 이어 붙여 작은 패치워크 코스터나 파우치를 완성합니다. 실과 바늘을 다루는 집중력, 색과 패턴을 조합하는 미적 감각, 손과 눈의 협응력이 함께 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>면 천 조각(다양한 색·무늬), 바느질 바늘(굵은 것), 실(면사), 가위, 자, 수성펜(재단선 표시용), 솜 또는 펠트지(안감)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>천을 재단할 때 시접(솔기 여유분) 1cm를 남겨두세요. 홈질(러닝 스티치)부터 시작해 익숙해지면 반박음질로 이어갑니다. 시접을 한쪽으로 꺾어 다림질하면 훨씬 깔끔하게 이어집니다. 처음에는 네 조각짜리 나인패치가 적당합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=패치워크천조각+바느질세트어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">86</span><div class="activity-title">자수 기초
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🍂 가을·겨울</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>수틀에 천을 고정하고 자수실로 꽃, 이니셜, 간단한 동물 등을 수놓습니다. 러닝 스티치·백 스티치·새틴 스티치 등 기초 기법을 익히며 집중력과 손 정교함이 크게 발달합니다. 완성된 수틀 작품은 그대로 인테리어 소품이 됩니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>자수틀(10~15cm), 면 천, 자수실 세트, 자수 바늘, 수성펜(밑그림용), 가위</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>수틀에 천을 팽팽하게 고정해야 바늘이 뚫기 쉽고 완성도가 높아집니다. 처음엔 선 위에 홈질로 따라가는 아웃라인 스티치부터 시작하세요. 간단한 이니셜 자수 키트를 구매하면 밑그림·실·바늘이 모두 포함되어 있어 편리합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=자수틀+자수실+입문키트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">87</span><div class="activity-title">파스텔 초상화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>오일 파스텔이나 소프트 파스텔로 가족이나 친구의 초상화를 그립니다. 손가락이나 블렌딩 스텀프로 문질러 피부 톤의 부드러운 그라데이션을 표현하고, 얼굴 구조(이목구비 위치·비례)를 관찰하며 그리는 법을 익힙니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>오일 파스텔 또는 소프트 파스텔 세트, 파스텔 전용지 또는 검은 도화지, 블렌딩 스텀프(손가락 대체 가능), 고정 스프레이(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>검은 도화지 위에 밝은 파스텔로 그리면 피부와 빛이 더욱 생생하게 표현됩니다. 눈의 위치가 얼굴 중간쯤에 온다는 비례 원칙을 먼저 알려주세요. 완성 후 헤어스프레이를 가볍게 뿌리면 번지지 않고 보존됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=오일파스텔+어린이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">88</span><div class="activity-title">추상화 (감정 표현)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>지금 느끼는 감정(기쁨, 불안, 설렘, 슬픔 등)을 구체적인 형태 없이 색과 선, 붓질만으로 표현합니다. 칸딘스키·폴록·로스코 등 추상 화가의 작품을 보며 시각 언어의 다양성을 이해하고 자기 감정을 시각적으로 표현하는 능력을 키웁니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>아크릴 또는 수채화 물감, 캔버스 또는 도화지, 다양한 붓(넓은 붓 포함)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~50분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>시작 전 "지금 내 기분은 어떤 색일까? 어떤 선의 느낌일까?"를 묻고 대화해 보세요. 빠른 붓질과 느린 붓질의 차이를 비교하면 표현이 더 풍부해집니다. 폴록의 드리핑 기법(물감 흘리기)을 시도해보면 해방감을 경험할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아크릴물감+캔버스세트어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">89</span><div class="activity-title">타이포그래피 포스터
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>좋아하는 명언, 노래 가사, 직접 지은 글귀를 글자 크기·굵기·배치를 조절해 손글씨 타이포그래피 포스터로 만듭니다. 글자 자체를 디자인 요소로 활용하는 시각 커뮤니케이션의 기초를 경험하며 레이아웃 감각이 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>굵기 다른 마커 세트(캘리그래피 펜 포함), 도화지 또는 크라프트지, 자, 연필(레이아웃 잡기용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~50분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>가장 강조할 단어를 제일 크게 쓰고 나머지 글자 크기는 단계적으로 줄이면 자연스러운 계층 구조가 생깁니다. 배경을 수채화로 먼저 칠하고 마른 뒤 글씨를 쓰면 예쁜 아트 포스터가 됩니다. 연필로 레이아웃을 잡은 뒤 마커로 덧쓰고 지우면 깔끔합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=캘리그래피펜+굵기마커세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">90</span><div class="activity-title">디지털 드로잉 (앱 활용)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>태블릿 드로잉 앱(메디방 페인트, 아이비스 페인트 등)으로 레이어를 활용한 디지털 일러스트를 그립니다. 스케치 레이어→채색 레이어→하이라이트 레이어로 단계를 나누어 작업하며 디지털 창작의 기본 워크플로우를 익힙니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>태블릿(안드로이드/아이패드), 스타일러스 펜(선택), 무료 앱(메디방·아이비스 페인트)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>처음엔 스케치 레이어 불투명도를 30%로 낮추고 그 위에 새 레이어에서 깔끔하게 선을 따는 연습을 하세요. 실수를 Ctrl+Z로 언제든 되돌릴 수 있다는 점이 큰 장점입니다. 좋아하는 캐릭터를 모작하며 시작하면 빠르게 실력이 늘어납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+태블릿+스타일러스펜" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">91</span><div class="activity-title">도예 핀칭 기법
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흙 덩어리를 엄지손가락으로 눌러가며 안쪽을 파내 컵이나 작은 그릇을 만드는 핀칭 기법을 배웁니다. 두께를 고르게 유지하며 형태를 잡는 과정이 집중력과 손 감각을 동시에 기릅니다. 에어드라이 클레이로 집에서도 쉽게 시작할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>에어드라이 클레이 또는 오븐 클레이, 도예 도구 세트(선택), 아크릴 물감, 붓, 방수 코팅제(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분 + 건조 1~2일</p>
+  <span class="desc-label">💡 팁</span>
+  <p>흙이 갈라지면 손에 물을 약간 묻혀 이어주세요. 바닥을 평평하게 두드려 세우면 안정적인 그릇이 됩니다. 건조 중 천천히 말리도록 비닐을 느슨하게 덮어두면 갈라짐을 방지할 수 있습니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=에어드라이클레이+도예도구세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">92</span><div class="activity-title">에코백 타이다이 염색
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌳 봄·여름</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>흰 에코백이나 면 티셔츠를 고무줄로 묶는 방식에 따라 나선형·동심원·사선 등 다양한 타이다이 패턴을 만듭니다. 묶는 위치와 방식이 결과를 결정하는 원리를 실험하며 자연스럽게 창의적 탐구가 이루어집니다. 나만의 패션 소품을 완성하는 성취감이 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>흰 면 에코백 또는 티셔츠, 타이다이 염료 키트, 고무줄, 비닐 장갑, 랩 또는 지퍼백</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>준비 30분 + 대기 6~8시간 + 세탁</p>
+  <span class="desc-label">💡 팁</span>
+  <p>염색 전 천을 물에 적셔 꼭 짜두면 색이 더 고르게 스며듭니다. 염료를 뿌린 후 비닐봉지에 밀봉해 8시간 이상 두면 색이 진해집니다. 가족이 같은 패턴으로 만들면 특별한 패밀리 룩이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=타이다이키트+에코백염색" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">93</span><div class="activity-title">가죽 공예 기초
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🍂 가을·겨울</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>인조 가죽이나 식물성 무두질 가죽으로 카드 지갑이나 열쇠고리를 만듭니다. 목타로 구멍을 뚫고 새들 스티치로 바느질하는 과정에서 정밀한 작업 능력과 완성도 높은 실용 소품을 만드는 성취감을 경험합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>가죽 공예 입문 키트(재단 가죽+바늘+실+목타), 망치, 목재 받침대, 본드</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>목타로 구멍을 뚫을 때는 반드시 두꺼운 나무판 위에서 망치를 사용하세요. 구멍 간격을 일정하게 유지하는 것이 완성도의 핵심입니다. 실 끝을 라이터로 살짝 녹이면 풀리지 않게 고정됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=가죽공예+입문키트+카드지갑" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">94</span><div class="activity-title">미니어처 공방
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>1:12 또는 1:24 축척으로 작은 가구, 음식, 소품을 클레이와 공예 재료로 만들어 미니어처 방이나 카페를 꾸밉니다. 세밀한 작업 능력과 공간 배치 감각, 비례 감각이 동시에 발달하며 결과물의 완성도가 높아 성취감이 매우 큽니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>미니어처 하우스 키트 또는 나무 섀도박스, 경화 클레이, 아크릴 물감, 공예 본드, 조각 도구</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>여러 날에 걸쳐 2~3시간씩</p>
+  <span class="desc-label">💡 팁</span>
+  <p>입문자는 완성된 나무 섀도박스 키트를 구매해 꾸미는 것부터 시작하는 것이 좋습니다. 클레이로 음식 모형을 만들 때 실물 사진을 옆에 놓고 참고하면 완성도가 높아집니다. SNS의 미니어처 계정을 참고하면 아이디어가 넘쳐납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=미니어처하우스키트+섀도박스" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">95</span><div class="activity-title">리노컷 판화
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>리놀륨 판(소프트 고무판)에 조각칼로 섬세한 도안을 새기고 수성 잉크를 롤러로 밀어 종이나 천에 찍어냅니다. 고무판 판화보다 날카롭고 세밀한 선 표현이 가능해 더 완성도 높은 작품을 만들 수 있습니다. 같은 판으로 반복 인쇄해 나만의 패턴이나 엽서를 제작합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>소프트 리놀륨 판, 리노컷 조각칼 세트, 수성 판화 잉크, 고무 롤러, 바렌, 판화 전용지</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>조각 60분 + 인쇄 30분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>조각 전 연필로 밑그림을 그린 뒤 먹지로 판에 옮기면 더 정확합니다. 조각칼은 항상 몸 바깥쪽 방향으로 파야 안전합니다. 잉크를 너무 두껍게 바르면 디테일이 뭉개지므로 롤러에 잉크를 얇게 펴 바르는 것이 핵심입니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=리노컷+판화조각칼+소프트판" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">96</span><div class="activity-title">보석 공예 (비즈 목걸이·팔찌)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>다양한 비즈와 크리스털을 낚싯줄이나 신축성 있는 줄에 꿰어 나만의 목걸이나 팔찌를 만듭니다. 색과 모양을 조합해 패턴을 설계하는 과정에서 미적 감각과 수리적 사고가 함께 발달합니다. 완성품을 직접 착용하거나 선물하는 기쁨이 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>비즈 세트(다양한 색·모양), 탄성 줄 또는 낚싯줄, 끝마무리 클램프, 핀셋, 접착제</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>30~50분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>줄에 꿰기 전 전체 패턴을 트레이에 미리 배열해보면 결과를 예측하기 쉽습니다. 탄성 줄은 두 번 묶고 매듭을 비즈 안쪽으로 숨기면 깔끔하게 마무리됩니다. 알파벳 비즈로 이름이나 메시지를 넣으면 더 특별한 선물이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=비즈세트+팔찌만들기+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">97</span><div class="activity-title">유리공예 (칠보 느낌 스테인드글라스)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>투명 필름이나 유리판에 검은 아웃라인 펜으로 문양을 그리고 유리용 물감(또는 투명 아크릴)으로 채색해 스테인드글라스 효과를 냅니다. 빛을 통과하면 보석처럼 빛나는 결과물이 완성되어 창가 장식품으로 활용할 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>투명 OHP 필름 또는 유리 액자, 유리 전용 물감(글래스 페인트), 아웃라인 펜(검정), 붓</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>40~60분 + 건조</p>
+  <span class="desc-label">💡 팁</span>
+  <p>아웃라인 펜으로 테두리를 먼저 그리고 완전히 건조한 뒤 채색하면 색이 섞이지 않습니다. 아래에 밑그림을 깔고 따라 그리면 초보자도 쉽게 도안을 완성할 수 있습니다. 창문에 붙이면 빛이 들어올 때 아름다운 색감이 나타납니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=글라스페인트+스테인드글라스+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">98</span><div class="activity-title">포스터 디자인 (손글씨 + 일러스트)
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-solo">👤 혼자</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>환경, 동물 보호, 학교 행사 등 관심 있는 주제로 직접 손그림과 손글씨를 결합한 포스터를 제작합니다. 주제 선정→메시지 구성→레이아웃 배치→채색의 단계를 밟으며 시각 디자인의 전 과정을 경험합니다. 완성된 포스터를 실제 전시하면 자신감이 높아집니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>B4 또는 A3 도화지, 굵기 다른 마커 세트, 수채화 또는 색연필, 자, 연필(레이아웃용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>포스터는 3초 안에 메시지가 전달되어야 합니다. 가장 중요한 단어 하나를 화면의 1/3 이상 크게 잡는 것이 핵심입니다. 색은 3가지 이내로 제한하면 통일감 있는 디자인이 완성됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=A3도화지+마커세트+포스터" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">99</span><div class="activity-title">사진 편집 & 포토북 만들기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>직접 찍은 사진을 캔바(Canva) 같은 무료 편집 툴로 보정·배치하고 가족 여행, 성장 기록, 좋아하는 주제로 포토북을 만듭니다. 사진 선별·구성·레이아웃 설계 과정에서 시각적 편집 능력과 이야기 구성 능력이 동시에 발달합니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>컴퓨터 또는 태블릿, 무료 편집 앱(캔바), 직접 찍은 사진, 미니 포토 프린터(선택)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>60~90분</p>
+  <span class="desc-label">💡 팁</span>
+  <p>주제별로 사진 10~15장을 먼저 추리고 시작하면 레이아웃 잡기가 쉽습니다. 캔바에서 "포토북" 템플릿을 검색하면 바로 사용할 수 있는 디자인이 많습니다. 완성 파일을 온라인 인쇄소(스냅스, 포토북 등)에 업로드하면 실제 책으로 제작도 가능합니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=미니포토프린터+포토북인쇄" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+  <div class="activity"><div class="activity-header"><span class="num">100</span><div class="activity-title">나만의 그림책 만들기
+    <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-hard">⭐⭐⭐ 어려움</span><span class="badge badge-season">🌸 사계절</span></div>
+  </div></div>
+  <span class="desc-label">📋 활동 설명</span>
+  <p>직접 쓴 이야기를 그림으로 표현해 제본까지 마친 나만의 그림책을 완성합니다. 주인공 설정→이야기 전개→그림 구성→글 배치→제본의 전 과정을 경험하며 창의적 표현의 최고 형태를 완성합니다. 완성된 책을 가족 앞에서 낭독하면 발표력까지 기를 수 있습니다.</p>
+  <span class="desc-label">🛒 준비물</span>
+  <p>도화지 8~12장, 스테이플러 또는 제본 재료(실·바늘), 색연필·수채화·사인펜, 두꺼운 종이(표지용)</p>
+  <span class="desc-label">⏱️ 소요 시간</span>
+  <p>여러 날에 걸쳐 완성 (1일 30~60분씩)</p>
+  <span class="desc-label">💡 팁</span>
+  <p>먼저 스토리보드로 전체 이야기 흐름을 잡은 뒤 페이지별로 그림을 배치하세요. 글 분량은 페이지당 1~3줄로 짧게 유지하면 그림책다운 느낌이 납니다. 완성 후 지역 도서관이나 학교에 기증하거나 학급 친구들에게 읽어주면 뜻깊은 경험이 됩니다.</p>
+  <div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=그림책만들기+제본키트+어린이" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function filter(input, sectionId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('#tab-' + sectionId + ' .activity').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
