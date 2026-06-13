@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>토로의 세계사 탐험</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Jua&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0f1923;--card:#1a2a3a;
+      --green:#2ecc71;--yellow:#f1c40f;--purple:#9b59b6;
+      --red:#e74c3c;--blue:#3498db;--orange:#e67e22;
+      --white:#f0f4f8;--gray:#8899aa;
+    }
+    body{
+      background:var(--bg);color:var(--white);
+      font-family:'Nanum Gothic',sans-serif;
+      min-height:100vh;overflow-x:hidden;
+      display:flex;flex-direction:column;align-items:center;
+      padding:20px;
+    }
+    .nav-bar{display:flex;align-items:center;gap:10px;width:100%;max-width:500px;margin-bottom:16px}
+    .nav-back{background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.35);color:#2ecc71;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:'Jua',sans-serif;font-size:.9rem}
+    .nav-back:hover{background:rgba(46,204,113,.25)}
+    .btn{border:none;border-radius:14px;cursor:pointer;font-family:'Jua',sans-serif;transition:.2s}
+
+    /* 홈 버튼 고정 */
+    .home-btn{
+      position:fixed;top:14px;right:14px;
+      background:rgba(46,204,113,.18);
+      border:1px solid rgba(46,204,113,.4);
+      color:var(--green);
+      font-family:'Jua',sans-serif;font-size:.85rem;
+      padding:7px 13px;border-radius:10px;cursor:pointer;
+      z-index:9999;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .home-btn:hover{background:rgba(46,204,113,.3)}
+  </style>
+</head>
+<body>
+
+  <!-- 홈 버튼 고정 -->
+  <a class="home-btn" href="https://choisuka.github.io/">🏠 메인 허브</a>
+
+  <!-- 네비게이션 바 -->
+  <div class="nav-bar" style="max-width:500px;width:100%">
+    <button class="nav-back" onclick="location.href='https://choisuka.github.io/'">← 홈</button>
+    <h2 style="flex:1;font-family:'Jua',sans-serif;font-size:1rem;text-align:center;color:#2ecc71">🌍 토로의 세계사 탐험</h2>
+    <div style="width:60px"></div>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div style="width:100%;max-width:500px;padding:0 0 40px">
+
+    <div style="text-align:center;padding:10px 0 16px">
+      <div style="font-size:2rem">🦕</div>
+      <p style="font-family:'Jua',sans-serif;color:#a0c8a0;font-size:.92rem;margin-top:4px">
+        토로와 함께 시간여행을 떠나볼까요?<br>
+        <span style="color:var(--gray);font-size:.82rem">시대를 선택해서 이야기를 펼쳐봐요!</span>
+      </p>
+    </div>
+
+    <!-- 시대 선택 버튼 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <button onclick="toggleHistory('ancient')" id="btn-h-ancient"
+        style="background:rgba(241,196,15,.1);border:1px solid rgba(241,196,15,.35);color:var(--yellow);font-family:'Jua',sans-serif;font-size:.9rem;padding:12px 8px;border-radius:14px;cursor:pointer;line-height:1.4">
+        🏛️ 고대<br><span style="font-size:.75rem;color:#a09060">~500년</span> ▾
+      </button>
+      <button onclick="toggleHistory('medieval')" id="btn-h-medieval"
+        style="background:rgba(155,89,182,.1);border:1px solid rgba(155,89,182,.35);color:var(--purple);font-family:'Jua',sans-serif;font-size:.9rem;padding:12px 8px;border-radius:14px;cursor:pointer;line-height:1.4">
+        ⚔️ 중세<br><span style="font-size:.75rem;color:#9070b0">500~1500년</span> ▾
+      </button>
+      <button onclick="toggleHistory('earlymod')" id="btn-h-earlymod"
+        style="background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.35);color:var(--blue);font-family:'Jua',sans-serif;font-size:.9rem;padding:12px 8px;border-radius:14px;cursor:pointer;line-height:1.4">
+        🔭 근세·근대<br><span style="font-size:.75rem;color:#6090c0">1500~1900년</span> ▾
+      </button>
+      <button onclick="toggleHistory('modern')" id="btn-h-modern"
+        style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.35);color:var(--red);font-family:'Jua',sans-serif;font-size:.9rem;padding:12px 8px;border-radius:14px;cursor:pointer;line-height:1.4">
+        🚀 현대<br><span style="font-size:.75rem;color:#c07060">1900년~현재</span> ▾
+      </button>
+    </div>
+
+    <!-- ════ 고대 패널 ════ -->
+    <div id="panel-h-ancient" style="display:none;margin-bottom:12px;max-width:800px;margin-left:auto;margin-right:auto">
+      <div style="font-family:'Jua',sans-serif;color:var(--yellow);font-size:1.1rem;margin-bottom:16px;text-align:center;letter-spacing:3px">
+        ✨✨ 고대 문명의 시작 (기원전 3000년 ~ 서기 500년) ✨✨
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <!-- 이집트 -->
+        <div style="background:linear-gradient(135deg,#1a1500,#2a2000);border-radius:18px;padding:20px;border:1px solid rgba(241,196,15,.3)">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px">
+            <div style="font-size:3.5rem;flex-shrink:0">🪬</div>
+            <div style="flex:1">
+              <div style="font-family:'Jua',sans-serif;color:var(--yellow);font-size:1.3rem;margin-bottom:4px">고대 이집트 — 나일강의 선물</div>
+              <div style="font-size:.9rem;color:#b0a070;font-weight:700">기원전 3100년 ~ 기원전 30년ㆍ약 3000년간 번성</div>
+            </div>
+          </div>
+          <div style="background:#0d1f0d;border-radius:14px;padding:14px;margin-bottom:14px;border-left:5px solid var(--yellow)">
+            <div style="font-size:.95rem;line-height:2;color:#d0e8d0">
+              <b style="color:var(--yellow);font-size:1.05rem">⏰ 기원전 2589년의 어느 아침</b><br>
+              너는 지금 이집트의 한 마을에서 살고 있어. 매일 아침 나일강이 얼마나 불었는지 확인해. 강물이 많으면 농사가 잘 되니까! 옆집 아메의 아버지는 오늘도 피라미드를 짓는 일꾼으로 나갔어. <br><br>
+              "파라오님이 죽으신 뒤에도 영원히 사시도록 엄청 큰 집을 만들어야 한대." 맞다, 저 <b style="color:var(--yellow)">거대한 삼각형</b> 보이지? 이미 공사를 시작한 지 5년이 되었는데, 돌 블록은 매일매일 쌓여가고 있어. 하나의 돌이 코끼리 한 마리만큼 무겁다니!
+              <br><br>
+              아메 아버지 말로는 무려 <b style="color:#fff">200만 개가 넘는 돌</b>을 모두 손으로 옮기고 있대. 지게차 같은 건 없으니까. 저 피라미드가 완성되려면 앞으로 15년은 더 걸린대. 아메는 자랄 때까지 계속 지어질 거야.
+            </div>
+          </div>
+          <div style="font-size:.98rem;line-height:1.85;color:#e0dca8;margin-bottom:12px">
+            <b style="color:var(--yellow);font-size:1.05rem">🏜️ 고대 이집트 — 역사상 가장 오래된 문명</b><br><br>
+            지금으로부터 약 <b style="color:#fff">5000년 전</b>, 이집트 사람들은 나일강 옆에 세계에서 가장 먼저 문명을 세웠어요.
+            나일강은 매년 홍수를 일으켜 검은 진흙을 남기고, 그 진흙 위에 옥수수·보리·밀이 잘 자랐거든요.<br><br>
+            이집트 지배자 <b style="color:#fff">파라오</b>는 자신이 신이라고 생각했어요. 그래서 파라오가 죽으면 <b style="color:var(--yellow)">미라</b>로 만들어 영원히 사후 세계에서 살 수 있도록 했답니다.
+            <b style="color:var(--yellow)">🔺 피라미드</b>는 파라오의 영원한 무덤이에요!
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:12px;padding:14px;margin-bottom:12px">
+            <div style="font-size:.95rem;line-height:1.9;color:#d8d080">
+              <b style="color:#fff;font-size:1.05rem">💫 흥미로운 사실들</b><br>
+              🔹 사람들은 죽기 전에 자신의 무덤에 식료품·가구·옷까지 넣었어요. "저세상도 물건이 필요하겠지?"<br>
+              🔹 <b style="color:var(--yellow)">미라 만드는 과정</b>이 무려 <b style="color:#fff">70일</b> 걸렸어! 뇌는 옆으로 빼고 내장은 따로 보관했어요<br>
+              🔹 피라미드의 무게는 약 <b style="color:var(--yellow)">630만 톤</b>! 현대 기술로도 만들기 어렵답니다<br>
+              🔹 고대 이집트 여성들은 남성과 거의 <b style="color:var(--green)">같은 권리</b>를 가졌어요. 믿기 힘들죠?
+            </div>
+          </div>
+          <div style="display:flex;gap:3px;margin-bottom:10px">
+            <div style="height:10px;flex:138;background:var(--yellow);border-radius:4px 0 0 4px"></div>
+            <div style="height:10px;flex:100;background:rgba(241,196,15,.15);border-radius:0 4px 4px 0"></div>
+          </div>
+          <div style="font-size:.85rem;color:#a89060;text-align:right;margin-bottom:12px">🏗️ 피라미드 높이 138m vs 에펠탑 300m</div>
+          <div style="background:rgba(0,0,0,.35);border-radius:10px;padding:12px;font-size:.9rem;color:#d0b880;line-height:1.8">
+            <b style="color:#fff">🔑 꼭 알아야 할 것!</b><br>
+            · 이집트 글자(상형문자)는 그림으로 뜻을 나타냈어요!<br>
+            · 미라를 만들 때 뇌는 코로 빼냈어요 😱<br>
+            · 나일강의 홍수 덕분에 3000년 동안 같은 문명을 유지했어요
+          </div>
+        </div>
+
+        <!-- 그리스 올림픽 -->
+        <div style="background:linear-gradient(135deg,#0d1520,#152030);border-radius:18px;padding:20px;border:1px solid rgba(52,152,219,.3)">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px">
+            <div style="font-size:3.5rem;flex-shrink:0">🏛️</div>
+            <div style="flex:1">
+              <div style="font-family:'Jua',sans-serif;color:var(--blue);font-size:1.3rem;margin-bottom:4px">고대 그리스 — 올림픽과 민주주의</div>
+              <div style="font-size:.9rem;color:#7090c0;font-weight:700">기원전 776년 ~ 기원후 393년ㆍ스포츠의 시작!</div>
+            </div>
+          </div>
+          <div style="background:#0a0f1a;border-radius:14px;padding:14px;margin-bottom:14px;border-left:5px solid var(--blue)">
+            <div style="font-size:.95rem;line-height:2;color:#c0d8e8">
+              <b style="color:var(--blue);font-size:1.05rem">⏰ 기원전 400년의 올림픽 경기장</b><br>
+              우와! 너는 지금 <b style="color:var(--yellow)">올림피아 신전</b> 근처에 와 있어. 그리스 전역에서 온 젊은이들이 달리기 준비를 하고 있어!
+              저 친구들은 올림픽 우승자가 되면 고향에 돌아가서 '영웅'처럼 대접받는대. 상금도 많고!<br><br>
+              신기한데, 지금 전쟁 중인 나라들도 이 기간만큼은 <b style="color:var(--yellow)">무기를 내려놨어</b>. "올림픽 기간에는 싸우지 말자!"는 약속이 있거든요.
+              <b style="color:var(--green)">스포츠가 전쟁도 멈추게 한다니!</b> 저 우승자가 받는 건 금메달이 아니라 <b style="color:var(--yellow)">올리브 나뭇가지로 만든 왕관</b>이야.
+            </div>
+          </div>
+          <div style="font-size:.98rem;line-height:1.85;color:#c0d8e8;margin-bottom:12px">
+            <b style="color:var(--blue);font-size:1.05rem">🏆 고대 그리스 — 민주주의의 탄생</b><br><br>
+            약 <b style="color:#fff">2800년 전</b>, 그리스 사람들은 올림피아 신전에서 4년마다 모여 운동 경기를 했어요.
+            달리기, 레슬링, 원반던지기, 격투기... 지금의 스포츠와 비슷했어요.<br><br>
+            그런데 그리스가 유명한 건 스포츠 때문만은 아니에요. 여기서 <b style="color:var(--yellow)">민주주의</b>가 처음 시작됐거든요!
+            <b style="color:var(--yellow)">아테네</b>라는 도시에서 모든 시민이 함께 투표해서 나라의 대표를 정했어요. 지금처럼요!
+            그리고 <b style="color:var(--yellow)">소크라테스</b>·<b style="color:var(--yellow)">플라톤</b>·<b style="color:var(--yellow)">아리스토텔레스</b> 같은 위대한 철학자들이 나와서 인간과 진리에 대해 깊이 생각했어요.
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:12px;padding:14px;margin-bottom:12px">
+            <div style="font-size:.95rem;line-height:1.9;color:#a0c0d8">
+              <b style="color:#fff;font-size:1.05rem">⚡ 엄청난 사실들</b><br>
+              🔹 올림픽 선수들은 경기할 때 <b style="color:#fff">옷을 안 입었어!</b> 알몸이었다니! (당시로선 자연스러운 표현)<br>
+              🔹 올림픽은 여성이 참가할 수 없었어. 심지어 <b style="color:var(--yellow)">몰래 들어가다 들켜면 절벽에서 떨어뜨렸어!</b> 다행히 근처 지역에선 별도의 여성 경기가 있었대요<br>
+              🔹 그리스 도시마다 <b style="color:var(--yellow)">다른 신을 믿었어</b>. 아테네는 지혜의 여신, 스파르타는 전쟁의 신<br>
+              🔹 그리스 사람들이 만들어낸 것: 알파벳, 비극·희극, 올림픽, 민주주의, 철학, 수학... <b style="color:var(--green)">엄청 많아!</b>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:100px;background:rgba(241,196,15,.3);border-radius:10px;padding:10px;text-align:center;font-size:.88rem;color:#e0c060">🥇 <b>1등</b><br>올리브관</div>
+            <div style="flex:1;min-width:100px;background:rgba(192,192,192,.2);border-radius:10px;padding:10px;text-align:center;font-size:.88rem;color:#c0c0c0">🥈 <b>2등</b><br>명예</div>
+            <div style="flex:1;min-width:100px;background:rgba(205,127,50,.2);border-radius:10px;padding:10px;text-align:center;font-size:.88rem;color:#c08040">🥉 <b>3등</b><br>박수</div>
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:10px;padding:12px;font-size:.9rem;color:#a0c0d8;line-height:1.8">
+            <b style="color:#fff">🔑 꼭 알아야 할 것!</b><br>
+            · 민주주의는 그리스에서 처음 시작됐어요!<br>
+            · 소크라테스는 스스로 독약을 마셨어요 (부당한 재판에 항거)<br>
+            · 마라톤 경기는 그리스 마라톤 전투의 전령 이야기에서 유래했어요
+          </div>
+        </div>
+
+        <!-- 로마 제국 -->
+        <div style="background:linear-gradient(135deg,#1a0a0a,#2a1010);border-radius:18px;padding:20px;border:1px solid rgba(231,76,60,.3)">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px">
+            <div style="font-size:3.5rem;flex-shrink:0">🏟️</div>
+            <div style="flex:1">
+              <div style="font-family:'Jua',sans-serif;color:var(--red);font-size:1.3rem;margin-bottom:4px">로마 제국 — 도로 제국의 비밀</div>
+              <div style="font-size:.9rem;color:#d07060;font-weight:700">기원전 27년 ~ 서기 476년ㆍ세계 최강대국!</div>
+            </div>
+          </div>
+          <div style="background:#0d080a;border-radius:14px;padding:14px;margin-bottom:14px;border-left:5px solid var(--red)">
+            <div style="font-size:.95rem;line-height:2;color:#e0c0b8">
+              <b style="color:var(--red);font-size:1.05rem">⏰ 서기 70년의 로마 길</b><br>
+              넓고 반듯한 돌길 위를 걸어가고 있어! 이건 로마의 '아피안 길'이라는 가장 유명한 도로야.
+              서쪽 나폴리에서 동쪽 브린디시까지 <b style="color:var(--yellow)">350km</b>를 곧게 뻗어있어.
+              저기 보이는 <b style="color:var(--yellow)">콜로세움</b>(원형 경기장)은 무려 <b style="color:#fff">5만 명</b>이 앉을 수 있는 엄청난 건물이야!<br><br>
+              "왜 로마의 도로는 이렇게 좋아?" 물어보니까, 한 상인이 말해줬어.
+              "로마 군대가 <b style="color:var(--yellow)">빨리 이동</b>해야 해서야. 이 도로들 덕분에 로마가 이렇게 커진 거야!"
+            </div>
+          </div>
+          <div style="font-size:.98rem;line-height:1.85;color:#e0b8a8;margin-bottom:12px">
+            <b style="color:var(--red);font-size:1.05rem">🏰 로마 제국 — 모든 길은 로마로!</b><br><br>
+            로마는 처음엔 작은 도시 국가였어요. 하지만 점점 주변 지역을 정복하다가,
+            마침내 <b style="color:#fff">유럽, 북아프리카, 중동까지</b> 지배하는 초강대국이 됐어요.<br><br>
+            로마의 최강점에 인구는 <b style="color:#fff">5000만 명</b> — 당시 세계 인구의 약 <b style="color:var(--yellow)">20%</b>였어요!
+            로마의 비밀은 <b style="color:var(--yellow)">도로</b>에 있었어요. 총 길이 <b style="color:#fff">8만km</b>의 도로를 깔았거든요.
+            덕분에 군대가 빨리 이동하고, 물건도 빨리 나를 수 있었어요.
+            그래서 "모든 길은 로마로 통한다"는 말이 생겼어요.
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:12px;padding:14px;margin-bottom:12px">
+            <div style="font-size:.95rem;line-height:1.9;color:#d08080">
+              <b style="color:#fff;font-size:1.05rem">👑 로마의 위대한 기술</b><br>
+              🔹 <b style="color:var(--yellow)">수도교(아쿠에덕트)</b>: 깔때기 같은 다리로 <b style="color:#fff">100km</b> 떨어진 곳에서 물을 끌어왔어요<br>
+              🔹 <b style="color:var(--yellow)">콘크리트</b>: 로마인들이 발명! 현대 콘크리트도 같은 원리래요<br>
+              🔹 <b style="color:var(--yellow)">법전</b>: 나폴레옹도 참고했을 만큼 우수한 법 체계<br>
+              🔹 <b style="color:var(--yellow)">공중 목욕탕</b>: 로마인들은 하루에 여러 번 목욕했어! 목욕이 생활 문화<br>
+              🔹 <b style="color:var(--yellow)">건축과 엔지니어링</b>: 둥근 아치 구조, 아쿠에덕트, 콜로세움...
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">🛣️</div>
+              <b style="color:var(--yellow)">도로의 제국</b><br>
+              <span style="color:#fff">8만km</span>
+            </div>
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">💪</div>
+              <b style="color:var(--yellow)">최강 시대</b><br>
+              <span style="color:#fff">인구 5천만</span>
+            </div>
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">⚖️</div>
+              <b style="color:var(--yellow)">법치주의</b><br>
+              <span style="color:#fff">로마법</span>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:10px;padding:12px;font-size:.9rem;color:#d0a0a0;line-height:1.8">
+            <b style="color:#fff">🔑 꼭 알아야 할 것!</b><br>
+            · 우리가 쓰는 알파벳의 조상이 로마 문자예요!<br>
+            · 7월(July)은 로마 황제 율리우스 카이사르 이름에서 왔어요<br>
+            · 로마인들은 수도교로 도시에 물을 공급했어요 – 혁신적인 기술!
+          </div>
+        </div>
+
+        <!-- 진시황 -->
+        <div style="background:linear-gradient(135deg,#0a1a0a,#102010);border-radius:18px;padding:20px;border:1px solid rgba(46,204,113,.3)">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px">
+            <div style="font-size:3.5rem;flex-shrink:0">🐉</div>
+            <div style="flex:1">
+              <div style="font-family:'Jua',sans-serif;color:var(--green);font-size:1.3rem;margin-bottom:4px">진시황 — 중국을 하나로!</div>
+              <div style="font-size:.9rem;color:#70a070;font-weight:700">기원전 221년 ~ 기원전 210년ㆍ역사가 바뀐 순간</div>
+            </div>
+          </div>
+          <div style="background:#0a1510;border-radius:14px;padding:14px;margin-bottom:14px;border-left:5px solid var(--green)">
+            <div style="font-size:.95rem;line-height:2;color:#c0d8b0">
+              <b style="color:var(--green);font-size:1.05rem">⏰ 기원전 220년의 중국</b><br>
+              넌 지금 중국의 변경에 있어. 그런데 ... 이상해. 동네마다 <b style="color:var(--yellow)">서로 다른 말</b>을 써! 길이 단위도 다르고, 화폐도 다르고, 글자도 좀 달라. 왜냐하면 지금 중국은 <b style="color:var(--red)">7개의 독립된 나라</b>로 나뉘어 있거든.<br><br>
+              그런데 갑자기 <b style="color:var(--yellow)">진(秦)</b>이라는 나라의 젊은 왕 <b style="color:var(--green)">진시황</b>이 나타났어. 그는 주변 나라들을 모두 정복해서 <b style="color:var(--yellow)">"중국을 하나의 나라로 만들겠다!"</b> 선언했어. 심지어 그 나이가 <b style="color:var(--red)">불과 13살</b>이야! 놀랍죠?
+            </div>
+          </div>
+          <div style="font-size:.98rem;line-height:1.85;color:#c0d8b0;margin-bottom:12px">
+            <b style="color:var(--green);font-size:1.05rem">🏯 진시황 — 역사상 가장 강력한 통일자</b><br><br>
+            진시황은 <b style="color:#fff">기원전 221년</b>에 중국의 모든 나라를 통일했어요. 역사 상 처음으로!<br><br>
+            그는 정말 엄청난 일들을 했어요:<br>
+            1️⃣ <b style="color:var(--yellow)">만리장성</b> — 북쪽 유목민 침략 막기 위해 <b style="color:#fff">총 2만1000km</b> 벽을 쌓았어! 지구 반 바퀴 길이야!<br>
+            2️⃣ <b style="color:var(--yellow)">병마용(테라코타 군대)</b> — 죽은 뒤 저세상을 위해 실물크기 흙 인형 <b style="color:#fff">8000개 이상</b>을 무덤에 묻었어요<br>
+            3️⃣ <b style="color:var(--yellow)">문자·화폐·도량형 통일</b> — 모든 지역이 같은 글자, 같은 돈, 같은 길이 단위를 쓰도록 했어요<br><br>
+            하지만 완급이 심했어요. 귀족들을 제거하고 책들을 많이 불태웠거든요. 백성들도 힘들어했대요. 결국 진시황이 49살에 죽고 나서는 진나라는 얼마 못 가 멸망했어요.
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:12px;padding:14px;margin-bottom:12px">
+            <div style="font-size:.95rem;line-height:1.9;color:#90c080">
+              <b style="color:#fff;font-size:1.05rem">⚡ 진시황의 엄청난 이야기</b><br>
+              🔹 <b style="color:var(--yellow)">불로불사의 약</b>을 찾고 싶었어요. 방대한 탐험대를 보내서 신약을 찾아다녔어요<br>
+              🔹 <b style="color:var(--red)">죽음을 아주 두려워했어요</b>. 암살을 피하기 위해 자신이 어디 있는지 아무도 모르게 했어요<br>
+              🔹 병마용은 1974년 한 농부가 우물 파다가 발견했어요. 세계 최고의 고고학 발견!<br>
+              🔹 진시황은 <b style="color:var(--red)">수은 든 약</b>을 먹었대요. 그걸로 죽었을지도 몰라요
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">🧱</div>
+              <b style="color:var(--yellow)">만리장성</b><br>
+              <span style="color:#fff">21,000km</span>
+            </div>
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">🪆</div>
+              <b style="color:var(--yellow)">병마용</b><br>
+              <span style="color:#fff">약 8,000개</span>
+            </div>
+            <div style="flex:1;min-width:100px;text-align:center;font-size:.85rem">
+              <div style="font-size:2rem">👑</div>
+              <b style="color:var(--yellow)">황제 즉위</b><br>
+              <span style="color:#fff">13세!</span>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.35);border-radius:10px;padding:12px;font-size:.9rem;color:#a0c090;line-height:1.8">
+            <b style="color:#fff">🔑 꼭 알아야 할 것!</b><br>
+            · 진시황은 불로불사 꿈꿨어요 (현실은 49세에 죽음)<br>
+            · 병마용은 각각 다른 얼굴과 표정을 가지고 있어요<br>
+            · 한자는 진시황이 통일한 글자 체계예요 (지금도 쓰고 있어!)
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════ 중세 패널 ════ -->
+    <div id="panel-h-medieval" style="display:none;margin-bottom:12px">
+      <div style="font-family:'Jua',sans-serif;color:var(--purple);font-size:.82rem;margin-bottom:10px;text-align:center;letter-spacing:2px">
+        ⚔️ 기사와 왕의 시대 (500년 ~ 1500년) ⚔️
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+
+        <!-- 바이킹 -->
+        <div style="background:linear-gradient(135deg,#0a0a1a,#101025);border-radius:16px;padding:16px;border:1px solid rgba(100,120,200,.3)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="font-size:2rem">🛡️</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:#8899ee;font-size:1rem">바이킹 — 바다를 지배한 전사들</div>
+              <div style="font-size:.75rem;color:#6070a0">793년 ~ 1100년경</div>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#c0c8e8;margin-bottom:10px">
+            <b style="color:#8899ee">바이킹</b>은 지금의 노르웨이·스웨덴·덴마크 지역에 살던 북유럽 전사들이에요.
+            드래곤 머리가 달린 배(드라카르)를 타고 유럽 해안을 기습 약탈해서 온 유럽이 벌벌 떨었죠.<br><br>
+            그런데! 바이킹들은 <b style="color:#fff">콜럼버스보다 500년 먼저</b> 아메리카 대륙에 도착했어요.
+            <b style="color:var(--yellow)">레이프 에릭손</b>이 1000년경 지금의 캐나다 땅을 밟았거든요. 하지만 오래 정착하지 못하고 돌아갔기 때문에 역사에서 잊혀졌답니다. 😮
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <div style="flex:1;background:rgba(80,100,180,.2);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:#a0b0e0">
+              ⛵ 드라카르<br><b style="color:#fff">최대 100명 탑승</b>
+            </div>
+            <div style="flex:1;background:rgba(80,100,180,.2);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:#a0b0e0">
+              🗺️ 항해 거리<br><b style="color:#fff">그린란드~캐나다</b>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#9090c0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 바이킹은 해적이기도 했지만 훌륭한 상인이기도 했어요<br>
+            · "목요일(Thursday)"은 바이킹 신 토르(Thor)에서 왔어요!<br>
+            · 바이킹 여성도 전사로 싸웠다는 기록이 있어요 💪
+          </div>
+        </div>
+
+        <!-- 칭기즈칸 -->
+        <div style="background:linear-gradient(135deg,#1a1000,#251800);border-radius:16px;padding:16px;border:1px solid rgba(230,126,34,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">🐎</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--orange);font-size:1.05rem">칭기즈칸 — 역사상 가장 넓은 제국!</div>
+              <div style="font-size:.73rem;color:#a07030;font-weight:700">1206년 ~ 1368년</div>
+            </div>
+          </div>
+          <div style="background:#1a0f05;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid var(--orange)">
+            <div style="font-size:.82rem;line-height:1.9;color:#d0b080">
+              <b style="color:var(--orange)">⏰ 기원후 1200년의 몽골 초원</b><br>
+              쿵! 쿵! 쿵! 지진처럼 땅이 흔들려. <b style="color:var(--yellow)">말발굽 소리</b>야. <b style="color:var(--orange)">몽골 기병대</b>가 온다! 저 말들 위에 탄 군인들은 <b style="color:#fff">활을 쏘면서 말을 달려</b>. 엄청 빨라. 불화살까지 쓰고 있어! 이들은 <b style="color:var(--orange)">칭기즈칸</b> 휘하의 군대야. 원래 서로 싸우던 초원 부족들을 모두 통일한 그 사람! 그리고 동쪽부터 서쪽까지 모든 나라를 정복하려고 한대. 정말 현실 같지 않아.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#e0c8a0;margin-bottom:10px">
+            <b style="color:var(--orange)">🏇 칭기즈칸 — 부족의 왕에서 세계 제국 황제로</b><br><br>
+            <b style="color:var(--orange)">칭기즈칸</b>(원래 이름 테무진)은 처음엔 작은 부족의 아들이었어요. 하지만 그는 <b style="color:#fff">40개가 넘는 초원 부족들을 통일</b>했어요!<br><br>
+            그 다음은 정복이었어요. <b style="color:var(--yellow)">빠른 말 + 강한 활 = 세계 최강의 군대</b>.<br>
+            중국, 중동, 중앙아시아... 모두 정복했어요. 칭기즈칸 죽은 뒤에도 그의 손자들이 계속 전쟁을 했고,
+            결국 몽골 제국은 <b style="color:#fff">3300만 km²</b>가 됐어요 — 지구 육지의 약 <b style="color:var(--yellow)">22%</b>!
+            <b style="color:var(--green)">역사상 가장 넓은 제국</b>이랍니다.
+          </div>
+          <div style="height:12px;border-radius:6px;overflow:hidden;display:flex;margin-bottom:8px">
+            <div style="width:22%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff">몽골 22%</div>
+            <div style="width:78%;background:rgba(230,126,34,.1);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#888">나머지 육지</div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#c0a060;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 칭기즈칸의 자손이 전 세계 남성의 약 0.5%! (약 1600만 명)이라고 해요<br>
+            · 몽골군은 역병(흑사병)을 무기로 사용하기도 했어요 😱<br>
+            · 고려(한국)도 몽골의 침략을 받았어요 — 삼별초가 끝까지 저항했죠
+          </div>
+        </div>
+
+        <!-- 흑사병 -->
+        <div style="background:linear-gradient(135deg,#0f0f0f,#1a1a1a);border-radius:16px;padding:16px;border:1px solid rgba(180,180,180,.2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">💀</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:#c0c0c0;font-size:1.05rem">흑사병 — 세상이 멈춘 시대</div>
+              <div style="font-size:.73rem;color:#808080;font-weight:700">1346년 ~ 1353년</div>
+            </div>
+          </div>
+          <div style="background:#0f0f0f;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid #888">
+            <div style="font-size:.82rem;line-height:1.9;color:#a0a0a0">
+              <b style="color:#c0c0c0">⏰ 1349년의 유럽 시골마을</b><br>
+              마을이 조용해... 좀 이상해. 어제는 우리 이웃 톰 아저씨가 죽고, 오늘은 톰의 가족 5명이 모두 죽었어. 그리고 어제 시장에서 봤던 여인도... 검은 종기가 몸에 피어나고 코에서 피가 나면서 죽었어. 모두가 같은 병이야. <b style="color:var(--red)">"죽음의 검은 질병"</b>. 마을 사람들 중에서 거의 절반이 이미 죽었어.
+              아침마다 <b style="color:var(--red)">목재톱 소리</b>가 들려. 관 만드는 소리야. 시체가 너무 많아서 무덤을 다 팔 수가 없대. 교회도 예배를 할 사람이 없어서 문을 닫았어.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#c0c0c0;margin-bottom:10px">
+            <b style="color:#c0c0c0">💀 흑사병 — 역사상 최악의 전염병</b><br><br>
+            <b style="color:#fff">흑사병</b>(검은 죽음의 질병)은 <b style="color:#fff">14세기</b>에 갑자기 유럽을 덮쳤어요. <br>
+            원인은 <b style="color:var(--yellow)">쥐에 사는 벼룩</b>이었어요(우리가 나중에야 알았지만).<br><br>
+            결과는 <b style="color:var(--red)">끔찍</b>했어요:
+            - <b style="color:var(--yellow)">겨우 6년</b> 만에 유럽 인구의 <b style="color:var(--red)">30~60%</b>가 죽었어요
+            - 어떤 마을은 <b style="color:#fff">주민 전체가 없어져</b>버렸어요
+            - 아이들은 죽은 아버지 무덤을 못 만들기도 했어요
+            - 죽음이 너무 많아서 종 울리는 걸 멈춰야 했어요<br><br>
+            <b style="color:var(--green)">놀라운 역설</b>: 이 끔찍한 재앙이 오히려 <b style="color:var(--yellow)">평등한 사회</b>를 만들었어요!
+            농민이 너무 많이 죽으니까, 남은 농민들이 "더 높은 임금을 달라!"고 할 수 있었거든요.
+          </div>
+          <div style="display:flex;gap:3px;margin-bottom:8px">
+            <div style="height:10px;flex:45;background:var(--red);border-radius:4px 0 0 4px"></div>
+            <div style="height:10px;flex:55;background:rgba(180,180,180,.15);border-radius:0 4px 4px 0"></div>
+          </div>
+          <div style="font-size:.72rem;color:#888;margin-bottom:8px">유럽 인구 감소율 약 45% 추정</div>
+          <div style="background:rgba(0,0,0,.4);border-radius:10px;padding:10px;font-size:.8rem;color:#a0a0a0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 병을 옮기는 건 사실 쥐가 아니라 쥐에 붙은 벼룩이에요<br>
+            · 당시 사람들은 나쁜 공기 때문에 병이 생긴다고 생각했어요<br>
+            · 흑사병 이후 그림, 음악, 문학에 "죽음"의 테마가 많아졌어요
+          </div>
+        </div>
+
+        <!-- 십자군 전쟁 -->
+        <div style="background:linear-gradient(135deg,#1a0d20,#251530);border-radius:16px;padding:16px;border:1px solid rgba(155,89,182,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="font-size:2rem">✝️</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--purple);font-size:1rem">십자군 전쟁 — 신을 위한 전쟁</div>
+              <div style="font-size:.75rem;color:#9070b0">1096년 ~ 1291년</div>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#d0b8e8;margin-bottom:10px">
+            예수님이 태어나고 활동한 땅인 <b style="color:#fff">예루살렘</b>을 이슬람 세력이 지배하자,
+            유럽 기독교 왕들이 "성지를 되찾자!"며 군대를 보낸 게 <b style="color:var(--purple)">십자군 전쟁</b>이에요.
+            200년 동안 총 7~8차례의 원정이 있었어요.<br><br>
+            엄청난 희생이 따랐지만, 이 전쟁 덕분에 유럽에
+            <b style="color:var(--yellow)">이슬람 문명의 수학·의학·철학</b>이 전해졌어요.
+            아라비아 숫자(1,2,3...)와 대수학도 이때 유럽에 소개됐답니다!
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#b090d0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 우리가 쓰는 숫자 1,2,3...은 사실 아라비아에서 온 거예요!<br>
+            · 살라딘(이슬람 장군)은 적군도 감탄할 만큼 용감하고 관대했어요<br>
+            · 커피, 체스, 종이 등 이슬람 문물이 유럽에 전해진 것도 이 시기예요 ☕
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════ 근세·근대 패널 ════ -->
+    <div id="panel-h-earlymod" style="display:none;margin-bottom:12px">
+      <div style="font-family:'Jua',sans-serif;color:var(--blue);font-size:.82rem;margin-bottom:10px;text-align:center;letter-spacing:2px">
+        🔭 탐험과 혁명의 시대 (1500년 ~ 1900년) 🔭
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+
+        <!-- 콜럼버스 -->
+        <div style="background:linear-gradient(135deg,#0d1a20,#102030);border-radius:16px;padding:16px;border:1px solid rgba(52,152,219,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="font-size:2rem">⛵</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--blue);font-size:1rem">콜럼버스 — 신대륙 발견 1492년</div>
+              <div style="font-size:.75rem;color:#6090c0">1492년 10월 12일</div>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#b0c8e0;margin-bottom:10px">
+            <b style="color:var(--blue)">크리스토퍼 콜럼버스</b>는 스페인 여왕의 지원을 받아 서쪽으로 항해하면 인도에 갈 수 있다고 믿었어요.
+            무려 <b style="color:#fff">70일</b>의 항해 끝에 바하마 제도에 도착했는데,
+            그는 죽을 때까지 그곳이 인도라고 믿었어요. 하지만 사실은 <b style="color:var(--yellow)">아메리카 대륙</b>이었죠!<br><br>
+            이 발견이 <b style="color:var(--green)">대항해 시대</b>를 열었어요. 유럽이 아메리카를 정복·개척하게 되면서
+            세계가 하나로 연결됐지만, 동시에 원주민들에게는 큰 비극이 됐어요.
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <div style="background:rgba(52,152,219,.15);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:#80b0d0;flex:1">
+              🛳️ 배 3척<br><b style="color:#fff">산타마리아호 外</b>
+            </div>
+            <div style="background:rgba(52,152,219,.15);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:#80b0d0;flex:1">
+              👥 선원<br><b style="color:#fff">약 90명</b>
+            </div>
+            <div style="background:rgba(52,152,219,.15);border-radius:8px;padding:8px;text-align:center;font-size:.78rem;color:#80b0d0;flex:1">
+              📅 항해<br><b style="color:#fff">70일</b>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#90b0d0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 아메리카(America)는 이탈리아 탐험가 아메리고 베스푸치의 이름에서 왔어요<br>
+            · 콜럼버스 덕분에 감자·옥수수·고추·토마토가 유럽에 전해졌어요 🍅<br>
+            · 아이러니하게도 콜럼버스는 정작 인정받지 못하고 쓸쓸히 죽었답니다
+          </div>
+        </div>
+
+        <!-- 갈릴레오/코페르니쿠스 -->
+        <div style="background:linear-gradient(135deg,#0a1510,#101a15);border-radius:16px;padding:16px;border:1px solid rgba(46,204,113,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="font-size:2rem">🌍</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--green);font-size:1rem">지동설 — 지구가 태양 주위를 돈다!</div>
+              <div style="font-size:.75rem;color:#60a060">1543년(코페르니쿠스) · 1633년(갈릴레오 재판)</div>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#b0d0b0;margin-bottom:10px">
+            <b style="color:#fff">1400년 동안</b> 사람들은 지구가 우주의 중심이고 태양이 지구 주위를 돈다고 믿었어요(천동설).
+            그런데 <b style="color:var(--green)">코페르니쿠스</b>가 "아니, 지구가 태양 주위를 도는 거야!(지동설)"라고 주장했어요.<br><br>
+            그 후 <b style="color:var(--yellow)">갈릴레오 갈릴레이</b>가 망원경으로 이를 증명했지만,
+            교회는 "성경에 어긋난다!"며 그를 <b style="color:var(--red)">종신 가택 연금</b>에 처했어요.
+            재판장에서 나오며 갈릴레오는 혼잣말로 이렇게 했다죠: <b style="color:var(--yellow)">"그래도 지구는 돈다!"</b> 🌀
+          </div>
+          <div style="display:flex;justify-content:center;gap:12px;margin-bottom:10px">
+            <div style="text-align:center">
+              <div style="font-size:1.5rem">☀️</div>
+              <div style="font-size:.72rem;color:var(--yellow)">태양 (중심)</div>
+            </div>
+            <div style="font-size:1.2rem;color:var(--gray);align-self:center">←</div>
+            <div style="text-align:center">
+              <div style="font-size:1.2rem">🌍</div>
+              <div style="font-size:.72rem;color:var(--blue)">지구 (공전)</div>
+            </div>
+            <div style="font-size:1.2rem;color:var(--gray);align-self:center">←</div>
+            <div style="text-align:center">
+              <div style="font-size:1rem">🌙</div>
+              <div style="font-size:.72rem;color:var(--gray)">달 (공전)</div>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#90c090;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 갈릴레오는 낙하 실험으로 무거운 물체와 가벼운 물체가 동시에 떨어진다는 걸 증명했어요<br>
+            · 아이작 뉴턴은 갈릴레오가 죽은 해에 태어났어요 — 과학의 바통을 이어받은 셈!<br>
+            · 갈릴레오 재판은 1992년 교황청이 공식 사과했어요 (360년 만에!)
+          </div>
+        </div>
+
+        <!-- 프랑스 혁명 -->
+        <div style="background:linear-gradient(135deg,#1a0808,#250d0d);border-radius:16px;padding:16px;border:1px solid rgba(231,76,60,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">🗽</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--red);font-size:1.05rem">프랑스 혁명 — 빵이 없어서 일어난 혁명!</div>
+              <div style="font-size:.73rem;color:#c07060;font-weight:700">1789년 7월 14일</div>
+            </div>
+          </div>
+          <div style="background:#0a0808;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid var(--red)">
+            <div style="font-size:.82rem;line-height:1.9;color:#d8b8b0">
+              <b style="color:var(--red)">⏰ 1789년의 파리 거리</b><br>
+              배가 고파... 시장에 가봤는데 빵이 없어. 아니, 있긴 한데 <b style="color:#fff">너무 비싸!</b>
+              우리 엄마는 "빵 조각 하나가 계란 한 달치 값"이라며 한숨을 쉬어. 그런데 왕궁을 보면? <b style="color:var(--yellow)">황금으로 꾸민 벽, 미친 듯이 호화로운 밥상!</b> 왕비 마리 앙투아네트는 세금을 안 내고도 팔찌·반지·드레스에 돈을 펑펑 써. 귀족들도 마찬가지야. 세금은 우리 같은 평민들이 내고, 귀족들 공짜야! 모두가 화났어. "우리를 착취하지 말자!"는 목소리가 커지고 있어.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#e0b0b0;margin-bottom:10px">
+            <b style="color:var(--red)">🔥 프랑스 혁명 — 빵의 부족이 가져온 평등의 소리</b><br><br>
+            1789년 프랑스는 기아 상태였어요. 흉작이 이어졌거든요.
+            하지만 귀족과 왕족은 세금을 안 내고 호화롭게 살았어요.<br><br>
+            화난 시민들이 <b style="color:var(--yellow)">바스티유 감옥</b>을 습격했어요 (1789년 7월 14일).
+            이건 <b style="color:#fff">자유의 상징</b>이 됐거든요.
+            그리고 "우리도 인권이 있다!"며 <b style="color:var(--yellow)">"자유, 평등, 박애"</b>를 외쳤어요.
+            결국 왕정이 무너지고, <b style="color:var(--green)">평민이 주인인 나라</b>가 됐어요!<br><br>
+            그런데... 혁명 후 혼란을 틈타 <b style="color:#9090e0">나폴레옹</b>이 나타났어요.
+          </div>
+          <div style="display:flex;gap:4px;margin-bottom:10px">
+            <div style="flex:3;background:rgba(0,0,200,.4);border-radius:4px 0 0 4px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff">자유 Liberté</div>
+            <div style="flex:3;background:rgba(255,255,255,.2);height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff">평등 Égalité</div>
+            <div style="flex:3;background:rgba(200,0,0,.4);border-radius:0 4px 4px 0;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff">박애 Fraternité</div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#c09090;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 루이 16세와 왕비 마리 앙투아네트는 단두대에서 처형됐어요<br>
+            · "빵이 없으면 케이크를 먹으면 되잖아!"는 마리 앙투아네트 말이 아닐 수도 있어요<br>
+            · 프랑스 혁명군가 "라 마르세예즈"가 지금도 프랑스 국가예요 🎵
+          </div>
+        </div>
+
+        <!-- 나폴레옹 -->
+        <div style="background:linear-gradient(135deg,#0d0d1a,#151520);border-radius:16px;padding:16px;border:1px solid rgba(100,100,200,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">👑</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:#9090e0;font-size:1.05rem">나폴레옹 — 작은 키, 큰 야망!</div>
+              <div style="font-size:.73rem;color:#7070b0;font-weight:700">1804년 ~ 1815년</div>
+            </div>
+          </div>
+          <div style="background:#080812;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid #9090e0">
+            <div style="font-size:.82rem;line-height:1.9;color:#b0b0d0">
+              <b style="color:#9090e0">⏰ 1812년의 러시아 평원</b><br>
+              추워... 저기 앞에 <b style="color:var(--yellow)">나폴레옹 군대</b>가 있어. <b style="color:#fff">60만 명의 거대한 군대!</b>
+              그런데 뭔가 이상해... 군인들이 자꾸 쓰러져. 추위 때문이야. 모스크바에 가려고 했는데 러시아의 <b style="color:var(--red)">혹독한 겨울</b>이 문제야.
+              영하 40℃ 가까운 추위야! 발가락은 검게 썩어가고, 손도 움직이지 않아.
+              군의관들도 어쩔 수 없어. 거의 모든 군인들이 치료도 못 받고 죽어가고 있어.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#c0c0e8;margin-bottom:10px">
+            <b style="color:#9090e0">🎖️ 나폴레옹 — 천재 장군에서 황제로, 그리고 유배자로</b><br><br>
+            나폴레옹 보나파르트는 원래 이탈리아의 작은 섬 코르시카에서 태어난 가난한 귀족이었어요.
+            그런데 그는 <b style="color:var(--yellow)">천재 군사 전략가</b>였어요. 프랑스가 혼란할 때 나타나서 군부 쿠데타를 일으켜 <b style="color:#fff">황제</b>가 됐어요!<br><br>
+            그다음은 정복이었어요:<br>
+            ✅ 유럽의 거의 모든 나라를 정복<br>
+            ✅ <b style="color:var(--yellow)">나폴레옹 법전</b> 만들기 (지금도 프랑스 법의 기초!)<br>
+            ✅ <b style="color:var(--yellow)">만국우편연합</b> 만들기 (전 세계 편지 시스템!)<br><br>
+            그런데... <b style="color:var(--red)">러시아 원정</b>이 실패했어요 (1812년).
+            <b style="color:#fff">60만 명의 대군이 겨우 10만 명으로 줄었거든요.</b>
+            나폴레옹은 권좌에서 떨어지고, 결국 <b style="color:var(--red)">세인트헬레나라는 외로운 섬에 유배</b>됐어요.
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#9090c0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 나폴레옹 법전은 현재도 프랑스·퀘벡·루이지애나 법의 기초예요<br>
+            · 나폴레옹의 키 170cm는 당시로선 평균이었어요 (영국군의 선전이었죠!)<br>
+            · 세인트헬레나 섬에서 유배 중 사망 — 비소 중독이라는 설도 있어요 🤔
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════ 현대 패널 ════ -->
+    <div id="panel-h-modern" style="display:none;margin-bottom:12px">
+      <div style="font-family:'Jua',sans-serif;color:var(--red);font-size:.82rem;margin-bottom:10px;text-align:center;letter-spacing:2px">
+        🚀 전쟁과 발전의 시대 (1900년 ~ 현재) 🚀
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+
+        <!-- 산업혁명 -->
+        <div style="background:linear-gradient(135deg,#0f0f0a,#1a1a10);border-radius:16px;padding:16px;border:1px solid rgba(241,196,15,.2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">⚙️</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--yellow);font-size:1.05rem">산업혁명 — 손에서 기계로!</div>
+              <div style="font-size:.73rem;color:#a09040;font-weight:700">1760년 ~ 1840년 (영국에서 시작)</div>
+            </div>
+          </div>
+          <div style="background:#0f0f05;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid var(--yellow)">
+            <div style="font-size:.82rem;line-height:1.9;color:#c0b080">
+              <b style="color:var(--yellow)">⏰ 1780년의 영국 맨체스터 공장</b><br>
+              "화악!" 거대한 기계음이 울려.
+              저 옆에 아이들이 앉아있어. 아까도 봤는데 어제도 여기 있고 오늘도 여기 있어.
+              <b style="color:#fff">6살짜리부터 14살까지</b> 다 있어. "아저씨, 휴식시간 언제예요?"
+              "휴식? 하하... 자네들은 <b style="color:var(--red)">하루 12시간</b>을 일하는 거야. 남은 시간엔 자고 먹고."
+              어떤 아이는 손가락이 몇 개 없어. 기계에 깨물렸대. 병원은 없고, 의약품은 너무 비싸.
+              <b style="color:var(--green)">하지만 모두가 이게 "진보"라고 외치고 있어.</b>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#d8d0a0;margin-bottom:10px">
+            <b style="color:var(--yellow)">🏭 산업혁명 — 기계가 세상을 바꾸다!</b><br><br>
+            <b style="color:var(--yellow)">제임스 와트</b>가 증기기관을 개량 (1769년)하면서 세상이 바뀌었어요.
+            지금까지 <b style="color:var(--yellow)">손으로 하던 일</b>을 <b style="color:var(--yellow)">기계가 대신하게</b> 된 거죠.<br><br>
+            그런데... 너무 빨리 변했어요. 처음엔:<br>
+            ❌ <b style="color:var(--red)">아이도 12시간씩 공장에</b><br>
+            ❌ <b style="color:var(--red)">돈만 많은 공장주들</b><br>
+            ❌ <b style="color:var(--red)">오염된 공기와 물</b><br><br>
+            하지만 이 비참한 현실 때문에 <b style="color:var(--green)">아동보호법과 노동법</b>이 생겼어요!<br><br>
+            산업혁명 덕분에:<br>
+            🚂 <b style="color:var(--yellow)">기차</b> 발명<br>
+            💡 <b style="color:var(--yellow)">전기와 전등</b> 발명<br>
+            ☎️ <b style="color:var(--yellow)">전화</b> 발명<br><br>
+            <b style="color:var(--green)">교훈:</b> 발전엔 항상 대가가 있지만, 그걸 당하는 사람들의 목소리가 커지면 더 나은 세상이 될 수 있어! 🦕
+          </div>
+          <div style="display:flex;gap:3px;margin-bottom:8px">
+            <div style="flex:1;background:rgba(50,50,50,.8);border-radius:4px;height:14px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#888">손 노동</div>
+            <div style="font-size:.8rem;color:var(--yellow);align-self:center;padding:0 4px">→</div>
+            <div style="flex:1;background:rgba(241,196,15,.4);border-radius:4px;height:14px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#f0c040">기계 노동</div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#c0b080;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 기차 덕분에 세계 최초로 표준시(time zone)가 생겼어요 🕐<br>
+            · 전화기 발명가 알렉산더 그레이엄 벨은 원래 청각장애인 교사였어요<br>
+            · 영국 아동 중 11살 이하가 공장에서 일한 경우도 있었어요 😢
+          </div>
+        </div>
+
+        <!-- 두 번의 세계대전 -->
+        <div style="background:linear-gradient(135deg,#150505,#200a0a);border-radius:16px;padding:16px;border:1px solid rgba(220,80,80,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">🕊️</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:#e08080;font-size:1.05rem">두 번의 세계대전 — 인류 최악의 시간들</div>
+              <div style="font-size:.73rem;color:#c06060;font-weight:700">1914~1918년 · 1939~1945년</div>
+            </div>
+          </div>
+          <div style="background:#0a0505;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid #e08080">
+            <div style="font-size:.82rem;line-height:1.9;color:#d0a0a0">
+              <b style="color:#e08080">⏰ 1916년의 솜 전투</b><br>
+              쿵! 쿵! 쿵! 포탄 쏟아져. 무언가 옆 친구가 "아!" 하면서 쓰러져. 손이 떨려.
+              <b style="color:var(--red)">더 이상 못하겠어. 시체가 너무 많아.</b>
+              한 달에 <b style="color:#fff">100만 명</b>이 죽었대.<br><br>
+              이게 뭐하는 짓이야?
+              <b style="color:var(--yellow)">제1차 세계대전</b>은
+              원래 한두 나라의 다툼이었는데,
+              유럽 모든 나라가 참전했어.
+              <b style="color:#fff">새로운 무기 — 비행기, 탱크, 독가스</b> 때문에 어마어마한 피해가 났어.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#e0b8b8;margin-bottom:10px">
+            <b style="color:#e08080">⚠️ 두 번의 세계대전 — 인류 최악의 시간들</b><br><br>
+            <b style="color:#fff">제1차 세계대전</b> (1914-1918) — 약 <b style="color:var(--red)">2000만 명</b> 사망<br>
+            <b style="color:#fff">제2차 세계대전</b> (1939-1945) — 약 <b style="color:var(--red)">7000만 명</b> 사망<br><br>
+            2차 대전은 더 심각했어요:<br>
+            ❌ <b style="color:var(--yellow)">나치 독일</b>이 유대인 <b style="color:#fff">600만 명</b>을 학살 (홀로코스트)<br>
+            ❌ 일본, 중국과 한반도 정복 시도<br>
+            ❌ <b style="color:var(--red)">히로시마·나가사키 원자폭탄</b> — 한 순간에 <b style="color:#fff">약 20만 명</b> 사망<br><br>
+            <b style="color:var(--green)">전후: 유엔(UN) 탄생</b><br>
+            "다시는 이런 일이 일어나지 말자!"
+            세계 모든 나라가 함께 평화를 지키기로 약속했어요.<br>
+            그래서 <b style="color:#fff">유엔 창설 이후 강대국 간 직접 전쟁은 한 번도 없었어요.</b> 🌍
+          </div>
+          <div style="display:flex;gap:4px;margin-bottom:10px">
+            <div style="flex:20;background:rgba(200,100,100,.4);border-radius:4px;height:16px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff">1차 2000만</div>
+            <div style="flex:70;background:rgba(220,50,50,.5);border-radius:4px;height:16px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff">2차 7000만 명 희생</div>
+          </div>
+          <div style="background:rgba(0,0,0,.4);border-radius:10px;padding:10px;font-size:.8rem;color:#c09090;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 히로시마·나가사키 원자폭탄으로 2차 대전이 끝났지만 약 20만 명이 희생됐어요<br>
+            · 2차 대전 중 한국인 20만 명이 강제 징용당했어요<br>
+            · 유엔 창설 이후 강대국 간 직접 전쟁은 한 번도 없었어요 🌐
+          </div>
+        </div>
+
+        <!-- 달 착륙 -->
+        <div style="background:linear-gradient(135deg,#080818,#0d0d25);border-radius:16px;padding:16px;border:1px solid rgba(100,150,255,.25)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">🌕</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:#8899ff;font-size:1.05rem">아폴로 11호 — 달에 발을 디디다!</div>
+              <div style="font-size:.73rem;color:#6070c0;font-weight:700">1969년 7월 20일</div>
+            </div>
+          </div>
+          <div style="background:#080820;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid #8899ff">
+            <div style="font-size:.82rem;line-height:1.9;color:#a0b0d0">
+              <b style="color:#8899ff">⏰ 달 착륙정 내부 — 1969년 7월 20일 오후</b><br>
+              "... 10... 9... 8..." 엔진음이 울려. TV로 보고 있는데 손에 땀이 나.
+              <b style="color:var(--yellow)">닐 암스트롱</b> 우주비행사가 금방 달에 발을 디딜 거야. 지금까지 <b style="color:#fff">아무도 본 적 없는 일</b>이 일어나려고 해.
+              "달 착륙 엔진, 정상입니다... 60미터... 50미터..."
+              심장이 철렁. 모래 먼지 때문에 앞이 안 보여... "24미터..."
+              하강 연료가 거의 없어! "16미터..." 드디어!
+              "The Eagle has landed!" (독수리가 착륙했습니다!)
+              전 세계 6억 명이 울음을 터뜨렸어.
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#b0b8e8;margin-bottom:10px">
+            <b style="color:#8899ff">🚀 달 착륙 — 불가능의 도전</b><br><br>
+            <b style="color:#8899ff">닐 암스트롱</b>이 달에 발을 디디며 말했어요:<br>
+            <b style="color:var(--yellow)">"이것은 한 인간의 작은 발걸음이지만, 인류에게는 위대한 도약이다."</b><br><br>
+            왜 달에 가야 했을까요? <b style="color:var(--red)">미국과 소련의 냉전</b> 때문이었어요.
+            "우리가 먼저 달에 갈 거다!" 경쟁을 벌인 거죠.
+            결국 미국이 이겼어요.<br><br>
+            <b style="color:var(--yellow)">아폴로 11호</b>는:<br>
+            ✅ 지구에서 달까지 <b style="color:#fff">384,000km</b> 여행<br>
+            ✅ 탑승한 컴퓨터의 성능이 <b style="color:var(--red)">지금 스마트폰의 약 100만 배 낮음</b><br>
+            ✅ 달에는 지금도 <b style="color:#fff">발자국과 깃발</b>이 그대로 남아있어요!
+          </div>
+          <div style="display:flex;justify-content:space-around;margin-bottom:10px">
+            <div style="text-align:center;font-size:.78rem;color:#8090d0">
+              🌍<div style="font-size:.65rem">지구</div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;padding:0 8px">
+              <div style="height:2px;flex:1;background:linear-gradient(90deg,var(--blue),#8899ff);border-radius:2px"></div>
+              <div style="font-size:.6rem;color:#8899ff;margin:0 4px;white-space:nowrap">384,000km</div>
+              <div style="height:2px;flex:1;background:linear-gradient(90deg,#8899ff,var(--yellow));border-radius:2px"></div>
+            </div>
+            <div style="text-align:center;font-size:.78rem;color:var(--yellow)">
+              🌕<div style="font-size:.65rem">달</div>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.4);border-radius:10px;padding:10px;font-size:.8rem;color:#8090c0;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 아폴로 계획에 참여한 여성 수학자 캐서린 존슨이 없었다면 달 착륙 불가능이었어요 💻<br>
+            · 달에는 지금도 발자국과 깃발이 그대로 남아있어요 (바람이 없으니까)<br>
+            · 달 착륙을 TV로 본 전 세계 시청자가 약 6억 명! 당시 세계 인구의 약 20%
+          </div>
+        </div>
+
+        <!-- 인터넷 시대 -->
+        <div style="background:linear-gradient(135deg,#081510,#0d1f18);border-radius:16px;padding:16px;border:1px solid rgba(46,204,113,.2)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="font-size:2.2rem">💻</div>
+            <div>
+              <div style="font-family:'Jua',sans-serif;color:var(--green);font-size:1.05rem">인터넷·AI 시대 — 지금 이 순간!</div>
+              <div style="font-size:.73rem;color:#40a060;font-weight:700">1989년 ~ 현재</div>
+            </div>
+          </div>
+          <div style="background:#081010;border-radius:12px;padding:12px;margin-bottom:12px;border-left:4px solid var(--green)">
+            <div style="font-size:.82rem;line-height:1.9;color:#a0c0a0">
+              <b style="color:var(--green)">⏰ 2026년 — 지금 이 시간들</b><br>
+              <b style="color:var(--yellow)">"AI 토로"</b>가 너에게 얘기를 해주고 있어. <b style="color:#fff">인터넷</b> 덕분이야.
+              너의 이 스마트폰 (또는 컴퓨터)는 <b style="color:var(--yellow)">지구 반대편 서버</b>와 연결되어 있어.
+              "알고리즘"이라고 불리는 <b style="color:var(--green)">똑똑한 계산 방식</b>이 너가 뭘 좋아할지 예측해.
+              너가 "토로 수학 게임" 했다는 데이터가 <b style="color:#fff">어디 멀리 저장되어</b> 있을 거야.
+              그리고 나중에 "넌 역사를 좋아하니?" 하고 물어볼 거야.
+              이게 <b style="color:var(--yellow)">인공지능</b>이야. <b style="color:var(--green)">미래는 우리 둘이 함께 만드는 거야!</b>
+            </div>
+          </div>
+          <div style="font-size:.88rem;line-height:1.8;color:#b0d0b0;margin-bottom:10px">
+            <b style="color:var(--green)">🌐 인터넷·AI 시대 — 가장 빠른 시대가 가장 길게 느껴진다</b><br><br>
+            <b style="color:var(--green)">팀 버너스리</b>가 1989년 <b style="color:var(--yellow)">월드와이드웹(WWW)</b>을 발명했어요.
+            처음엔 <b style="color:#fff">과학자들이 자료를 공유하는 용도</b>였는데...
+            지금은 <b style="color:#fff">전 세계 50억 명</b>이 매일 사용해요!<br><br>
+            그 다음은:<br>
+            📱 <b style="color:var(--yellow)">스마트폰</b> (2007년) — 손 안의 컴퓨터<br>
+            🎬 <b style="color:var(--yellow)">유튜브</b> (2005년) — 1분마다 <b style="color:#fff">500시간</b>의 영상 올라와<br>
+            🤖 <b style="color:var(--yellow)">인공지능(AI)</b> (2022년~) — 나처럼 말하고 생각하는 기계<br><br>
+            <b style="color:var(--green)">놀라운 사실:</b> <br>
+            지난 <b style="color:#fff">30년</b>의 변화가 이전 <b style="color:var(--yellow)">3000년보다 빠를지도 몰라요!</b><br>
+            그리고 <b style="color:var(--yellow)">너희가 사는 이 시대</b>는 나중에 역사 교과서에 실릴 거예요. 🦕💚
+          </div>
+          <div style="display:flex;gap:4px;margin-bottom:10px">
+            <div style="flex:1;background:rgba(46,204,113,.15);border-radius:6px;padding:6px;text-align:center;font-size:.72rem;color:#80c080">
+              🌐 인터넷<br><b style="color:#fff">1990년대</b>
+            </div>
+            <div style="flex:1;background:rgba(46,204,113,.2);border-radius:6px;padding:6px;text-align:center;font-size:.72rem;color:#80c080">
+              📱 스마트폰<br><b style="color:#fff">2007년~</b>
+            </div>
+            <div style="flex:1;background:rgba(46,204,113,.3);border-radius:6px;padding:6px;text-align:center;font-size:.72rem;color:#80c080">
+              🤖 AI<br><b style="color:#fff">2020년대~</b>
+            </div>
+          </div>
+          <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px;font-size:.8rem;color:#80c080;line-height:1.7">
+            🔑 <b style="color:#fff">알고 있었나요?</b><br>
+            · 팀 버너스리는 WWW를 발명하고도 특허를 내지 않아 인류에게 무료로 선물했어요 🎁<br>
+            · 1분마다 유튜브에 올라오는 영상은 약 500시간 분량이에요<br>
+            · 지금 여러분이 쓰는 AI(나 같은!)도 세계사의 한 페이지를 쓰고 있어요 😊
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../toro_ai.js"></script>
+  <script>
+    function toggleHistory(id){
+      const ids=['ancient','medieval','earlymod','modern'];
+      ids.forEach(k=>{
+        const panel=document.getElementById('panel-h-'+k);
+        const btn=document.getElementById('btn-h-'+k);
+        if(k===id){
+          const open=panel.style.display==='none';
+          panel.style.display=open?'block':'none';
+          let text=btn.textContent;
+          if(open){
+            text=text.replace('▾','▴');
+          } else {
+            text=text.replace('▴','▾');
+          }
+          btn.textContent=text;
+        } else {
+          panel.style.display='none';
+          let text=btn.textContent;
+          if(!text.includes('▾')) text=text.replace('▴','▾');
+          btn.textContent=text;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
