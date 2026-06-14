@@ -210,6 +210,20 @@
   .art-img   { width: 100%; border-radius: 12px; margin-bottom: .7rem; display: block; }
   .art-title { font-weight: 700; font-size: .98rem; }
   .art-info  { font-size: .8rem; opacity: .6; margin-top: .1rem; }
+
+  @media (min-width: 700px) {
+    #panel-art {
+      width: min(85vw, 920px);
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    #panel-art .art-img {
+      max-height: 72vh;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+  }
   .art-desc  { font-size: .87rem; margin-top: .45rem; line-height: 1.6; }
 
   /* Places */
