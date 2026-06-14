@@ -109,37 +109,38 @@
   .w-banner {
     background: var(--card);
     backdrop-filter: blur(12px);
-    border-radius: var(--radius);
-    padding: .55rem 1rem;
+    border-radius: 999px;
+    padding: .35rem .9rem;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,.1);
-    display: flex;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    display: inline-flex;
     align-items: center;
-    gap: .7rem;
+    gap: .45rem;
+    font-size: .88rem;
   }
-  .w-big   { font-size: 1.8rem; flex-shrink: 0; }
-  .w-loc   { font-size: .82rem; opacity: .6; margin-bottom: .15rem; }
-  .w-temp  { font-size: 1.1rem; font-weight: 700; }
-  .w-cond  { font-size: .75rem; font-weight: 600; opacity: .75; }
-  .w-meta  { display: flex; gap: .8rem; font-size: .8rem; margin-top: .35rem; opacity: .6; }
+  .w-big   { font-size: 1.2rem; flex-shrink: 0; }
+  .w-loc   { font-weight: 600; }
+  .w-temp  { font-weight: 800; color: var(--P); }
+  .w-cond  { opacity: .65; }
+  .w-meta  { opacity: .55; font-size: .8rem; }
 
   /* ── QUOTE BOX ── */
   .quote-box {
     background: var(--P, #d97706);
     color: #fff;
     border-radius: var(--radius);
-    padding: 1.4rem 1.6rem;
+    padding: .9rem 1.4rem;
     margin-bottom: 1rem;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-style: italic;
     font-weight: 600;
     box-shadow: 0 4px 18px rgba(0,0,0,.12);
     position: relative;
     overflow: hidden;
   }
-  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia, serif; }
-  .quote-box .q-text { position: relative; }
-  .quote-box .q-src  { display: block; font-style: normal; font-size: .78rem; opacity: .75; margin-top: .3rem; }
+  .quote-box::before { display: none; }
+  .quote-box .q-text { display: inline; }
+  .quote-box .q-src  { display: inline; font-style: normal; font-size: .85rem; opacity: .8; margin-left: 1.2em; }
 
   /* ── TABS ── */
   .tab-bar {
@@ -295,21 +296,19 @@
 
   <!-- Weather banner -->
   <div id="w-banner" class="w-banner" style="display:none">
-    <div class="w-big"  id="w-emoji">☀️</div>
-    <div>
-      <div class="w-loc"  id="w-loc">-</div>
-      <div class="w-temp" id="w-temp">--°C</div>
-      <div class="w-cond" id="w-cond">-</div>
-      <div class="w-meta">
-        <span id="w-hum">💧 -</span>
-        <span id="w-wind">💨 -</span>
-      </div>
-    </div>
+    <span class="w-big"  id="w-emoji">☀️</span>
+    <span class="w-loc"  id="w-loc">-</span>
+    <span class="w-temp" id="w-temp">--°C</span>
+    <span class="w-cond" id="w-cond">-</span>
+    <span class="w-meta">
+      <span id="w-hum">💧-</span>
+      <span id="w-wind"> 💨-</span>
+    </span>
   </div>
 
   <!-- Quote -->
   <div id="quote-box" class="quote-box" style="display:none">
-    <div class="q-text" id="q-text">-</div>
+    <span class="q-text" id="q-text">-</span>
     <span class="q-src"  id="q-src"></span>
   </div>
 
@@ -971,7 +970,7 @@ function renderAll(){
   artIdx = today.getDate() - 1;
 
   // Quote
-  $('q-text').textContent = quote.t;
+  $('q-text').innerHTML = '<span style=”font-size:2em;line-height:0;vertical-align:.2em;margin-right:.3em”>”</span>' + quote.t + '<span style=”font-size:2em;line-height:0;vertical-align:.2em;margin-left:.3em”>”</span>';
   $('q-src').textContent  = (quote.s && !quote.s.includes('익명')) ? quote.s : '';
   $('quote-box').style.display   = 'block';
   $('quote-box').style.background = 'var(--P)';
