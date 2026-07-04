@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>하루 60분 신체 활동이 뇌를 키운다</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#e2e8f0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#2e1a0a,#4e2d1a);padding:40px 20px;text-align:center;border-bottom:1px solid rgba(251,191,36,.3)}
+header h1{font-size:1.8rem;color:#fcd34d;margin-bottom:8px}
+header p{color:rgba(255,255,255,.55);font-size:.92rem}
+.back-btn{display:inline-block;margin-top:16px;padding:.45rem 1.2rem;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);border-radius:999px;color:#fcd34d;text-decoration:none;font-size:.82rem}
+.tab-wrap{position:sticky;top:0;z-index:100;background:#0a0a1a;border-bottom:1px solid rgba(255,255,255,.08);display:flex;overflow-x:auto;gap:0}
+.tab{flex:1;min-width:120px;text-align:center;padding:14px 8px;font-size:.82rem;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+.tab.active{color:#fcd34d;border-bottom-color:#fcd34d}
+.section{display:none;max-width:900px;margin:0 auto;padding:32px 20px}
+.section.active{display:block}
+input[type=text]{width:100%;padding:10px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#e2e8f0;font-size:.88rem;margin-bottom:20px}
+.activity{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:.2s}
+.activity:hover{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.25)}
+.activity-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.num{min-width:32px;color:#6b7280;font-size:.78rem;padding-top:3px}
+.activity-title{font-size:.98rem;color:#e2e8f0;font-weight:700;flex:1}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.68rem;font-weight:700}
+.badge-indoor{background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
+.badge-outdoor{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.badge-solo{background:rgba(251,191,36,.15);color:#fcd34d;border:1px solid rgba(251,191,36,.3)}
+.badge-together{background:rgba(236,72,153,.15);color:#f9a8d4;border:1px solid rgba(236,72,153,.3)}
+.badge-easy{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.badge-medium{background:rgba(251,191,36,.15);color:#fcd34d;border:1px solid rgba(251,191,36,.3)}
+.badge-hard{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.badge-season{background:rgba(125,211,252,.12);color:#7dd3fc;border:1px solid rgba(125,211,252,.3)}
+.desc-label{display:block;color:#fcd34d;font-weight:700;font-size:.76rem;margin-top:10px;margin-bottom:2px;letter-spacing:.02em}
+.activity p{margin:0;color:#94a3b8;font-size:.82rem;line-height:1.7}
+.btn-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.naver-btn{display:inline-block;padding:5px 14px;background:rgba(3,199,90,.12);border:1px solid rgba(3,199,90,.35);border-radius:999px;color:#6ee7b7;font-size:.75rem;font-weight:700;text-decoration:none}
+.naver-btn:hover{background:rgba(3,199,90,.25);color:#fff}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ 하루 60분 신체 활동이 뇌를 키운다</h1>
+  <p>0~2세 · 3~5세 · 6~8세 · 9세 이상 · 부모와 함께하는 신체 활동 32가지</p>
+  <a class="back-btn" href="index.html">← 허브로 돌아가기</a>
+</header>
+
+<div class="tab-wrap">
+  <div class="tab active" onclick="showTab('age1')">👶 0~2세</div>
+  <div class="tab" onclick="showTab('age2')">🌱 3~5세</div>
+  <div class="tab" onclick="showTab('age3')">⚽ 6~8세</div>
+  <div class="tab" onclick="showTab('age4')">🏃 9세 이상</div>
+</div>
+
+<!-- 0~2세 -->
+<div class="section active" id="tab-age1">
+<input type="text" placeholder="🔍 검색 (활동명, 준비물...)" oninput="filter(this,'age1')">
+
+<div class="activity"><div class="activity-header"><span class="num">1</span><div class="activity-title">터미타임 · 기어다니기 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>엎드린 자세로 목과 어깨 근육을 키우고, 이후 기어다니며 팔다리 협응력을 발달시킵니다. 목 가누기부터 걷기 이전까지 신체 발달의 기초가 되는 핵심 활동입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>부드러운 놀이매트, 좋아하는 장난감(유인용)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>하루 여러 번, 1회 5~10분</p>
+<span class="desc-label">💡 팁</span>
+<p>장난감을 살짝 앞에 놓아 기어가도록 유도하세요. 식사 직후는 피하고 깨어있는 시간에 짧게 자주 하는 게 좋습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+놀이매트+터미타임" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">2</span><div class="activity-title">볼풀 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>알록달록한 공들 사이에서 부모와 함께 잡고 던지며 대근육과 촉각을 자극합니다. 색깔·숫자 놀이와 결합하면 인지 발달에도 도움이 됩니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>유아용 볼풀 텐트 또는 울타리, 놀이용 공 100개 세트</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>부모가 공을 던져주고 아이가 잡는 놀이로 확장하면 상호작용이 더 커집니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아용+볼풀+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">3</span><div class="activity-title">걸음마 보조 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 양손을 잡아주거나 보행기를 밀며 균형감각과 다리 근력을 키웁니다. 첫 걸음마를 준비하는 시기에 안전하게 자립보행을 연습할 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>유아용 보행기 또는 밀고 다니는 카트형 장난감, 미끄럼 방지 양말</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10~15분씩 여러 번</p>
+<span class="desc-label">💡 팁</span>
+<p>바닥에 걸리는 물건을 미리 치우고, 넘어져도 다치지 않게 매트를 깔아주세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+보행기+걸음마+카트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">4</span><div class="activity-title">비눗방울 쫓기
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 봄·여름</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 불어주는 비눗방울을 눈으로 쫓고 손으로 터뜨리며 시각 추적 능력과 대근육 반응 속도를 키웁니다. 아이들이 가장 좋아하는 부모 참여 야외 활동 중 하나입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>유아용 무독성 비눗방울 세트, 야외용 돗자리</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>바람이 적은 날 그늘에서 하면 비눗방울이 더 오래 떠 있어 쫓기 좋습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아용+비눗방울+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">5</span><div class="activity-title">촉감놀이 매트 탐험
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>다양한 질감(우둘투둘, 폭신폭신, 매끈매끈)의 매트 위를 부모와 함께 기어다니거나 걸으며 촉각과 균형감각을 함께 발달시킵니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>촉감놀이 매트 또는 감각 발달 매트 세트</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10~15분</p>
+<span class="desc-label">💡 팁</span>
+<p>맨발로 하면 촉각 자극 효과가 더 큽니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+촉감놀이+매트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">6</span><div class="activity-title">까꿍놀이 · 잡기 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 숨었다 나타나는 까꿍놀이와 손을 뻗어 물건을 잡는 놀이로 대근육 반응과 사회적 상호작용을 함께 키웁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>수건 또는 손, 딸랑이 장난감</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>반복해서 웃음을 유도하면 정서적 애착 형성에도 좋습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아기+딸랑이+장난감" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">7</span><div class="activity-title">계단 오르내리기 연습
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 손을 잡아주며 계단을 오르내리며 다리 근력과 균형감각, 공간지각력을 키웁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>미끄럼방지 양말, 안전 손잡이</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>항상 보호자가 곁에서 손을 잡아주며 안전하게 진행하세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+미끄럼방지+양말" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">8</span><div class="activity-title">리듬 악기 흔들기 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 마주 앉아 마라카스, 탬버린 등을 흔들고 두드리며 팔 근육과 리듬감, 청각 자극을 함께 키웁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>유아용 리듬악기 세트(마라카스·탬버린)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10~15분</p>
+<span class="desc-label">💡 팁</span>
+<p>음악을 틀어주고 박자에 맞춰 흔들게 하면 리듬감 발달에 더 좋습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+리듬악기+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+</div>
+
+<!-- 3~5세 -->
+<div class="section" id="tab-age2">
+<input type="text" placeholder="🔍 검색 (활동명, 준비물...)" oninput="filter(this,'age2')">
+
+<div class="activity"><div class="activity-header"><span class="num">9</span><div class="activity-title">모래놀이
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">☀️ 봄·여름·가을</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 함께 모래를 파고, 쌓고, 틀에 담으며 소근육과 창의력을 함께 키웁니다. 놀이터 모래밭이나 실내 키네틱 모래로도 즐길 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>모래놀이 삽·양동이 세트, 모래틀, (실내용) 키네틱 모래</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>30~40분</p>
+<span class="desc-label">💡 팁</span>
+<p>부모가 함께 모래성을 쌓으면 협동 놀이로 확장됩니다. 놀이 후 손 씻기를 꼭 챙기세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+모래놀이+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">10</span><div class="activity-title">그네 · 미끄럼틀 놀이터
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 그네를 밀어주고 미끄럼틀 아래서 받아주며 함께 노는 활동입니다. 대근육 발달과 함께 부모와의 스킨십으로 애착도 쌓입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>동네 놀이터, 편한 신발</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>30~40분</p>
+<span class="desc-label">💡 팁</span>
+<p>그네를 밀어줄 때 높이를 점점 올려가며 아이의 반응을 살펴주세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=가정용+미끄럼틀+그네" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">11</span><div class="activity-title">훌라후프 대결
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 각자 훌라후프를 돌리며 누가 더 오래 돌리나 대결하는 놀이. 코어 근육과 리듬감을 키우면서 온 가족이 함께 웃을 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>훌라후프 2개(부모용·아이용)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10~15분</p>
+<span class="desc-label">💡 팁</span>
+<p>처음엔 아이가 이기도록 살짝 져주면 자신감을 키워줄 수 있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아용+훌라후프" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">12</span><div class="activity-title">목마놀이 · 비행기놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 아이를 목말 태우거나 두 팔로 들어 올려 비행기처럼 태워주는 몸놀이. 부모에겐 근력 운동이 되고, 아이는 균형감각과 정서적 유대감을 함께 얻습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>별도 준비물 없음(안전한 공간만 확보)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>부모의 허리·무릎 상태를 고려해 무리하지 않는 선에서 진행하세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+실내놀이+매트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">13</span><div class="activity-title">이불 썰매 끌기
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>이불이나 담요 위에 아이를 태우고 부모가 집 안 바닥을 끌어주는 놀이. 부모에겐 팔·다리 근력 운동이 되고 아이는 속도감과 스릴을 느끼며 즐거워합니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>두꺼운 담요 또는 이불</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10~15분</p>
+<span class="desc-label">💡 팁</span>
+<p>미끄러운 바닥(장판·마루)에서 하고, 모서리에 부딪히지 않게 공간을 확보하세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=미끄럼방지+실내매트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">14</span><div class="activity-title">트램폴린 함께 뛰기
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 손을 잡아주며 아이와 함께 통통 뛰는 놀이. 하체 근력과 균형감각을 키우면서 스킨십으로 애착도 쌓입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>가정용 미니 트램폴린, 안전 손잡이</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>안전 그물망이 있는 제품을 쓰고, 반드시 부모가 함께 잡아주며 진행하세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=가정용+유아+트램폴린" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">15</span><div class="activity-title">술래잡기
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 직접 술래가 되어 아이를 쫓거나 도망치며 노는 활동. 순발력과 심폐지구력을 키우고 부모와 몸으로 부대끼며 노는 즐거움을 줍니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>넓은 거실이나 마당, 놀이터</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>20~30분</p>
+<span class="desc-label">💡 팁</span>
+<p>너무 빨리 잡지 말고 아이가 도망치는 재미를 느끼도록 속도를 맞춰주세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+야외놀이용품" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">16</span><div class="activity-title">풍선 배구
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>풍선을 배구공 삼아 부모와 아이가 마주 보고 손으로 쳐서 주고받는 놀이. 손눈 협응력과 순발력을 안전하게 키울 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>풍선 여러 개</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15분</p>
+<span class="desc-label">💡 팁</span>
+<p>바닥에 떨어뜨리지 않기 미션으로 하면 협동심도 함께 기를 수 있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=파티풍선+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+</div>
+
+<!-- 6~8세 -->
+<div class="section" id="tab-age3">
+<input type="text" placeholder="🔍 검색 (활동명, 준비물...)" oninput="filter(this,'age3')">
+
+<div class="activity"><div class="activity-header"><span class="num">17</span><div class="activity-title">줄넘기 함께하기
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 번갈아 뛰거나, 부모가 긴 줄을 돌려주고 아이가 그 사이로 뛰어드는 2인 줄넘기로 즐길 수 있습니다. 협응력과 리듬감, 협동심을 함께 키웁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>어린이용 줄넘기 또는 긴 줄</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>긴 줄넘기부터 시작하면 개인 줄넘기보다 진입장벽이 낮습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이용+줄넘기" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">18</span><div class="activity-title">손수레 걷기(휠배로우 워크)
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>아이가 양손을 바닥에 짚으면 부모가 아이의 다리를 잡아 손수레처럼 걷게 하는 놀이. 팔과 코어 근력을 크게 키우는 재미있는 몸놀이입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>별도 준비물 없음, 매트 권장</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>짧은 거리부터 시작하고, 팔 힘이 약한 아이는 무리하지 않게 조절해주세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=요가매트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">19</span><div class="activity-title">등에 업고 달리기(피기백 레이스)
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모가 아이를 업고 정해진 구간을 달리는 놀이. 부모의 체력 운동도 되고 아이는 신나는 속도감을 즐깁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>안전한 잔디밭이나 공원</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15분</p>
+<span class="desc-label">💡 팁</span>
+<p>부모의 허리·무릎 상태를 고려해 무리하지 않는 거리로 진행하세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=가족+야외놀이용품" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">20</span><div class="activity-title">팔씨름
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>마주 앉아 손을 맞잡고 겨루는 팔씨름은 팔 근력과 승부욕, 부모와의 스킨십을 동시에 키울 수 있는 간단한 놀이입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>테이블 또는 바닥</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>부모가 살짝 힘을 빼고 겨뤄주면 아이가 성취감을 느끼며 더 좋아합니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동+실내놀이용품" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">21</span><div class="activity-title">요가 · 스트레칭 함께하기
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 마주 보고 간단한 요가 동작이나 스트레칭을 따라 하며 유연성과 신체 인지 능력을 키웁니다. 차분한 마무리 운동으로도 좋습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>요가매트</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>동물 모양 흉내내기(고양이·강아지 자세)로 하면 아이가 더 즐겁게 참여합니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=아동용+요가매트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">22</span><div class="activity-title">캐치볼(공 주고받기)
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부드러운 공을 부모와 아이가 던지고 받으며 손눈 협응력과 순발력을 키우는 기본 놀이입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>말랑한 스펀지 공</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15~20분</p>
+<span class="desc-label">💡 팁</span>
+<p>처음엔 가까운 거리에서 시작해 점점 거리를 늘려가세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아용+스펀지공" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">23</span><div class="activity-title">다리 사이로 공 굴리기 계주
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>다리를 벌리고 서서 그 사이로 공을 굴려 전달하는 계주 놀이. 협응력과 협동심을 재미있게 키울 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>공 1개</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>가족이 여러 명이면 편을 나눠 이어달리기 형식으로 하면 더 재미있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이용+놀이공" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">24</span><div class="activity-title">콩주머니 던지기 놀이
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>바구니나 목표물에 콩주머니를 던져 넣는 놀이로, 던지는 힘 조절과 집중력을 키웁니다. 부모와 점수 대결을 하면 더욱 즐겁습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>콩주머니 세트, 바구니</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>15분</p>
+<span class="desc-label">💡 팁</span>
+<p>거리를 점점 늘려가며 난이도를 조절해주세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=유아+콩주머니+놀이세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+</div>
+
+<!-- 9세 이상 -->
+<div class="section" id="tab-age4">
+<input type="text" placeholder="🔍 검색 (활동명, 준비물...)" oninput="filter(this,'age4')">
+
+<div class="activity"><div class="activity-header"><span class="num">25</span><div class="activity-title">배드민턴
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 봄·가을</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>순발력과 반응 속도, 손눈 협응력을 키우는 데 좋은 운동. 부모와 아이 단둘이 간단히 즐길 수 있는 대표적인 가족 운동입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>배드민턴 라켓 2개, 셔틀콕</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>20~30분</p>
+<span class="desc-label">💡 팁</span>
+<p>바람이 적은 저녁 시간에 하면 셔틀콕이 덜 날아가서 랠리를 오래 이어갈 수 있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=주니어+배드민턴+라켓세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">26</span><div class="activity-title">농구 슛 대결
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 번갈아 슛을 던지며 승부를 겨루는 놀이. 순발력, 점프력, 손눈 협응력을 키우고 부모와 실력을 겨루는 재미가 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>주니어 농구공, 운동화, 인근 농구 골대</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>30~40분</p>
+<span class="desc-label">💡 팁</span>
+<p>골대 높이를 낮춰주면 성공 경험이 늘어 흥미를 오래 유지할 수 있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=주니어+농구공" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">27</span><div class="activity-title">등산 · 하이킹
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🍂 봄·가을</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 함께 오르막을 걸으며 심폐지구력과 하체 근력을 키우고, 자연 관찰을 통해 정서적 안정과 호기심도 함께 얻습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>트레킹화, 물통, 간식, 자외선 차단제</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>1~2시간(난이도 낮은 코스 기준)</p>
+<span class="desc-label">💡 팁</span>
+<p>처음엔 짧고 완만한 둘레길부터 시작해 성취감을 쌓아가세요.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=주니어+트레킹화" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">28</span><div class="activity-title">탁구
+  <div class="badges"><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>짧은 랠리로 반응 속도와 손목 힘, 집중력을 키우는 실내 스포츠입니다. 부모와 아이 둘이서 바로 즐길 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>탁구 라켓, 탁구대(또는 접이식 탁구대)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>20~30분</p>
+<span class="desc-label">💡 팁</span>
+<p>비 오는 날 실내 가족 활동으로 추천합니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+탁구라켓" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">29</span><div class="activity-title">캐치볼(야구공 던지고 받기)
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-medium">⭐⭐ 보통</span><span class="badge badge-season">🌸 봄·가을</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 마주 서서 공을 던지고 받으며 손눈 협응력과 어깨·팔 근력을 키웁니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>어린이용 글러브, 말랑한 야구공</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>30~40분</p>
+<span class="desc-label">💡 팁</span>
+<p>부드러운 스펀지 공으로 시작하면 부상 위험 없이 재미있게 연습할 수 있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=어린이+야구글러브+세트" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">30</span><div class="activity-title">프리스비(원반 던지기)
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>원반을 던지고 받으며 전신 협응력과 순발력을 키우는 활동. 규칙이 간단해 부모와 아이 단둘이서도 쉽게 즐길 수 있습니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>프리스비(원반)</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>20~30분</p>
+<span class="desc-label">💡 팁</span>
+<p>넓은 공원 잔디밭에서 하면 마음껏 던질 수 있어 좋습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=프리스비+원반" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">31</span><div class="activity-title">가족 줄다리기
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-indoor">🏠 실내</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>튼튼한 줄을 양쪽에서 잡아당기는 줄다리기는 전신 근력과 협동심을 키우는 간단하지만 신나는 활동입니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>튼튼한 줄 또는 로프</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>10분</p>
+<span class="desc-label">💡 팁</span>
+<p>가족이 여러 명이면 편을 나눠서 하면 더 재미있습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=줄다리기+로프" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+
+<div class="activity"><div class="activity-header"><span class="num">32</span><div class="activity-title">함께 걷기 · 가벼운 조깅
+  <div class="badges"><span class="badge badge-outdoor">🌿 실외</span><span class="badge badge-together">👨‍👩‍👧 함께</span><span class="badge badge-easy">⭐ 쉬움</span><span class="badge badge-season">🌸 사계절</span></div>
+</div></div>
+<span class="desc-label">📋 활동 설명</span>
+<p>부모와 아이가 나란히 걷거나 가볍게 뛰며 심폐지구력을 키우고 대화를 나눌 수 있는 시간을 함께 가집니다.</p>
+<span class="desc-label">🛒 준비물</span>
+<p>운동화, 물통</p>
+<span class="desc-label">⏱️ 소요 시간</span>
+<p>20~30분</p>
+<span class="desc-label">💡 팁</span>
+<p>목적지를 정하거나 간단한 미션(꽃 찾기 등)을 주면 아이가 지루해하지 않습니다.</p>
+<div class="btn-row"><a class="naver-btn" href="https://search.shopping.naver.com/search/all?query=주니어+운동화" target="_blank">🛒 네이버쇼핑에서 보기</a></div>
+</div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function filter(input, sectionId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll('#tab-' + sectionId + ' .activity').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>

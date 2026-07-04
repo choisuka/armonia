@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연령별 꼭 필요한 육아용품</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#e2e8f0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#1e0a3c,#3b0d6e);padding:40px 20px;text-align:center;border-bottom:1px solid rgba(168,85,247,.3)}
+header h1{font-size:1.7rem;color:#d8b4fe;margin-bottom:8px}
+header p{color:rgba(255,255,255,.55);font-size:.9rem}
+.back-btn{display:inline-block;margin-top:16px;padding:.45rem 1.2rem;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:999px;color:#d8b4fe;text-decoration:none;font-size:.82rem}
+.tab-wrap{position:sticky;top:0;z-index:100;background:#0a0a1a;border-bottom:1px solid rgba(255,255,255,.08);display:flex;overflow-x:auto;gap:0}
+.tab{flex:1;min-width:120px;text-align:center;padding:14px 8px;font-size:.82rem;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+.tab.active{color:#d8b4fe;border-bottom-color:#d8b4fe}
+.section{display:none;max-width:960px;margin:0 auto;padding:32px 20px}
+.section.active{display:block}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.product-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;overflow:hidden;transition:transform .2s,border-color .2s}
+.product-card:hover{transform:translateY(-5px);border-color:rgba(168,85,247,.4)}
+.product-img{width:100%;height:90px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+.product-info{padding:14px}
+.product-info h4{font-size:.88rem;font-weight:700;margin-bottom:6px;line-height:1.4}
+.product-info .why{font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:10px}
+.shop-btn{display:block;text-align:center;background:linear-gradient(135deg,#d97706,#f59e0b);color:#000;text-decoration:none;border-radius:10px;padding:8px;font-size:.8rem;font-weight:800;transition:opacity .2s;margin-bottom:6px}
+.shop-btn:hover{opacity:.85}
+.ai-btn{display:block;text-align:center;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;text-decoration:none;border-radius:10px;padding:8px;font-size:.8rem;font-weight:800;transition:opacity .2s}
+.ai-btn:hover{opacity:.85}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛍️ 연령별 꼭 필요한 육아용품</h1>
+  <p>0~7세까지 낭비 없이 단계별로 정리한 필수템</p>
+  <a class="back-btn" href="index.html">← 허브로 돌아가기</a>
+</header>
+
+<div class="tab-wrap">
+  <div class="tab active" onclick="showTab('age1')">👶 신생아(0~6개월)</div>
+  <div class="tab" onclick="showTab('age2')">🍼 영아(7~24개월)</div>
+  <div class="tab" onclick="showTab('age3')">🧸 유아(2~4세)</div>
+  <div class="tab" onclick="showTab('age4')">🎒 유치원(5~7세)</div>
+</div>
+
+<div class="section active" id="tab-age1">
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">🚗</div>
+      <div class="product-info">
+        <h4>신생아 카시트</h4>
+        <div class="why">자동차 이동 시 필수 안전장비. 법적으로도 의무 장착 대상입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=신생아+카시트" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=신생아+카시트+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🎠</div>
+      <div class="product-info">
+        <h4>침대 모빌</h4>
+        <div class="why">시각 자극과 정서 안정에 도움. 흑백·원색 모빌이 초점 발달에 좋습니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=아기+침대+모빌" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=신생아+모빌+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">👶</div>
+      <div class="product-info">
+        <h4>아기띠 · 힙시트</h4>
+        <div class="why">외출·이동 시 양손을 자유롭게 하고 밀착감으로 정서 안정을 줍니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=신생아+아기띠" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=신생아+아기띠+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🍼</div>
+      <div class="product-info">
+        <h4>젖병 소독기</h4>
+        <div class="why">면역력이 약한 신생아 시기, 위생 관리에 필수적인 가전입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=젖병+소독기" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=젖병+소독기+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🧦</div>
+      <div class="product-info">
+        <h4>속싸개 · 배냇저고리</h4>
+        <div class="why">자궁 속 환경을 재현해 놀람 반사를 줄이고 숙면을 돕습니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=신생아+속싸개+배냇저고리" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=신생아+속싸개+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="tab-age2">
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">🧱</div>
+      <div class="product-info">
+        <h4>원목 블록</h4>
+        <div class="why">소근육과 공간지각력, 창의력을 키우는 대표적인 놀이 교구입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+원목블록" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+원목블록+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🪑</div>
+      <div class="product-info">
+        <h4>유아용 식탁의자</h4>
+        <div class="why">이유식·식사 습관 형성에 필요한 필수 가구입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아용+식탁의자" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아용+식탁의자+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🚪</div>
+      <div class="product-info">
+        <h4>안전문 · 안전가드</h4>
+        <div class="why">아장아장 걷기 시작하는 시기, 계단·주방 사고 예방에 필수입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+안전문+안전가드" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+안전문+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🚶</div>
+      <div class="product-info">
+        <h4>걸음마 보조기</h4>
+        <div class="why">첫걸음을 연습하는 시기, 균형감각과 다리 근력 발달을 돕습니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+걸음마보조기" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+걸음마보조기+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🛁</div>
+      <div class="product-info">
+        <h4>목욕놀이 장난감</h4>
+        <div class="why">목욕 시간을 놀이로 만들어 씻기 싫어하는 아이도 즐겁게 만듭니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+목욕놀이+장난감" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+목욕놀이+장난감+추천" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="tab-age3">
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">🚲</div>
+      <div class="product-info">
+        <h4>삼발이 자전거 · 밸런스바이크</h4>
+        <div class="why">균형감각과 하체 근력을 키우는 첫 탈것. 두발자전거의 발판이 됩니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+삼발이자전거+밸런스바이크" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+밸런스바이크+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🛝</div>
+      <div class="product-info">
+        <h4>실내 미끄럼틀</h4>
+        <div class="why">날씨와 상관없이 실내에서 대근육 활동을 할 수 있게 해줍니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+실내미끄럼틀" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+실내미끄럼틀+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🧩</div>
+      <div class="product-info">
+        <h4>원목 퍼즐</h4>
+        <div class="why">문제 해결력과 집중력, 손끝 소근육 발달에 좋은 교구입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+원목퍼즐" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+원목퍼즐+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🚽</div>
+      <div class="product-info">
+        <h4>유아용 변기 · 배변훈련 세트</h4>
+        <div class="why">배변 훈련 시기에 아이 스스로 성취감을 느끼게 해주는 필수템입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아용+변기+배변훈련" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+배변훈련+변기+추천" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🧸</div>
+      <div class="product-info">
+        <h4>소꿉놀이 세트</h4>
+        <div class="why">역할놀이를 통해 언어 발달과 사회성, 상상력을 함께 키웁니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=유아+소꿉놀이+세트" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=유아+소꿉놀이+세트+추천" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="tab-age4">
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">🚴</div>
+      <div class="product-info">
+        <h4>두발자전거(보조바퀴)</h4>
+        <div class="why">본격적인 두발자전거 입문. 보조바퀴로 안전하게 연습할 수 있습니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=어린이+두발자전거+보조바퀴" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=어린이+두발자전거+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🛴</div>
+      <div class="product-info">
+        <h4>킥보드</h4>
+        <div class="why">균형감각과 순발력을 키우는 대표적인 야외 놀이기구입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=어린이+킥보드" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=어린이+킥보드+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">📚</div>
+      <div class="product-info">
+        <h4>책상·의자 세트</h4>
+        <div class="why">취학 준비를 시작하는 시기, 바른 자세 학습 습관의 기초가 됩니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=어린이+책상의자세트" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=어린이+책상의자세트+추천" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🎲</div>
+      <div class="product-info">
+        <h4>보드게임</h4>
+        <div class="why">규칙 이해력, 승부욕 조절, 가족 간 소통을 함께 키울 수 있습니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=어린이+보드게임" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=어린이+보드게임+추천+비교" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">📖</div>
+      <div class="product-info">
+        <h4>초등 입학 준비 전집</h4>
+        <div class="why">읽기 독립과 초등 학습의 기초를 다지는 연령별 도서 전집입니다.</div>
+        <a class="shop-btn" href="https://search.shopping.naver.com/search/all?query=초등입학준비+전집" target="_blank" rel="nofollow noopener">🛒 네이버쇼핑</a>
+        <a class="ai-btn" href="https://www.perplexity.ai/search/?q=초등입학준비+전집+추천" target="_blank" rel="nofollow noopener">🤖 AI에게 질문</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
