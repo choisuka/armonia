@@ -1,4 +1,4 @@
-const CACHE_NAME = 'armoonia-hub-v13';
+const CACHE_NAME = 'armoonia-hub-v17';
 const ASSETS = [
   './',
   './index.html',
