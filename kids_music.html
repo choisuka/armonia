@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유튜브로 바로 듣는 아이 발달 음악</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#e2e8f0;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#1e0a3c,#1a2d4e);padding:40px 20px;text-align:center;border-bottom:1px solid rgba(168,85,247,.3)}
+header h1{font-size:1.6rem;color:#d8b4fe}
+header p{color:rgba(255,255,255,.55);font-size:.88rem;margin-top:8px}
+.back-btn{display:inline-block;margin-top:16px;padding:.45rem 1.2rem;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:999px;color:#d8b4fe;text-decoration:none;font-size:.82rem}
+.grid{max-width:960px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden}
+.cover{position:relative;aspect-ratio:16/9;background:#111;cursor:pointer}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.play-btn{position:absolute;inset:0;margin:auto;width:52px;height:52px;background:rgba(168,85,247,.85);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.play-btn::after{content:'';border-style:solid;border-width:10px 0 10px 16px;border-color:transparent transparent transparent #fff;margin-left:4px}
+.body{padding:14px 16px}
+.artist{font-size:.78rem;color:#c4b5fd;font-weight:700}
+.title{font-size:.98rem;font-weight:700;margin:4px 0 8px;color:#fff}
+.why{font-size:.82rem;color:rgba(255,255,255,.55)}
+.open-link{display:block;margin-top:10px;font-size:.78rem;color:#93c5fd;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎵 유튜브로 바로 듣는 아이 발달 음악</h1>
+  <p>뇌 발달 · 정서 안정 · 리듬감 · 상상력에 도움 되는 클래식 33곡</p>
+  <a class="back-btn" href="index.html">← 허브로 돌아가기</a>
+  <p id="autoplay-hint" style="margin-top:14px;font-size:.78rem;color:#fbbf24">🔈 소리가 안 나오면 재생 화면을 한 번 눌러주세요 (브라우저 자동재생 제한)</p>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const SONGS = [
+  {title:'터키 행진곡 (Rondo alla Turca, Mozart)', artist:'모차르트 / Epic Piano', yt:'KfgQw5bFrPA', why:'경쾌한 리듬으로 박자 감각을 키워주는 모차르트의 발랄한 소품.'},
+  {title:'작은 별 변주곡 (Ah, vous dirai-je, Maman, Mozart)', artist:'모차르트 / Rousseau', yt:'hCKBl-TpRzc', why:'반짝반짝 작은별의 원곡. 익숙한 멜로디가 변주되며 음악적 사고력을 자극합니다.'},
+  {title:'미뉴에트 G장조 (Bach)', artist:'바흐(전 Petzold) / The Great Repertoire', yt:'p1gGxpitLO8', why:'단정하고 우아한 선율로 클래식에 처음 입문하기 좋은 곡.'},
+  {title:'캐논 D장조 (Pachelbel)', artist:'파헬벨 / OmarD97', yt:'PkSp8wc8lKw', why:'반복되는 화성 진행이 안정감과 집중력을 키워줍니다.'},
+  {title:'축혼 행진곡 (Wedding March, Mendelssohn)', artist:'멘델스존 / EuroArts', yt:'z85QVFf3-2M', why:'웅장하고 밝은 행진곡. 리듬감과 성취감을 동시에 느끼게 합니다.'},
+  {title:'캉캉 (Can-Can, Offenbach)', artist:'오펜바흐 / Youth Symphony Orchestra', yt:'Tmm8fP1-_ww', why:'발랄하고 신나는 리듬으로 몸을 들썩이게 만드는 흥겨운 곡.'},
+  {title:'라데츠키 행진곡 (J. Strauss I)', artist:'요한 슈트라우스 1세 / Strauss Capelle Vienna', yt:'7H1bSWwd3Ko', why:'박수 치며 리듬을 맞추기 좋은 대표적인 행진곡.'},
+  {title:'투우사의 노래 (Toreador Song, Bizet)', artist:'비제 / Carmen Suite', yt:'4DNGMoMNLRY', why:'당당하고 힘찬 멜로디로 자신감을 북돋아주는 명곡.'},
+  {title:'아름답고 푸른 도나우강 (J. Strauss II)', artist:'요한 슈트라우스 2세 / Adagietto', yt:'RIgqL54cHYE', why:'우아한 왈츠 리듬으로 3박자 감각을 자연스럽게 익히게 합니다.'},
+  {title:'호두까기 인형 — 행진곡 (Tchaikovsky)', artist:'차이콥스키 / Arthur Arnold', yt:'zOQm3qDjtOw', why:'씩씩한 행진곡. 발레 동화 속 장난감 병정들의 세계로 안내합니다.'},
+  {title:'호두까기 인형 — 눈송이의 왈츠 (Tchaikovsky)', artist:'차이콥스키 / 사이먼 래틀 & 베를린 필하모닉', yt:'42asIhamWU4', why:'눈송이가 춤추는 듯한 발레 음악. 겨울의 환상적인 세계로 안내합니다.'},
+  {title:'호두까기 인형 — 사탕 요정의 춤 (Tchaikovsky)', artist:'차이콥스키 / Royal Philharmonic Orchestra', yt:'V6DvTbGFf5Q', why:'신비로운 첼레스타 음색이 상상력을 자극하는 발레 명곡.'},
+  {title:'호두까기 인형 — 트레팍 (Tchaikovsky)', artist:'차이콥스키 / moltoallegro19', yt:'z2ISRMSIyX8', why:'빠르고 힘찬 러시아 춤곡. 에너지와 즐거움을 함께 선사합니다.'},
+  {title:'꽃의 왈츠 (Tchaikovsky)', artist:'차이콥스키 / Concertgebouworkest', yt:'Zp1aDnVySf8', why:'화사하고 우아한 왈츠로 정서적 풍요로움을 더해줍니다.'},
+  {title:'동물의 사육제 — 백조 (Saint-Saëns)', artist:'생상스 / Gautier Capuçon', yt:'IpWoSDsUJu8', why:'우아한 첼로 선율로 정서 안정과 집중력에 도움을 줍니다.'},
+  {title:'동물의 사육제 — 코끼리 (Saint-Saëns)', artist:'생상스 / The PRSO', yt:'sxI7xwdXLQw', why:'묵직하고 유쾌한 콘트라베이스 선율. 동물의 특징을 음악으로 표현하는 재미.'},
+  {title:'동물의 사육제 — 새장 (Saint-Saëns)', artist:'생상스 / RoyalDukeJam', yt:'ZFJf3rHd69c', why:'지저귀는 새소리를 닮은 플루트 선율로 청각적 상상력을 키워줍니다.'},
+  {title:'동물의 사육제 — 화석 (Saint-Saëns)', artist:'생상스 / RoyalDukeJam', yt:'0TSkIG9lFvY', why:'달그락거리는 실로폰 소리가 재미있는 유쾌한 익살곡.'},
+  {title:'동물의 사육제 — 수족관 (Saint-Saëns)', artist:'생상스 / 피츠버그 심포니, 안드레 프레빈', yt:'-OAQ6rAs9DA', why:'몽환적인 물결 소리 같은 선율로 상상력과 정서를 자극합니다.'},
+  {title:'피터와 늑대 (Prokofiev)', artist:'프로코피예프 / ClassicalMusicScores', yt:'ki0xu6Gl9Nc', why:'악기마다 캐릭터를 부여한 동화 음악. 악기 소리 구분 능력을 키워줍니다.'},
+  {title:'청소년을 위한 관현악 입문 (Britten)', artist:'브리튼 / Boosey & Hawkes', yt:'JGxQVxgacSI', why:'오케스트라 악기를 하나씩 소개하는 교육적인 음악 여행.'},
+  {title:'헨젤과 그레텔 서곡 (Humperdinck)', artist:'훔퍼딩크 / Im Walde', yt:'Z7xQL6ob4QU', why:'동화 속 모험을 그린 따뜻하고 아름다운 서곡.'},
+  {title:'신세계 교향곡 2악장 (Dvorak)', artist:'드보르작 / peterawilliams', yt:'qKQ1hiP96-M', why:'고요하고 서정적인 잉글리시 호른 선율로 정서 안정에 도움을 줍니다.'},
+  {title:'마더 구스 — 잠자는 숲속의 미녀 (Ravel)', artist:'라벨 / scottbrothersduo', yt:'AzG-v85XvH0', why:'동화적 상상력을 자극하는 몽환적이고 아름다운 파반느.'},
+  {title:'브람스 자장가 (Wiegenlied, Brahms)', artist:'브람스 / Metamorphose String Orchestra', yt:'j-1P23CgLc8', why:'세상에서 가장 유명한 자장가. 포근하고 나른한 선율로 수면을 유도합니다.'},
+  {title:'유머레스크 7번 (Dvorak)', artist:'드보르작 / Augustin Hadelich', yt:'2B9kZ2jguwk', why:'부드럽게 흐르는 바이올린 선율로 정서적 안정감을 줍니다.'},
+  {title:'강아지 왈츠 (Minute Waltz, Chopin)', artist:'쇼팽 / Arthur Rubinstein', yt:'OoX6ZTUd3Vo', why:'짧고 경쾌한 왈츠. 리듬감과 집중력을 동시에 키워줍니다.'},
+  {title:'하바네라 (Habanera, Bizet)', artist:'비제 / Nova Amadeus Chamber Orchestra', yt:'D2aicOA--qA', why:'매혹적인 리듬의 오페라 명곡. 다양한 음악 장르 경험에 좋습니다.'},
+  {title:'윌리엄 텔 서곡 — 피날레 (Rossini)', artist:'로시니 / Kim Cl Deok', yt:'j3T8-aeOrbg', why:'질주하는 듯한 신나는 리듬으로 활력과 에너지를 선사합니다.'},
+  {title:'위풍당당 행진곡 1번 (Elgar)', artist:'엘가 / FacundoJG', yt:'moL4MkJ-aLk', why:'웅장하고 힘찬 행진곡으로 성취감과 자신감을 키워줍니다.'},
+  {title:'볼레로 (Ravel)', artist:'라벨 / Rotterdam Philharmonic Orchestra', yt:'5Eqj9G5j1ss', why:'서서히 고조되는 리듬으로 집중력과 인내심을 길러주는 명곡.'},
+  {title:'왕궁의 불꽃놀이 — 기쁨 (Handel)', artist:'헨델 / britcrit09', yt:'mpTeslni6tA', why:'우렁찬 팀파니와 금관이 어우러진 축제 분위기의 신나는 곡.'},
+  {title:'사계 — 여름 3악장 (Vivaldi)', artist:'비발디 / National Symphony Orchestra', yt:'YD-JvMChuDg', why:'강렬한 폭풍우를 그린 다이나믹한 곡. 감정 표현력을 자극합니다.'}
+];
+
+function loadYT(el, id){
+  el.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" width="100%" height="100%" style="position:absolute;inset:0;border:0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+}
+
+document.getElementById('grid').innerHTML = SONGS.map((s, i) => `
+  <div class="card">
+    <div class="cover" id="cover-${i}" onclick="loadYT(this,'${s.yt}')">
+      <img src="https://img.youtube.com/vi/${s.yt}/hqdefault.jpg" alt="${s.title}" loading="lazy">
+      <div class="play-btn"></div>
+    </div>
+    <div class="body">
+      <div class="artist">${s.artist}</div>
+      <div class="title">${s.title}</div>
+      <div class="why">${s.why}</div>
+      <a class="open-link" href="https://www.youtube.com/watch?v=${s.yt}" target="_blank" rel="noopener">↗ YouTube에서 바로 열기</a>
+    </div>
+  </div>
+`).join('');
+
+// 페이지 열릴 때 무작위 한 곡 자동 재생
+const randomIdx = Math.floor(Math.random() * SONGS.length);
+const randomCover = document.getElementById('cover-' + randomIdx);
+loadYT(randomCover, SONGS[randomIdx].yt);
+randomCover.scrollIntoView({behavior:'smooth', block:'center'});
+</script>
+
+</body>
+</html>
