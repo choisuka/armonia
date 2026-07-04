@@ -297,7 +297,7 @@ footer .notice{font-size:.73rem;color:rgba(255,255,255,.2);max-width:580px;margi
     </svg>
   </div>
   <h1>우리 아이 행복 프로젝트</h1>
-  <p>수학 · 과학 · 감정 · 행복</p>
+  <p>과학 · 감정 · 행복</p>
   <p>부모와 아이가 함께 행복해지는 무료 앱 모음<br>토로와 함께하는 모든 탐험의 시작점 🦕</p>
   <button id="install-fab">📲 앱으로 설치하기</button>
 </header>
@@ -341,19 +341,19 @@ footer .notice{font-size:.73rem;color:rgba(255,255,255,.2);max-width:580px;margi
 <!-- 날씨에 맞는 토로 추천 -->
 <div class="weather-section">
   <div class="rec-card">
-    <div class="rec-label">📡 오늘 날씨에 맞는 토로 추천</div>
+    <div class="rec-label">📡 오늘의 토로 추천</div>
     <div class="rec-row">
-      <div class="rec-item" onclick="location.href='happy_day/index.html'">
+      <div class="rec-item" style="cursor:default">
         <div class="rec-ico">📜</div>
         <div class="rec-lbl">오늘의 시</div>
         <div class="rec-name" id="rec-poem">불러오는 중</div>
       </div>
-      <div class="rec-item" onclick="location.href='happy_day/index.html'">
+      <div class="rec-item" onclick="location.href='kids_music.html'">
         <div class="rec-ico">🎵</div>
         <div class="rec-lbl">어울리는 음악</div>
         <div class="rec-name" id="rec-music">불러오는 중</div>
       </div>
-      <div class="rec-item" onclick="location.href='happy_day/index.html'">
+      <div class="rec-item" style="cursor:default">
         <div class="rec-ico">🖼️</div>
         <div class="rec-lbl">오늘의 명화</div>
         <div class="rec-name" id="rec-art">불러오는 중</div>
@@ -613,7 +613,11 @@ const THEMES={
   Snow:        {icon:'❄️',poems:['첫눈','하얀 세상','눈꽃'],                  music:['차이코프스키 호두까기','Let It Go','White Christmas'],arts:['까치 — 모네','겨울 풍경 — 프리드리히','눈 속의 사냥꾼'],        mission:'세계사 탐험 도전!'},
   Thunderstorm:{icon:'⛈️',poems:['천둥소리','폭풍 속에서'],                   music:['베토벤 운명','Thunderstruck'],                       arts:['폭풍 — 터너','별이 빛나는 밤'],                             mission:'과학 탐험 도전!'},
   night:       {icon:'🌙',poems:['별빛 아래','달의 노래','고요한 밤'],         music:['드뷔시 달빛','Moonlight Sonata','Starry Night'],     arts:['별이 빛나는 밤 — 반 고흐','달빛 아래 — 드뷔시'],               mission:'오늘 일기 쓰기!'},
-  default:     {icon:'🌤️',poems:['오늘의 시','바람과 나','계절의 끝'],        music:['드뷔시 달빛','사계','봄날'],                         arts:['진주 귀걸이를 한 소녀','이삭 줍는 여인들'],                  mission:'탐험 시작하기!'},
+  default:     {icon:'🌤️',
+    poems:['봄은 고양이로다','풀꽃','산유화','귀천','향수','나그네','진달래꽃','풀'],
+    music:['터키 행진곡 (Mozart)','작은 별 변주곡 (Mozart)','캐논 D장조 (Pachelbel)','동물의 사육제 — 백조 (Saint-Saëns)','호두까기 인형 — 사탕 요정의 춤','브람스 자장가','유머레스크 7번 (Dvorak)','아름답고 푸른 도나우강'],
+    arts:['그랑드 자트 섬의 일요일 오후','인상 — 해돋이','비너스의 탄생','해바라기','아테네 학당','만종','진주 귀걸이를 한 소녀','별이 빛나는 밤'],
+    missions:['우주 탐험 도전!','공룡 탐험 도전!','전기 실험 도전!','태양계 퀴즈 도전!']},
 };
 const TORO_MSGS=[
   "오늘 날씨에 어울리는 탐험을 추천해줄게! 🗺️",
@@ -649,10 +653,14 @@ const TORO_MSGS=[
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
 function applyTheme(key){
   const t=THEMES[key]||THEMES.default;
-  document.getElementById('rec-poem').textContent=pick(t.poems);
-  document.getElementById('rec-music').textContent=pick(t.music);
-  document.getElementById('rec-art').textContent=pick(t.arts);
-  document.getElementById('rec-mission').textContent=t.mission;
+  const today=new Date();
+  const seed=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
+  const rand=seededRandom(seed);
+  const dayPick=arr=>arr[Math.floor(rand()*arr.length)];
+  document.getElementById('rec-poem').textContent=dayPick(t.poems);
+  document.getElementById('rec-music').textContent=dayPick(t.music);
+  document.getElementById('rec-art').textContent=dayPick(t.arts);
+  document.getElementById('rec-mission').textContent=dayPick(t.missions);
 }
 // ── 일기 ──
 const DIARY=[
@@ -663,10 +671,19 @@ const DIARY=[
   {emoji:'🚀',tag:'과학 탐험',title:'전기 실험을 해봤어요',body:'전구에 불이 켜지는 원리를 배웠어요. 집에서 직접 실험해보고 싶어졌어요!'},
   {emoji:'🌍',tag:'세계사 탐험',title:'이집트 피라미드의 비밀',body:'어떻게 저 큰 돌을 옮겼을까? 고대 이집트가 너무 신기하고 재미있었어요.'},
 ];
+function seededRandom(seed){
+  let s=seed;
+  return function(){ s=(s*9301+49297)%233280; return s/233280; };
+}
 function renderDiary(){
   const today=new Date();
   const seed=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
-  const shuffled=[...DIARY].sort((a,b)=>Math.sin(seed*DIARY.indexOf(a)+1)%1-Math.sin(seed*DIARY.indexOf(b)+1)%1);
+  const rand=seededRandom(seed);
+  const shuffled=[...DIARY];
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(rand()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
   const colors=['rgba(236,72,153,.25)','rgba(168,85,247,.25)','rgba(16,185,129,.25)'];
   const ds=today.toLocaleDateString('ko-KR',{month:'long',day:'numeric'});
   document.getElementById('diary-date-lbl').textContent=ds+' — 오늘 토로와 함께한 이야기';
