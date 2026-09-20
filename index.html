@@ -184,6 +184,20 @@ header p{margin-top:14px;font-size:1rem;color:rgba(255,255,255,.6);line-height:1
 .toro-face{font-size:2.4rem;flex-shrink:0}
 .toro-txt{font-size:.95rem;line-height:1.75;color:#c8d8e8}
 
+/* ── 만든 이유 ── */
+.why-section{max-width:960px;margin:0 auto;padding:0 24px 40px;position:relative;z-index:1}
+.why-card{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(59,130,246,.07));border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:28px 28px 24px}
+.why-label{font-size:.75rem;color:var(--purple);font-weight:700;letter-spacing:.06em;margin-bottom:10px}
+.why-title{font-family:'Jua',sans-serif;font-size:1.5rem;line-height:1.4;margin-bottom:18px;text-wrap:balance}
+.why-card p{font-size:.95rem;line-height:1.85;color:#c8d8e8;max-width:65ch;word-break:keep-all}
+.why-card p + p{margin-top:12px}
+.why-card p.why-key{color:#fff;font-family:'Jua',sans-serif;font-size:1.05rem}
+.why-next{display:block;margin-top:22px;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;text-decoration:none;transition:.2s}
+.why-next:hover{border-color:var(--purple);transform:translateY(-2px)}
+.why-next .n-name{font-family:'Jua',sans-serif;font-size:1.05rem}
+.why-next .n-desc{font-size:.85rem;color:rgba(255,255,255,.6);margin-top:4px;line-height:1.6;word-break:keep-all}
+.why-next .n-url{font-size:.78rem;color:var(--purple);margin-top:6px;word-break:break-all}
+
 /* ── 상품 스트립 ── */
 .products-wrap{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:52px 0;position:relative;z-index:1}
 .product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:32px}
@@ -322,6 +336,24 @@ footer .notice{font-size:.73rem;color:rgba(255,255,255,.2);max-width:580px;margi
          3️⃣ <strong>"추가"</strong> 누르면 완료! 🎉</p>
     </div>
     <button class="ios-close" onclick="document.getElementById('ios-modal').classList.remove('show')">닫기</button>
+  </div>
+</div>
+
+<!-- 아르모니아를 만든 이유 -->
+<div class="why-section">
+  <div class="why-card">
+    <div class="why-label">📖 아르모니아를 만든 이유</div>
+    <h2 class="why-title">문자를 배우기 전, 더 중요한 시간이 있습니다</h2>
+    <p>교육은 인간의 역사라고 생각합니다. 인류가 수만 년에 걸쳐 쌓아온 진화의 과정을, 한 사람이 자라는 짧은 시간 안에 다시 익혀야 합니다. 어려운 것이 당연합니다. 게다가 아이는 아무것도 스스로 할 수 없는 상태로 태어납니다.</p>
+    <p>그런데 그 몇 년의 시간조차, 문자를 배우기 전의 시기는 교육의 시간으로 셈해지지 않습니다. 이 지점이 시작점입니다.</p>
+    <p>문자를 배우기 전에 훨씬 중요한 과정이 있습니다. 부모의 사랑과 관심 속에서 여러 가지 흥미로운 활동을 하고, 그 사이에 말을 배우고 대화하며, 스스로 생각하는 훈련을 하는 시간입니다.</p>
+    <p>아르모니아는 그 시간을 위한 앱입니다. 스스로 열심히 공부하는 학생처럼, 자녀의 성장에 바른 생각을 가진 부모가 쓸 때 진짜 도움이 됩니다. 그런 부모 한 분 한 분을 통해 다른 가정으로도 퍼져 나갈 수 있다고 생각합니다.</p>
+    <p class="why-key">아르모니아는 학습의 핵심 코어를 준비하는 시기를 위한 프로그램입니다.</p>
+    <a class="why-next" href="https://choisuka.github.io/toro_math/">
+      <div class="n-name">🦕 토로매쓰</div>
+      <div class="n-desc">직관 · 시각 · 논리, 세 가지 방식으로 수학을 익히는 초중고 수학 학습 앱</div>
+      <div class="n-url">https://choisuka.github.io/toro_math/</div>
+    </a>
   </div>
 </div>
 
