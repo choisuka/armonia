@@ -1203,7 +1203,7 @@ async function connectWatch() {
   const status = document.getElementById('watch-status');
 
   if (!navigator.bluetooth) {
-    status.textContent = 'Web Bluetooth 미지원 (안드로이드 Chrome 필요)';
+    status.innerHTML = '앱에서는 워치 연결이 지원되지 않아요.<br><a href="?openExternal=1" style="color:inherit;text-decoration:underline">↗ Chrome 브라우저에서 열기</a>';
     status.className = 'watch-status error';
     return;
   }
