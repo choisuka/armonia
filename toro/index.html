@@ -102,7 +102,7 @@ h1,h2,h3,h4,.jua{font-family:'Jua',sans-serif}
 .emotion-btn{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:20px 12px;cursor:pointer;transition:all .25s;text-align:center;color:var(--text)}
 .emotion-btn:hover{transform:translateY(-3px)}
 .emotion-btn.selected{border-color:var(--green);background:rgba(74,222,128,.15);transform:scale(1.04)}
-.emotion-icon{font-size:2.4rem;display:block;margin-bottom:8px}
+.emotion-icon{font-size:2rem;display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;margin:0 auto 8px;background:rgba(255,255,255,.08)}
 .emotion-name{font-family:'Jua',sans-serif;font-size:.95rem}
 .emotion-btn:nth-child(5){grid-column:1/-1}
 
@@ -130,8 +130,15 @@ h1,h2,h3,h4,.jua{font-family:'Jua',sans-serif}
 .log-info{flex:1}
 .log-day-title{font-size:.9rem;font-weight:700;margin-bottom:3px}
 .log-date{font-size:.75rem;color:var(--muted)}
-.log-emotion-icon{font-size:1.5rem}
+.log-emotion-icon{font-size:1.2rem;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.08)}
 .log-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+
+/* 감정별 색 구분 — 색으로도 한눈에 다른 감정임을 알 수 있도록 (.emotion-icon, .log-emotion-icon 둘 다에 적용되므로 반드시 이 둘보다 뒤에 위치) */
+.emo-joy{background:rgba(251,191,36,.28);box-shadow:inset 0 0 0 2px rgba(251,191,36,.65)}
+.emo-anger{background:rgba(248,113,113,.28);box-shadow:inset 0 0 0 2px rgba(248,113,113,.65)}
+.emo-sad{background:rgba(96,165,250,.28);box-shadow:inset 0 0 0 2px rgba(96,165,250,.65)}
+.emo-worry{background:rgba(251,146,60,.28);box-shadow:inset 0 0 0 2px rgba(251,146,60,.65)}
+.emo-lonely{background:rgba(167,139,250,.28);box-shadow:inset 0 0 0 2px rgba(167,139,250,.65)}
 
 /* ── 완료 화면 (all done) ── */
 .all-done-wrap{text-align:center;padding:60px 20px}
@@ -282,23 +289,23 @@ h1,h2,h3,h4,.jua{font-family:'Jua',sans-serif}
     <p class="emotion-sub">지금 내 기분과 가장 비슷한 것을 골라요</p>
     <div class="emotion-grid">
       <button class="emotion-btn" onclick="selectEmotion('joy',this)">
-        <span class="emotion-icon">😊</span>
+        <span class="emotion-icon emo-joy">😊</span>
         <span class="emotion-name">기쁨</span>
       </button>
       <button class="emotion-btn" onclick="selectEmotion('anger',this)">
-        <span class="emotion-icon">😡</span>
+        <span class="emotion-icon emo-anger">😡</span>
         <span class="emotion-name">화남</span>
       </button>
       <button class="emotion-btn" onclick="selectEmotion('sad',this)">
-        <span class="emotion-icon">😢</span>
+        <span class="emotion-icon emo-sad">😢</span>
         <span class="emotion-name">슬픔</span>
       </button>
       <button class="emotion-btn" onclick="selectEmotion('worry',this)">
-        <span class="emotion-icon">😟</span>
+        <span class="emotion-icon emo-worry">😟</span>
         <span class="emotion-name">걱정</span>
       </button>
       <button class="emotion-btn" onclick="selectEmotion('lonely',this)">
-        <span class="emotion-icon">🫥</span>
+        <span class="emotion-icon emo-lonely">😔</span>
         <span class="emotion-name">외로움</span>
       </button>
     </div>
@@ -1036,7 +1043,7 @@ actDesc:'온 가족이 한 자리에 모여 크게 외쳐봐요. "우리 가족 
 tip:'"너는 이미 빛나는 존재야"라고 말하며 꽉 안아주세요. 30일을 함께 해주신 것만으로도 아이에게 평생 기억으로 남을 거예요.'}
 ];
 
-const EMOTIONS = {joy:'😊',anger:'😡',sad:'😢',worry:'😟',lonely:'🫥'};
+const EMOTIONS = {joy:'😊',anger:'😡',sad:'😢',worry:'😟',lonely:'😔'};
 
 // ══════════════════════════════════════════
 //  상태
@@ -1214,7 +1221,7 @@ function renderLog(){
         <div class="log-day-title">${l.title}</div>
         <div class="log-date">${l.date}</div>
       </div>
-      <div class="log-emotion-icon">${EMOTIONS[l.emotion]||'💚'}</div>
+      <div class="log-emotion-icon emo-${l.emotion}">${EMOTIONS[l.emotion]||'💚'}</div>
     </div>`).reverse().join('');
 }
 
