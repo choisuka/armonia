@@ -660,7 +660,7 @@
   <div class="alert-text-box">
     <h2 id="alert-message"></h2>
     <p id="alert-sub"></p>
-    <button class="btn" onclick="showScreen('breath'); startBreath()">잠깐 멈추기</button>
+    <button class="btn" onclick="stopAlarm(); showScreen('breath'); startBreath()">잠깐 멈추기</button>
     <button class="btn ghost" onclick="dismissAlert()">괜찮아요, 돌아가기</button>
   </div>
 </div>
@@ -793,6 +793,7 @@ function renderListenThumb() {
 // ── 마이크 ──
 function stopMic() {
   clearInterval(monitoringInterval);
+  stopAlarm();
   if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
   if (audioCtx)  { audioCtx.close(); audioCtx = null; }
   analyser = null;
@@ -883,6 +884,36 @@ function playGong() {
       osc.start(); osc.stop(audioCtx.currentTime + 2.6);
     });
   } catch(e) {}
+}
+
+// ── 경보음 (큰 소리 감지 → 자동 화면 전환 시 주의를 끌기 위한 소리) ──
+let alarmInterval = null;
+
+function playAlarm() {
+  stopAlarm();
+  if (!audioCtx) return;
+  try { if (audioCtx.state === 'suspended') audioCtx.resume(); } catch(e) {}
+  const beep = () => {
+    if (!audioCtx) return;
+    [[880, 0], [660, 0.15]].forEach(([freq, delay]) => {
+      const start = audioCtx.currentTime + delay;
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.9, start);
+      gain.gain.setValueAtTime(0.9, start + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(start); osc.stop(start + 0.3);
+    });
+  };
+  beep();
+  alarmInterval = setInterval(beep, 700);
+}
+
+function stopAlarm() {
+  if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
 }
 
 function stopCalmSound() {
@@ -1020,6 +1051,7 @@ function selectSound(type) {
 
 // ── 알림 무시 (모니터링 재시작) ──
 function dismissAlert() {
+  stopAlarm();
   stopCalmSound();
   saveLog('dismissed');
   showScreen('listen');
@@ -1037,7 +1069,7 @@ function triggerAlert() {
   }
   showRandomAlert();
   showScreen('alert');
-  startCalmSound();
+  playAlarm();
   if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
 }
 
