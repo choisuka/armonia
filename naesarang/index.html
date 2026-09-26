@@ -803,7 +803,11 @@ async function startMic() {
   stopMic();
   initShake();
   try {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // 자동 게인 컨트롤(AGC)이 켜져 있으면 크롬이 음량을 자동으로 평탄화해서
+    // "큰 소리"를 감지 못하게 됨 — 실제 음량이 그대로 들어오도록 전부 끔
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { autoGainControl: false, noiseSuppression: false, echoCancellation: false }
+    });
     audioCtx  = new (window.AudioContext || window.webkitAudioContext)();
     analyser  = audioCtx.createAnalyser();
     analyser.fftSize = 256;
