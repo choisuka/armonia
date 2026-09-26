@@ -887,33 +887,25 @@ function playGong() {
 }
 
 // ── 경보음 (큰 소리 감지 → 자동 화면 전환 시 주의를 끌기 위한 소리) ──
-let alarmInterval = null;
+// 바흐 "G선상의 아리아"(관현악 모음곡 3번, BWV 1068) 도입부 14초 — 퍼블릭 도메인
+// 출처: 위키미디어 커먼즈, 미 공군 군악대(Air Force Strings) 연주
+// https://commons.wikimedia.org/wiki/File:Air_-_Air_Force_Strings_-_United_States_Air_Force_Band.mp3
+let alarmAudioEl = null;
 
 function playAlarm() {
   stopAlarm();
-  if (!audioCtx) return;
-  try { if (audioCtx.state === 'suspended') audioCtx.resume(); } catch(e) {}
-  const beep = () => {
-    if (!audioCtx) return;
-    [[880, 0], [660, 0.15]].forEach(([freq, delay]) => {
-      const start = audioCtx.currentTime + delay;
-      const osc  = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'square';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.9, start);
-      gain.gain.setValueAtTime(0.9, start + 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(start); osc.stop(start + 0.3);
-    });
-  };
-  beep();
-  alarmInterval = setInterval(beep, 700);
+  alarmAudioEl = new Audio('assets/bach_air.wav');
+  alarmAudioEl.loop = true;
+  alarmAudioEl.volume = 1.0;
+  alarmAudioEl.play().catch(() => {});
 }
 
 function stopAlarm() {
-  if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
+  if (alarmAudioEl) {
+    alarmAudioEl.pause();
+    alarmAudioEl.currentTime = 0;
+    alarmAudioEl = null;
+  }
 }
 
 function stopCalmSound() {
