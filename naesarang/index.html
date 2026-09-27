@@ -838,12 +838,12 @@ function monitorVolume() {
         alertLock = true;
         setTimeout(() => { alertLock = false; }, 3000);
       }
-      if (highCount === 3) {
+      if (highCount === 2) {
         startCalmSound();                  // 진정 음악
       }
-      if (highCount >= 5) {
+      if (highCount >= 3) {
         highCount = 0;
-        setTimeout(triggerAlert, 2000);
+        setTimeout(triggerAlert, 500);
       }
     } else {
       if (highCount > 0 && highCount < 5) {
